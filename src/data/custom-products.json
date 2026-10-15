@@ -1,0 +1,727 @@
+[
+  {
+    "id": "prod-diff-02",
+    "slug": "dr-scent-smart-tower-pro",
+    "name": "Dr. Scent Smart Aroma Tower Pro",
+    "tagline": "Bluetooth-controlled architectural scenting for residences & upscale retail - Updated",
+    "sku": "DSC-TWR-PRO-02",
+    "category": "aroma-diffusers",
+    "categoryName": "Aroma Diffusers",
+    "basePriceLKR": 68500,
+    "images": [
+      "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": true,
+    "isBestseller": true,
+    "isNew": true,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "coverageArea": "Up to 1,500 sq.ft (150 m²)",
+    "bottleVolume": "150ml refillable reservoir",
+    "shortDescription": "Standing column diffuser with integrated smartphone Bluetooth scheduling. Perfect for living rooms, hotel suites, and boutique showrooms.",
+    "description": "A statement piece in modern interior architecture. The Smart Aroma Tower Pro delivers continuous, finely calibrated fragrance dispersal across spacious open-plan homes and retail settings. Set individual operating schedules, work hours, and scent intensities per day of the week via the companion iOS and Android app.",
+    "usageInstructions": [
+      "Open the top locking latch with the included safety key.",
+      "Fill the 150ml internal container with Dr. Scent fragrance oil.",
+      "Connect to the 230V AC adapter.",
+      "Pair with the mobile app via Bluetooth to establish daily operating hours and intensity levels."
+    ],
+    "features": [
+      "Bluetooth 5.0 smart scheduling app",
+      "Covers up to 1,500 sq.ft with uniform atomization",
+      "Direct oil nebulization without heat or water condensation",
+      "Heavy weighted stainless base with anti-tip dampeners",
+      "Tamper-resistant lock for hospitality & commercial areas"
+    ],
+    "specifications": [
+      {
+        "label": "Coverage",
+        "value": "Up to 1,500 sq.ft (approx. 150 m²)"
+      },
+      {
+        "label": "Oil Capacity",
+        "value": "150ml"
+      },
+      {
+        "label": "Dimensions",
+        "value": "112mm x 112mm x 285mm"
+      },
+      {
+        "label": "Power",
+        "value": "12V DC / 8W (Adapter Included)"
+      },
+      {
+        "label": "Controls",
+        "value": "Bluetooth App + Manual touch panel"
+      },
+      {
+        "label": "Warranty",
+        "value": "1 Year Official Franchise Warranty"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-twr-blk",
+        "sku": "DSC-TWR-BLK",
+        "name": "Satin Noir",
+        "priceLKR": 68500,
+        "inStock": true,
+        "attributes": {
+          "color": "Satin Noir",
+          "finish": "Powder-coated Matte Steel"
+        }
+      },
+      {
+        "id": "var-twr-wht",
+        "sku": "DSC-TWR-WHT",
+        "name": "Warm Alabaster",
+        "priceLKR": 68500,
+        "inStock": true,
+        "attributes": {
+          "color": "Warm Alabaster",
+          "finish": "Ceramic Matte Texture"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "warrantyPeriod": "1 Year Official Warranty",
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 6
+  },
+  {
+    "id": "prod-diff-03",
+    "slug": "dr-scent-hvac-commercial-system-5000",
+    "name": "Dr. Scent HVAC Central Scent System 5000",
+    "tagline": "Commercial AHU/HVAC duct-integrated scent architecture for large venues",
+    "sku": "DSC-HVAC-5000",
+    "category": "commercial-scenting",
+    "categoryName": "Commercial Scenting",
+    "basePriceLKR": 145000,
+    "images": [
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": true,
+    "isBestseller": false,
+    "isNew": false,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "coverageArea": "Up to 5,000 sq.ft (500 m²)",
+    "bottleVolume": "500ml / 1,000ml bottle",
+    "shortDescription": "Direct HVAC ductwork integration unit. Delivers completely invisible, uniform scent distribution across entire hotel lobbies, conference centres, and flagship retail.",
+    "description": "Designed specifically for mechanical contractors, facility directors, and luxury hoteliers. The HVAC 5000 connects directly into central air handling units (AHU) or duct systems. Utilizing advanced dual-fluid sub-micron atomization, the fragrance molecules stay suspended in airflow without adhering to duct walls or filters.",
+    "usageInstructions": [
+      "Professional mounting to wall or direct duct connection bracket.",
+      "Install the high-pressure PTFE tube into the supply air plenum.",
+      "Insert 500ml or 1,000ml Dr. Scent commercial fragrance bottle.",
+      "Configure operating calendar through onboard LCD or remote Wi-Fi module."
+    ],
+    "features": [
+      "Seamless integration with building management systems (BMS)",
+      "Continuous airflow sensing prevents dispersal when ventilation is inactive",
+      "Massive 5,000 sq.ft coverage capacity from a single discrete unit",
+      "Industrial-grade twin diaphragm pump with 10,000h lifespan rating",
+      "Compliant with international building air safety guidelines"
+    ],
+    "specifications": [
+      {
+        "label": "Coverage",
+        "value": "Up to 5,000 sq.ft (500 m²)"
+      },
+      {
+        "label": "Bottle Capacity",
+        "value": "500ml or 1000ml"
+      },
+      {
+        "label": "Connection",
+        "value": "Standard HVAC duct probe tube included"
+      },
+      {
+        "label": "Voltage",
+        "value": "110V - 240V AC universal"
+      },
+      {
+        "label": "Noise Level",
+        "value": "< 35 dB (installed inside plant/ceiling)"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-hvac-500",
+        "sku": "DSC-HVAC-500ML",
+        "name": "500ml System Package",
+        "priceLKR": 145000,
+        "inStock": true,
+        "attributes": {
+          "capacity": "500ml Reservoir"
+        }
+      },
+      {
+        "id": "var-hvac-1000",
+        "sku": "DSC-HVAC-1000ML",
+        "name": "1000ml High-Capacity Package",
+        "priceLKR": 175000,
+        "inStock": true,
+        "attributes": {
+          "capacity": "1000ml Extended Reservoir"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "warrantyPeriod": "2 Year Commercial Warranty & Service Plan",
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 24
+  },
+  {
+    "id": "prod-oil-01",
+    "slug": "ceylon-oud-and-smoky-amber-oil",
+    "name": "Royal Oud & Amber Noir",
+    "tagline": "Opulent woody oriental with hints of rare agarwood and vanilla",
+    "sku": "DSC-OIL-ROA-100",
+    "category": "fragrance-oils",
+    "categoryName": "Fragrance Oils",
+    "basePriceLKR": 12500,
+    "originalPriceLKR": 14000,
+    "images": [
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": true,
+    "isBestseller": true,
+    "isNew": false,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "bottleVolume": "100ml / 500ml",
+    "scentFamily": "woody",
+    "scentNotes": {
+      "top": [
+        "Cardamom",
+        "Bergamot",
+        "Saffron Veil"
+      ],
+      "heart": [
+        "Smoked Agarwood",
+        "Bulgarian Rose",
+        "Cedar Bark"
+      ],
+      "base": [
+        "Golden Amber",
+        "Madagascan Vanilla",
+        "Tonka Bean",
+        "Dark Musk"
+      ],
+      "intensity": "Opulent"
+    },
+    "shortDescription": "A profound, enveloping woody amber composition. Formulated exclusively for cold-air diffusers to bring five-star luxury resort ambience into private spaces.",
+    "description": "Royal Oud & Amber Noir is an ode to ancient spice routes and nocturnal opulence. The fragrance opens with a whisper of golden cardamom and sun-drenched bergamot, unveiling a rich heart of precious smoked agarwood and crushed cedar. Lingering notes of warm amber, Bourbon vanilla, and velvety musk establish an unforgettable sensory sanctuary.",
+    "features": [
+      "100% pure undiluted diffuser oil — zero alcohol or water fillers",
+      "Manufactured in compliance with IFRA international safety codes",
+      "Long-lasting olfactory projection with slow, consistent evaporation",
+      "Dark amber glass bottle with UV-filtering dropper cap"
+    ],
+    "specifications": [
+      {
+        "label": "Fragrance Family",
+        "value": "Woody Oriental"
+      },
+      {
+        "label": "Formulation",
+        "value": "Pure diffuser oil (Cold-air nebulizers only)"
+      },
+      {
+        "label": "IFRA Certified",
+        "value": "Yes (Standard 51st Amendment)"
+      },
+      {
+        "label": "Longevity",
+        "value": "Approx. 45-60 days at average residential use (100ml)"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-roa-100",
+        "sku": "DSC-ROA-100ML",
+        "name": "100ml Bottle",
+        "priceLKR": 12500,
+        "originalPriceLKR": 14000,
+        "inStock": true,
+        "attributes": {
+          "volume": "100ml"
+        }
+      },
+      {
+        "id": "var-roa-500",
+        "sku": "DSC-ROA-500ML",
+        "name": "500ml Refill Flacon",
+        "priceLKR": 48000,
+        "originalPriceLKR": 55000,
+        "inStock": true,
+        "attributes": {
+          "volume": "500ml Commercial Size"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 6
+  },
+  {
+    "id": "prod-oil-02",
+    "slug": "white-tea-and-thyme-botanical-oil",
+    "name": "White Tea & Bergamot Thyme",
+    "tagline": "Crisp, restorative spa profile inspired by high-elevation tea mist",
+    "sku": "DSC-OIL-WTT-100",
+    "category": "fragrance-oils",
+    "categoryName": "Fragrance Oils",
+    "basePriceLKR": 11800,
+    "images": [
+      "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": true,
+    "isBestseller": true,
+    "isNew": true,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "bottleVolume": "100ml / 500ml",
+    "scentFamily": "fresh",
+    "scentNotes": {
+      "top": [
+        "Italian Bergamot",
+        "Mandarin Zest",
+        "Morning Thyme"
+      ],
+      "heart": [
+        "Silver Needle White Tea",
+        "Jasmine Petals",
+        "Nutmeg"
+      ],
+      "base": [
+        "Sheer White Amber",
+        "Driftwood",
+        "Clean Musks"
+      ],
+      "intensity": "Moderate"
+    },
+    "shortDescription": "A serene, luminous wellness scent. Evokes the tranquil mountain mist of Sri Lanka's tea country combined with Mediterranean herbal clarity.",
+    "description": "Beloved by boutique wellness clinics, contemporary art galleries, and modern living spaces. White Tea & Bergamot Thyme awakens the senses with sparkling citrus and tender herbal greens, transitioning gracefully into silky white tea blossoms. It creates an atmosphere of effortless cleanliness, mental focus, and welcoming calm.",
+    "features": [
+      "Crisp, non-cloying scent profile suited for warm tropical climates",
+      "Neutralizes unwanted ambient odors naturally",
+      "Formulated for cold-air aroma diffusers",
+      "Hypoallergenic aromatic profile"
+    ],
+    "specifications": [
+      {
+        "label": "Fragrance Family",
+        "value": "Fresh Botanical / Citrus Aromatic"
+      },
+      {
+        "label": "Recommended Spaces",
+        "value": "Spas, living areas, reception, retail"
+      },
+      {
+        "label": "Longevity",
+        "value": "Approx. 45-60 days per 100ml"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-wtt-100",
+        "sku": "DSC-WTT-100ML",
+        "name": "100ml Bottle",
+        "priceLKR": 11800,
+        "inStock": true,
+        "attributes": {
+          "volume": "100ml"
+        }
+      },
+      {
+        "id": "var-wtt-500",
+        "sku": "DSC-WTT-500ML",
+        "name": "500ml Refill Flacon",
+        "priceLKR": 45000,
+        "inStock": true,
+        "attributes": {
+          "volume": "500ml Commercial Size"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 6
+  },
+  {
+    "id": "prod-oil-03",
+    "slug": "santal-and-black-cardamom-oil",
+    "name": "Santal & Black Cardamom",
+    "tagline": "Sophisticated creamy Australian sandalwood with spiced warmth",
+    "sku": "DSC-OIL-SBC-100",
+    "category": "fragrance-oils",
+    "categoryName": "Fragrance Oils",
+    "basePriceLKR": 13200,
+    "images": [
+      "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": false,
+    "isBestseller": true,
+    "isNew": false,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "bottleVolume": "100ml",
+    "scentFamily": "woody",
+    "scentNotes": {
+      "top": [
+        "Black Cardamom",
+        "Violet Leaf",
+        "Ginger Root"
+      ],
+      "heart": [
+        "Sandalwood Spire",
+        "Orris Butter",
+        "Papyrus"
+      ],
+      "base": [
+        "Smoked Leather",
+        "Cedarwood",
+        "Cashmere Wood"
+      ],
+      "intensity": "Opulent"
+    },
+    "shortDescription": "A cult favourite in luxury interior scenting. Rich creamy sandalwood layered with cardamom and dry papyrus for a distinctly bespoke atmosphere.",
+    "description": "Santal & Black Cardamom is the definitive choice for executive boardrooms, upscale cocktail lounges, and modern residences with minimalist timber aesthetics. Grounding, confident, and deeply comforting, this fragrance leaves an impression of refined discernment without ever overwhelming the room.",
+    "features": [
+      "Iconic luxury hospitality fragrance profile",
+      "Pure formulation with exceptional diffusion efficiency",
+      "UV-protected dropper bottle"
+    ],
+    "specifications": [
+      {
+        "label": "Fragrance Family",
+        "value": "Woody Spicy"
+      },
+      {
+        "label": "Diffusion Method",
+        "value": "Cold-air nebulizing diffusers"
+      },
+      {
+        "label": "Standard Bottle",
+        "value": "100ml"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-sbc-100",
+        "sku": "DSC-SBC-100ML",
+        "name": "100ml Bottle",
+        "priceLKR": 13200,
+        "inStock": true,
+        "attributes": {
+          "volume": "100ml"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 6
+  },
+  {
+    "id": "prod-oil-04",
+    "slug": "coastal-fig-and-marine-cypress",
+    "name": "Coastal Fig & Marine Cypress",
+    "tagline": "Sunlit Mediterranean fig leaf, salted ocean breeze, and cedar",
+    "sku": "DSC-OIL-CFM-100",
+    "category": "fragrance-oils",
+    "categoryName": "Fragrance Oils",
+    "basePriceLKR": 12000,
+    "images": [
+      "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": false,
+    "isBestseller": false,
+    "isNew": true,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "scentFamily": "fresh",
+    "scentNotes": {
+      "top": [
+        "Wild Fig Leaf",
+        "Sea Salt Mist",
+        "Pink Pepper"
+      ],
+      "heart": [
+        "Ripe Black Fig",
+        "Coconut Water",
+        "Italian Cypress"
+      ],
+      "base": [
+        "Solar Cedar",
+        "Ambergris Accord",
+        "Vetiver"
+      ],
+      "intensity": "Moderate"
+    },
+    "shortDescription": "Capturing the vibrant energy of coastal ocean air and lush green fig foliage. Fresh, breezy, and effortlessly uplifting.",
+    "description": "Inspired by oceanfront villas and tropical veranda living. Coastal Fig & Marine Cypress begins with crisp sea spray and freshly crushed fig leaves before unfurling into rich green fruit and sun-warmed driftwood. Excellent for brightening open living areas and entrance lobbies.",
+    "features": [
+      "Invigorating coastal atmosphere",
+      "Balances natural sweetness with salted woody freshness",
+      "Cold-air diffusion optimized"
+    ],
+    "specifications": [
+      {
+        "label": "Fragrance Family",
+        "value": "Green / Marine Aromatic"
+      },
+      {
+        "label": "Optimal Space",
+        "value": "Verandas, beach houses, living lounges"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-cfm-100",
+        "sku": "DSC-CFM-100ML",
+        "name": "100ml Bottle",
+        "priceLKR": 12000,
+        "inStock": true,
+        "attributes": {
+          "volume": "100ml"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 6
+  },
+  {
+    "id": "prod-home-01",
+    "slug": "luxe-acoustic-ceramic-nebulizer",
+    "name": "Architectural Ceramic Nebulizer",
+    "tagline": "Hand-poured porcelain cold mist diffuser with soft ambient halo illumination",
+    "sku": "DSC-HOME-CER-01",
+    "category": "home-fragrance",
+    "categoryName": "Home Fragrance",
+    "basePriceLKR": 34500,
+    "originalPriceLKR": 39000,
+    "images": [
+      "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": true,
+    "isBestseller": false,
+    "isNew": true,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "coverageArea": "Up to 600 sq.ft (60 m²)",
+    "shortDescription": "A sculptural ceramic vessel designed for discerning residential interiors. Combines silent atomization with a gentle warm LED candlelight glow.",
+    "description": "Blending functional sculpture with cutting-edge scent atomization. The Architectural Ceramic Nebulizer features a bespoke matte stoneware cover with subtle organic fluting. It creates a serene visual and olfactory focal point in master bedrooms, meditation rooms, and formal dining areas.",
+    "features": [
+      "Artisan-crafted matte ceramic stoneware body",
+      "Warm 2700K ambient LED base with dimming function",
+      "Whisper-quiet acoustic internal chamber (<25dB)",
+      "Touch-sensitive concealed controls"
+    ],
+    "specifications": [
+      {
+        "label": "Coverage",
+        "value": "Up to 600 sq.ft (60 m²)"
+      },
+      {
+        "label": "Material",
+        "value": "Stoneware Ceramic & Brass Trim"
+      },
+      {
+        "label": "Dimensions",
+        "value": "135mm x 135mm x 210mm"
+      },
+      {
+        "label": "Power",
+        "value": "100-240V AC power cord"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-cer-wh",
+        "sku": "DSC-CER-WH",
+        "name": "Matte Chalk White",
+        "priceLKR": 34500,
+        "originalPriceLKR": 39000,
+        "inStock": true,
+        "attributes": {
+          "color": "Chalk White",
+          "material": "Ceramic"
+        }
+      },
+      {
+        "id": "var-cer-gr",
+        "sku": "DSC-CER-GR",
+        "name": "Charcoal Basalt",
+        "priceLKR": 34500,
+        "inStock": true,
+        "attributes": {
+          "color": "Charcoal Basalt",
+          "material": "Ceramic"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "warrantyPeriod": "1 Year Official Warranty",
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 6
+  },
+  {
+    "id": "prod-gift-01",
+    "slug": "discovery-scent-flight-collection",
+    "name": "The Grand Discovery Scent Flight",
+    "tagline": "Curated collection of 5 iconic 15ml fragrance oils in a linen presentation box",
+    "sku": "DSC-GIFT-FLT-05",
+    "category": "gift-collections",
+    "categoryName": "Gift Collections",
+    "basePriceLKR": 18500,
+    "originalPriceLKR": 22000,
+    "images": [
+      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": true,
+    "isBestseller": true,
+    "isNew": false,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "shortDescription": "A prestigious gifting choice. Includes 5 signature 15ml fragrances (Royal Oud, White Tea, Santal, Coastal Fig, Amber Velvet) in an embossed keepsake box.",
+    "description": "The perfect introduction to Dr. Scent’s world of olfactory craftsmanship. This flight invites the recipient to experience five contrasting scent worlds, from airy mountain botanicals to nocturnal woody ambers. Housed in a rigid ivory linen presentation coffer with gold hot-stamped insignia.",
+    "features": [
+      "Includes 5 x 15ml precision dropper bottles",
+      "Compatible with all portable and residential cold-air diffusers",
+      "Luxury linen textured coffer with magnetic closure",
+      "Includes fragrance notes guide and scenting tips"
+    ],
+    "specifications": [
+      {
+        "label": "Contents",
+        "value": "5 x 15ml pure fragrance oils"
+      },
+      {
+        "label": "Packaging",
+        "value": "Rigid gift coffer with gold foil detail"
+      },
+      {
+        "label": "Ideal For",
+        "value": "Corporate gifting, housewarmings, bridal parties"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-gift-01",
+        "sku": "DSC-GIFT-STD",
+        "name": "Standard Presentation Box",
+        "priceLKR": 18500,
+        "originalPriceLKR": 22000,
+        "inStock": true,
+        "attributes": {
+          "edition": "First Edition Discovery"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 6
+  },
+  {
+    "id": "prod-comm-02",
+    "slug": "dr-scent-commercial-smart-duo-column",
+    "name": "Dr. Scent Dual-Chamber Commercial Column",
+    "tagline": "Dual fragrance reservoirs for day-and-night daypart scheduling",
+    "sku": "DSC-COMM-DUO-02",
+    "category": "commercial-scenting",
+    "categoryName": "Commercial Scenting",
+    "basePriceLKR": 115000,
+    "images": [
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "featured": false,
+    "isBestseller": false,
+    "isNew": true,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "coverageArea": "Up to 3,000 sq.ft (300 m²)",
+    "bottleVolume": "2 x 500ml dual reservoirs",
+    "shortDescription": "Independent dual nozzles allow hotels and luxury dining venues to switch seamlessly between refreshing daytime citrus and alluring evening amber.",
+    "description": "Engineered for high-end hospitality venues that demand dynamic olfactory atmospheres. The Dual-Chamber Column houses two isolated 500ml canisters, allowing automated transitions between daytime energizing blends and evening warm ambient profiles without manual intervention.",
+    "features": [
+      "Dual independent cold-air atomizers",
+      "Wi-Fi & Bluetooth multi-zone cloud schedule control",
+      "Sleek architectural pillar aesthetic in matte bronze or black",
+      "Lockable stainless steel service bay"
+    ],
+    "specifications": [
+      {
+        "label": "Coverage",
+        "value": "Up to 3,000 sq.ft (300 m²)"
+      },
+      {
+        "label": "Capacity",
+        "value": "2 x 500ml"
+      },
+      {
+        "label": "Dimensions",
+        "value": "140mm x 140mm x 520mm"
+      },
+      {
+        "label": "Weight",
+        "value": "6.2 kg"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-duo-brz",
+        "sku": "DSC-DUO-BRZ",
+        "name": "Architectural Bronze",
+        "priceLKR": 115000,
+        "inStock": true,
+        "attributes": {
+          "color": "Architectural Bronze"
+        }
+      },
+      {
+        "id": "var-duo-blk",
+        "sku": "DSC-DUO-BLK",
+        "name": "Noir Titanium",
+        "priceLKR": 115000,
+        "inStock": true,
+        "attributes": {
+          "color": "Noir Titanium"
+        }
+      }
+    ],
+    "drScentAuthorized": true,
+    "warrantyPeriod": "2 Year Commercial Warranty",
+    "isPublished": true,
+    "isArchived": false,
+    "inventoryCount": 25,
+    "warrantyDurationMonths": 24
+  }
+]

@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+:root {
+  --font-serif-luxury: var(--font-serif), Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans-clean: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  --bg-primary: #FAF8F5;
+  --bg-secondary: #F4EFEA;
+  --bg-card: #FFFFFF;
+  --text-main: #1C1917;
+  --text-muted: #57534E;
+  --text-subtle: #78716C;
+  --accent-gold: #B89758;
+  --accent-gold-light: #CBB079;
+  --accent-gold-dark: #96783E;
+  --accent-gold-subtle: #FAF6ED;
+  --border-subtle: #E7E2D8;
+  --border-strong: #D6CFC3;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    font-family: var(--font-sans-clean);
+  }
+
+  h1, h2, h3, .font-serif-luxury {
+    font-family: var(--font-serif-luxury);
+    letter-spacing: -0.015em;
+  }
+}
+
+/* Custom subtle luxury scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F4EFEA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D1C7B7;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B89758;
+}
+
+/* Focus styles for keyboard accessibility */
+:focus-visible {
+  outline: 2px solid #B89758;
+  outline-offset: 2px;
+}
+
+/* Custom text selection */
+::selection {
+  background: #F2E8D3;
+  color: #1C1917;
+}
