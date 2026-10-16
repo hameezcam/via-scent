@@ -1,5 +1,1153 @@
 [
   {
+    "id": "audit-1792170877622-275",
+    "timestamp": "2026-10-16T17:14:37.622Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877614-501",
+    "timestamp": "2026-10-16T17:14:37.614Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877602-955",
+    "timestamp": "2026-10-16T17:14:37.602Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877592-572",
+    "timestamp": "2026-10-16T17:14:37.592Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877565-637",
+    "timestamp": "2026-10-16T17:14:37.565Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877563-693",
+    "timestamp": "2026-10-16T17:14:37.563Z",
+    "category": "RETURNS",
+    "action": "UPDATE_RETURN_SETTINGS",
+    "performedBy": "compliance_officer@viascent.lk",
+    "details": "Return policy adjusted to 7-day return / 7-day refund.",
+    "previousValue": {
+      "returnWindowDays": 7,
+      "refundWindowDays": 7,
+      "policyText": "Customers may initiate a return within 7 calendar days of delivery. Returned items must be unused, in original packaging with seals intact. For damaged or defective arrivals, replacements are dispatched free of charge within 48 hours.",
+      "requiresInspection": true,
+      "allowDamagedExchange": true
+    },
+    "newValue": {
+      "returnWindowDays": 7,
+      "refundWindowDays": 7,
+      "policyText": "Customers may initiate a return within 7 calendar days of delivery. Returned items must be unused, in original packaging with seals intact. For damaged or defective arrivals, replacements are dispatched free of charge within 48 hours.",
+      "requiresInspection": true,
+      "allowDamagedExchange": true
+    }
+  },
+  {
+    "id": "audit-1792170877561-444",
+    "timestamp": "2026-10-16T17:14:37.561Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877558-465",
+    "timestamp": "2026-10-16T17:14:37.558Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877554-448",
+    "timestamp": "2026-10-16T17:14:37.554Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877550-145",
+    "timestamp": "2026-10-16T17:14:37.550Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877548-523",
+    "timestamp": "2026-10-16T17:14:37.548Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877545-790",
+    "timestamp": "2026-10-16T17:14:37.545Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877543-834",
+    "timestamp": "2026-10-16T17:14:37.543Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877540-57",
+    "timestamp": "2026-10-16T17:14:37.540Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877538-451",
+    "timestamp": "2026-10-16T17:14:37.538Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877537-897",
+    "timestamp": "2026-10-16T17:14:37.537Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 750 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 750,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877535-352",
+    "timestamp": "2026-10-16T17:14:37.535Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "superadmin@viascent.lk",
+    "details": "Delivery fee updated from LKR 500 to LKR 750. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 750,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877532-945",
+    "timestamp": "2026-10-16T17:14:37.532Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877531-813",
+    "timestamp": "2026-10-16T17:14:37.531Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877529-541",
+    "timestamp": "2026-10-16T17:14:37.529Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": 40000,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877528-54",
+    "timestamp": "2026-10-16T17:14:37.528Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": 40000,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877526-39",
+    "timestamp": "2026-10-16T17:14:37.526Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877524-736",
+    "timestamp": "2026-10-16T17:14:37.524Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792170877520-604",
+    "timestamp": "2026-10-16T17:14:37.520Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985333-151",
+    "timestamp": "2026-10-16T16:59:45.333Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985325-710",
+    "timestamp": "2026-10-16T16:59:45.325Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985317-650",
+    "timestamp": "2026-10-16T16:59:45.317Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985308-206",
+    "timestamp": "2026-10-16T16:59:45.308Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985292-37",
+    "timestamp": "2026-10-16T16:59:45.292Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985291-16",
+    "timestamp": "2026-10-16T16:59:45.291Z",
+    "category": "RETURNS",
+    "action": "UPDATE_RETURN_SETTINGS",
+    "performedBy": "compliance_officer@viascent.lk",
+    "details": "Return policy adjusted to 7-day return / 7-day refund.",
+    "previousValue": {
+      "returnWindowDays": 7,
+      "refundWindowDays": 7,
+      "policyText": "Customers may initiate a return within 7 calendar days of delivery. Returned items must be unused, in original packaging with seals intact. For damaged or defective arrivals, replacements are dispatched free of charge within 48 hours.",
+      "requiresInspection": true,
+      "allowDamagedExchange": true
+    },
+    "newValue": {
+      "returnWindowDays": 7,
+      "refundWindowDays": 7,
+      "policyText": "Customers may initiate a return within 7 calendar days of delivery. Returned items must be unused, in original packaging with seals intact. For damaged or defective arrivals, replacements are dispatched free of charge within 48 hours.",
+      "requiresInspection": true,
+      "allowDamagedExchange": true
+    }
+  },
+  {
+    "id": "audit-1792169985289-838",
+    "timestamp": "2026-10-16T16:59:45.289Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985285-589",
+    "timestamp": "2026-10-16T16:59:45.285Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985279-859",
+    "timestamp": "2026-10-16T16:59:45.279Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169985273-30",
+    "timestamp": "2026-10-16T16:59:45.273Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983683-753",
+    "timestamp": "2026-10-16T16:59:43.683Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983668-937",
+    "timestamp": "2026-10-16T16:59:43.668Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983660-740",
+    "timestamp": "2026-10-16T16:59:43.660Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983651-830",
+    "timestamp": "2026-10-16T16:59:43.651Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983645-128",
+    "timestamp": "2026-10-16T16:59:43.645Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983644-715",
+    "timestamp": "2026-10-16T16:59:43.644Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 750 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 750,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983641-348",
+    "timestamp": "2026-10-16T16:59:43.641Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "superadmin@viascent.lk",
+    "details": "Delivery fee updated from LKR 500 to LKR 750. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 750,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983636-57",
+    "timestamp": "2026-10-16T16:59:43.636Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983629-149",
+    "timestamp": "2026-10-16T16:59:43.629Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983628-537",
+    "timestamp": "2026-10-16T16:59:43.628Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": 40000,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983626-622",
+    "timestamp": "2026-10-16T16:59:43.626Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": 40000,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983623-216",
+    "timestamp": "2026-10-16T16:59:43.623Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983612-133",
+    "timestamp": "2026-10-16T16:59:43.612Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
+    "id": "audit-1792169983607-258",
+    "timestamp": "2026-10-16T16:59:43.607Z",
+    "category": "DELIVERY",
+    "action": "UPDATE_DELIVERY_SETTINGS",
+    "performedBy": "system_admin",
+    "details": "Delivery fee updated from LKR 500 to LKR 500. Islandwide status: true.",
+    "previousValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    },
+    "newValue": {
+      "islandwideEnabled": true,
+      "defaultCourierFeeLKR": 500,
+      "districtFees": {},
+      "freeDeliveryThresholdLKR": null,
+      "policyText": "Standard islandwide delivery throughout Sri Lanka is charged at a flat rate of LKR 500 per order. All deliveries are tracked and dispatched via verified express couriers.",
+      "estimateText": "Colombo & suburbs: 1-2 business days. Outstation & regional provinces: 2-4 business days."
+    }
+  },
+  {
     "id": "audit-1792117836223-913",
     "timestamp": "2026-10-16T02:30:36.223Z",
     "category": "CATALOGUE",

@@ -1,249 +1,332 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, ShoppingBag, User, Menu, ChevronDown, Building2, X } from "lucide-react";
+import { Search, ShoppingBag, User, Menu, ChevronDown, Sparkles, X, ArrowRight, ShieldCheck } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { MobileNav } from "./MobileNav";
+
+const MEGA_CATEGORIES = [
+  {
+    title: "Aroma Diffusers",
+    slug: "aroma-diffusers",
+    tagline: "Cold-Air Micro-Nebulization",
+    image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=600&q=80",
+    href: "/shop/aroma-diffusers",
+  },
+  {
+    title: "Fragrance Oils",
+    slug: "fragrance-oils",
+    tagline: "100% Pure Undiluted Blends",
+    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80",
+    href: "/shop/fragrance-oils",
+  },
+  {
+    title: "Commercial Scenting",
+    slug: "commercial-scenting",
+    tagline: "HVAC & Architectural Systems",
+    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
+    href: "/shop/commercial-scenting",
+  },
+  {
+    title: "Home Fragrance",
+    slug: "home-fragrance",
+    tagline: "Atmospheric Living Collections",
+    image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=600&q=80",
+    href: "/shop/home-fragrance",
+  },
+];
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { itemCount, openCart } = useCart();
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCollectionsOpen, setIsCollectionsOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Shop All", href: "/shop" },
-    {
-      label: "Collections",
-      href: "/shop",
-      children: [
-        { label: "Aroma Diffusers", href: "/shop/aroma-diffusers" },
-        { label: "Fragrance Oils", href: "/shop/fragrance-oils" },
-        { label: "Commercial Scenting", href: "/shop/commercial-scenting" },
-        { label: "Home Fragrance", href: "/shop/home-fragrance" },
-        { label: "Gift Sets", href: "/shop/gift-collections" },
-      ],
-    },
-    { label: "Business Scenting", href: "/business-scenting", badge: "B2B" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
-  ];
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
+      setSearchQuery("");
     }
   };
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E7E2D8] transition-all">
+      <header
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          isScrolled
+            ? "bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E7E2D8] shadow-xs py-0"
+            : "bg-[#FAF8F5]/90 backdrop-blur-xs border-b border-[#E7E2D8]/60 py-1"
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* Left: Mobile Menu Toggle & Brand Wordmark */}
-            <div className="flex items-center gap-4">
+            {/* Left: Mobile Toggle & Brand Identity */}
+            <div className="flex items-center gap-5">
               <button
                 type="button"
                 onClick={() => setIsMobileNavOpen(true)}
-                className="lg:hidden p-2 text-stone-700 hover:text-stone-900 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-800"
+                className="lg:hidden p-2 text-[#211C19] hover:text-[#B49A70] rounded-md focus:outline-none focus:ring-2 focus:ring-[#B49A70] transition-colors"
                 aria-label="Open mobile navigation menu"
               >
                 <Menu className="w-6 h-6" />
               </button>
 
-              <Link href="/" className="flex flex-col group">
-                <span className="font-serif text-2xl tracking-[0.2em] font-semibold text-stone-900 group-hover:text-amber-900 transition-colors">
-                  {BRAND_CONFIG.brandName}
+              <Link href="/" className="flex flex-col group select-none">
+                <span className="font-serif text-2xl sm:text-3xl tracking-[0.22em] font-semibold text-[#151412] group-hover:text-[#B49A70] transition-colors">
+                  VIA SCENT
                 </span>
-                <span className="text-[9px] tracking-[0.18em] uppercase text-stone-500 font-medium -mt-1 group-hover:text-amber-800 transition-colors">
-                  {BRAND_CONFIG.franchiseStatement}
+                <span className="text-[9px] tracking-[0.24em] uppercase text-[#8A8275] font-medium -mt-1 group-hover:text-[#151412] transition-colors">
+                  Dr. Scent Franchise Partner
                 </span>
               </Link>
             </div>
 
             {/* Center: Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-1" aria-label="Main Navigation">
-              {navLinks.map((link) => {
-                const isActive =
-                  pathname === link.href ||
-                  (link.href !== "/" && pathname.startsWith(link.href));
+            <nav className="hidden lg:flex items-center space-x-7" aria-label="Main Navigation">
+              <Link
+                href="/shop"
+                className={`text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] relative py-2 ${
+                  pathname === "/shop" ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
+                }`}
+              >
+                Shop All
+              </Link>
 
-                if (link.children) {
-                  return (
-                    <div key={link.label} className="relative group">
-                      <Link
-                        href={link.href}
-                        className={`inline-flex items-center gap-1 px-3 py-2 text-xs tracking-wider uppercase font-medium transition-colors ${
-                          isActive
-                            ? "text-amber-900 font-semibold"
-                            : "text-stone-700 hover:text-stone-950"
-                        }`}
-                      >
-                        {link.label}
-                        <ChevronDown className="w-3.5 h-3.5 text-stone-400 group-hover:rotate-180 transition-transform duration-200" />
-                      </Link>
+              {/* Collections Mega Menu Trigger */}
+              <div
+                className="relative"
+                onMouseEnter={() => setIsCollectionsOpen(true)}
+                onMouseLeave={() => setIsCollectionsOpen(false)}
+              >
+                <Link
+                  href="/shop"
+                  className={`inline-flex items-center gap-1.5 text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
+                    pathname.startsWith("/shop/") ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
+                  }`}
+                >
+                  <span>Collections</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-[#8A8275] transition-transform duration-200 ${
+                      isCollectionsOpen ? "rotate-180 text-[#B49A70]" : ""
+                    }`}
+                  />
+                </Link>
 
-                      {/* Dropdown Menu */}
-                      <div className="absolute top-full left-0 w-56 pt-2 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50">
-                        <div className="bg-white rounded-md shadow-xl border border-stone-200 p-2 space-y-1">
-                          {link.children.map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              className="block px-3 py-2 text-xs text-stone-700 hover:bg-stone-50 hover:text-amber-900 rounded font-medium transition-colors"
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
+                {/* Wide Luxury Mega Menu */}
+                {isCollectionsOpen && (
+                  <div className="absolute top-full -left-20 w-[720px] pt-3 z-50">
+                    <div className="bg-[#FFFFFF] rounded-xl shadow-2xl border border-[#E7E2D8] p-6 grid grid-cols-4 gap-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                      {MEGA_CATEGORIES.map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={cat.href}
+                          onClick={() => setIsCollectionsOpen(false)}
+                          className="group/card flex flex-col rounded-lg overflow-hidden border border-[#EFEAE1] hover:border-[#B49A70]/60 transition-all bg-[#FAF8F5]"
+                        >
+                          <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
+                            <Image
+                              src={cat.image}
+                              alt={cat.title}
+                              fill
+                              sizes="160px"
+                              className="object-cover group-hover/card:scale-105 transition-transform duration-500 ease-out"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                          </div>
+                          <div className="p-3">
+                            <h4 className="font-serif text-xs font-semibold text-[#151412] group-hover/card:text-[#B49A70] transition-colors">
+                              {cat.title}
+                            </h4>
+                            <p className="text-[10px] text-[#8A8275] tracking-wide mt-0.5 line-clamp-1">
+                              {cat.tagline}
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                      <div className="col-span-4 pt-3 border-t border-[#EFEAE1] flex items-center justify-between text-xs">
+                        <span className="text-[#8A8275] tracking-wide">
+                          Official Dr. Scent Franchise Supply for Sri Lanka
+                        </span>
+                        <Link
+                          href="/shop"
+                          onClick={() => setIsCollectionsOpen(false)}
+                          className="text-[#B49A70] hover:text-[#8F764F] font-semibold uppercase tracking-wider flex items-center gap-1"
+                        >
+                          <span>View Complete Catalogue</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                       </div>
                     </div>
-                  );
-                }
+                  </div>
+                )}
+              </div>
 
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`inline-flex items-center gap-1.5 px-3 py-2 text-xs tracking-wider uppercase font-medium transition-colors ${
-                      isActive
-                        ? "text-amber-900 font-semibold border-b-2 border-amber-800 -mb-[2px]"
-                        : "text-stone-700 hover:text-stone-950"
-                    }`}
-                  >
-                    {link.label}
-                    {link.badge && (
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                        {link.badge}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
+              <Link
+                href="/shop/home-fragrance"
+                className={`text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
+                  pathname === "/shop/home-fragrance" ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
+                }`}
+              >
+                Home Fragrance
+              </Link>
+
+              <Link
+                href="/business-scenting"
+                className={`inline-flex items-center gap-1.5 text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
+                  pathname.startsWith("/business-scenting") ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
+                }`}
+              >
+                <span>Business Scenting</span>
+                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold tracking-wider bg-[#211C19] text-[#B49A70] uppercase">
+                  B2B
+                </span>
+              </Link>
+
+              <Link
+                href="/about"
+                className={`text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
+                  pathname === "/about" ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
+                }`}
+              >
+                Our Story
+              </Link>
             </nav>
 
-            {/* Right: Actions (Search, Account, Cart, B2B CTA) */}
+            {/* Right: Actions (Search, Account, Cart) */}
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Quick Search Trigger */}
+              {/* Search Toggle */}
               <button
                 type="button"
-                onClick={() => setIsSearchOpen(true)}
-                aria-label="Search fragrance catalogue"
-                className="p-2 text-stone-700 hover:text-amber-900 rounded-full hover:bg-stone-100/60 transition-colors"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="p-2.5 text-[#211C19] hover:text-[#B49A70] hover:bg-[#EFEAE1]/60 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#B49A70]"
+                aria-label="Open search flyout"
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-4 h-4" />
               </button>
 
-              {/* Customer Account Button (Phase 2 Preview modal) */}
+              {/* Account Portal Modal Trigger */}
               <button
                 type="button"
                 onClick={() => setIsAccountModalOpen(true)}
-                aria-label="Account entry point"
-                className="p-2 text-stone-700 hover:text-amber-900 rounded-full hover:bg-stone-100/60 transition-colors"
+                className="p-2.5 text-[#211C19] hover:text-[#B49A70] hover:bg-[#EFEAE1]/60 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#B49A70]"
+                aria-label="Open client account portal"
               >
-                <User className="w-5 h-5" />
+                <User className="w-4 h-4" />
               </button>
 
-              {/* Shopping Cart Trigger */}
+              {/* Shopping Bag Trigger */}
               <button
                 type="button"
                 onClick={openCart}
-                aria-label={`Open shopping cart with ${itemCount} items`}
-                className="relative p-2 text-stone-700 hover:text-amber-900 rounded-full hover:bg-stone-100/60 transition-colors"
+                className="relative p-2.5 text-[#211C19] hover:text-[#B49A70] hover:bg-[#EFEAE1]/60 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#B49A70]"
+                aria-label={`Shopping bag containing ${itemCount} items`}
               >
-                <ShoppingBag className="w-5 h-5" />
+                <ShoppingBag className="w-4 h-4" />
                 {itemCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-amber-800 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-in zoom-in">
+                  <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#151412] text-[#B49A70] text-[9px] font-bold flex items-center justify-center border border-[#B49A70]/50 animate-in zoom-in duration-200">
                     {itemCount}
                   </span>
                 )}
               </button>
-
-              {/* B2B Enquiry Desktop Button */}
-              <Link
-                href="/business-scenting/request-quote"
-                className="hidden xl:inline-flex items-center gap-1.5 px-3.5 py-2 bg-stone-900 hover:bg-stone-800 text-amber-100 rounded text-xs font-semibold tracking-wider uppercase transition-colors ml-2 shadow-xs"
-              >
-                <Building2 className="w-3.5 h-3.5 text-amber-400" />
-                <span>B2B Consultation</span>
-              </Link>
             </div>
           </div>
         </div>
 
-        {/* Search Bar Flyout */}
+        {/* Search Flyout Overlay */}
         {isSearchOpen && (
-          <div className="border-t border-stone-200 bg-white p-4 shadow-lg animate-in slide-in-from-top-2 duration-200">
-            <div className="max-w-3xl mx-auto">
-              <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-                <Search className="absolute left-3.5 w-4 h-4 text-stone-400" />
-                <input
-                  type="text"
-                  placeholder="Search diffusers, fragrance oils, scent notes (e.g. Oud, Bergamot, HVAC)..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  autoFocus
-                  className="w-full pl-10 pr-24 py-2.5 text-sm bg-stone-50 border border-stone-300 rounded focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-800 text-stone-900"
-                />
-                <div className="absolute right-2 flex items-center gap-1">
-                  <button
-                    type="submit"
-                    className="px-3 py-1 bg-stone-900 text-stone-100 text-xs font-medium rounded hover:bg-stone-800 transition-colors uppercase tracking-wider"
-                  >
-                    Search
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsSearchOpen(false)}
-                    className="p-1.5 text-stone-400 hover:text-stone-700 rounded"
-                    aria-label="Close search"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </form>
-            </div>
+          <div className="border-t border-[#E7E2D8] bg-[#FAF8F5] py-4 px-4 sm:px-6 shadow-md animate-in slide-in-from-top-1 duration-200">
+            <form onSubmit={handleSearchSubmit} className="max-w-2xl mx-auto flex items-center gap-3">
+              <Search className="w-5 h-5 text-[#8A8275]" />
+              <input
+                type="search"
+                placeholder="Search diffusers, fragrance oils, olfactory notes (e.g., Oud, Amber, Vanilla)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+                className="flex-1 bg-transparent border-b border-[#D8D0C4] py-2 text-sm text-[#151412] placeholder-[#8A8275] focus:outline-none focus:border-[#B49A70]"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-[#151412] text-[#EFEAE1] hover:bg-[#211C19] text-xs font-semibold tracking-wider uppercase rounded transition-colors"
+              >
+                Search
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsSearchOpen(false)}
+                className="p-1 text-[#8A8275] hover:text-[#151412]"
+                aria-label="Close search"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </form>
           </div>
         )}
       </header>
 
-      {/* Account Info Modal (Honest Phase 2 notification) */}
+      {/* Account Info Modal */}
       {isAccountModalOpen && (
-        <div className="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-sm w-full p-6 shadow-2xl border border-stone-200 text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-800 mx-auto flex items-center justify-center border border-amber-200">
-              <User className="w-6 h-6" />
-            </div>
-            <h3 className="font-serif text-lg font-semibold text-stone-900">
-              Customer Accounts & Portals
-            </h3>
-            <p className="text-xs text-stone-600 leading-relaxed">
-              Customer authentication, passwordless login, order history, and recurring scent cartridge subscriptions will be enabled in <strong>Phase 2</strong> alongside the PostgreSQL / Prisma database architecture.
-            </p>
-            <div className="pt-2 flex flex-col gap-2">
-              <Link
-                href="/shop"
-                onClick={() => setIsAccountModalOpen(false)}
-                className="w-full py-2.5 bg-stone-900 text-amber-100 text-xs font-semibold uppercase tracking-wider rounded hover:bg-stone-800 transition-colors"
-              >
-                Continue Shopping
-              </Link>
-              <button
-                type="button"
-                onClick={() => setIsAccountModalOpen(false)}
-                className="w-full py-2 border border-stone-300 text-stone-700 text-xs uppercase tracking-wider rounded hover:bg-stone-100 transition-colors"
-              >
-                Close
-              </button>
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setIsAccountModalOpen(false)}
+        >
+          <div
+            className="bg-[#FFFFFF] border border-[#E7E2D8] rounded-xl max-w-md w-full p-6 shadow-2xl relative animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsAccountModalOpen(false)}
+              className="absolute top-4 right-4 text-[#8A8275] hover:text-[#151412] p-1"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-[#FAF8F5] border border-[#B49A70]/30 flex items-center justify-center mx-auto text-[#B49A70]">
+                <User className="w-6 h-6" />
+              </div>
+              <h3 className="font-serif text-xl font-semibold text-[#151412]">
+                Client Olfactory Portal
+              </h3>
+              <p className="text-xs text-[#57534E] leading-relaxed">
+                Guest checkout is enabled across VIA Scent with instant SMS and email tracking for all Sri Lankan orders.
+              </p>
+              <div className="pt-2 space-y-2">
+                <Link
+                  href="/admin"
+                  onClick={() => setIsAccountModalOpen(false)}
+                  className="block w-full py-2.5 px-4 bg-[#151412] hover:bg-[#211C19] text-[#B49A70] text-xs font-semibold tracking-widest uppercase rounded transition-colors"
+                >
+                  Staff & Administrative Portal
+                </Link>
+                <Link
+                  href="/returns"
+                  onClick={() => setIsAccountModalOpen(false)}
+                  className="block w-full py-2 px-4 border border-[#E7E2D8] hover:bg-[#FAF8F5] text-[#211C19] text-xs font-medium tracking-wider uppercase rounded transition-colors"
+                >
+                  Check Return & Warranty Status
+                </Link>
+              </div>
             </div>
           </div>
         </div>

@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, ArrowRight, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { motion } from "motion/react";
+import { LUXURY_EASE } from "@/config/motion.config";
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("");
@@ -12,7 +16,7 @@ export function NewsletterSection() {
     e.preventDefault();
     if (!email || !email.includes("@") || !email.includes(".")) {
       setStatus("error");
-      setMessage("Please provide a valid email address.");
+      setMessage("Please enter a valid email address.");
       return;
     }
 
@@ -20,66 +24,112 @@ export function NewsletterSection() {
     setTimeout(() => {
       setStatus("success");
       setMessage(
-        "Thank you for your interest! In Phase 1 preview mode, emails are verified on the client and not yet stored in an external mailing list."
+        "Welcome to the Olfactory Gazette. You will receive private announcements for rare seasonal formulations and private franchise exhibitions."
       );
       setEmail("");
     }, 600);
   };
 
   return (
-    <section className="py-20 bg-[#F4EFEA] border-b border-[#E7E2D8]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-        <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-900 mx-auto flex items-center justify-center border border-amber-300">
-          <Mail className="w-6 h-6" />
-        </div>
+    <section className="relative overflow-hidden bg-[var(--near-black)] text-[var(--ivory)] py-28 lg:py-36 border-t border-[var(--warm-stone)]/20">
+      {/* Ambient background image with soft cinematic overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-25">
+        <Image
+          src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=2000&q=80"
+          alt="Atmospheric architectural living space with subtle ambient lighting"
+          fill
+          className="object-cover object-center filter grayscale contrast-125 scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--near-black)] via-[var(--near-black)]/80 to-[var(--near-black)]" />
+      </div>
 
-        <div className="space-y-2">
-          <h2 className="font-serif text-3xl sm:text-4xl text-stone-900 font-normal">
-            Join The Olfactory Gazette
-          </h2>
-          <p className="text-sm text-stone-600 max-w-lg mx-auto leading-relaxed">
-            Receive private notifications of limited seasonal fragrance releases, interior scenting guides, and exclusive franchise previews.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-3">
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (status !== "idle") setStatus("idle");
-              }}
-              placeholder="Your preferred email address"
-              aria-label="Email address for subscription"
-              className="flex-1 px-4 py-3 bg-white border border-stone-300 rounded text-xs text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-800"
-            />
-            <button
-              type="submit"
-              disabled={status === "submitting"}
-              className="px-6 py-3 bg-stone-900 text-amber-100 text-xs uppercase tracking-wider font-semibold rounded hover:bg-stone-800 transition-colors flex items-center justify-center gap-1.5 shrink-0"
-            >
-              <span>{status === "submitting" ? "Verifying..." : "Subscribe"}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.9, ease: LUXURY_EASE }}
+          className="space-y-6"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--champagne)]/30 bg-[var(--champagne)]/5 text-[var(--champagne)] text-[10px] uppercase tracking-[0.3em]">
+            <Sparkles className="w-3 h-3 text-[var(--champagne)]" />
+            <span>The Olfactory Conclusion</span>
           </div>
 
-          {status === "error" && (
-            <p className="text-xs text-red-600 text-left font-medium">{message}</p>
-          )}
+          <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-[var(--porcelain)] font-normal tracking-tight leading-[1.15]">
+            Your space. <span className="italic font-light text-[var(--champagne)]">Your signature.</span>
+          </h2>
 
-          {status === "success" && (
-            <div className="p-3 bg-amber-50 border border-amber-300 rounded text-left text-xs text-amber-950 flex items-start gap-2 animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-              <span>{message}</span>
-            </div>
-          )}
-
-          <p className="text-[11px] text-stone-400">
-            We value your privacy. Unsubscribe at any time. No spam or third-party marketing.
+          <p className="max-w-xl mx-auto text-xs sm:text-sm text-[var(--warm-stone)] font-light leading-relaxed">
+            From intimate residences to grand architectural hospitality suites, discover the precise scenting instrument to define your environment.
           </p>
-        </form>
+
+          {/* Quick Route to Catalogue */}
+          <div className="pt-2 pb-8 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-[var(--porcelain)] text-[var(--near-black)] text-xs uppercase tracking-[0.2em] font-medium rounded-sm hover:bg-[var(--champagne)] hover:text-white transition-all duration-300 shadow-sm"
+            >
+              <span>Explore The Full Catalogue</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            <Link
+              href="/business-scenting/request-quote"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-transparent text-[var(--ivory)] border border-[var(--warm-stone)]/40 text-xs uppercase tracking-[0.2em] font-light rounded-sm hover:border-[var(--champagne)] hover:text-[var(--champagne)] transition-all duration-300"
+            >
+              <span>Request B2B Architecture</span>
+            </Link>
+          </div>
+
+          {/* Integrated Gazette Newsletter Subscription */}
+          <div className="pt-10 border-t border-[var(--warm-stone)]/20 max-w-md mx-auto">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-[var(--champagne)] font-medium block mb-2">
+              The Olfactory Gazette
+            </span>
+            <p className="text-[11px] text-[var(--warm-stone)]/80 mb-5 font-light">
+              Receive private invitations to limited franchise releases and spatial design guides.
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (status !== "idle") setStatus("idle");
+                  }}
+                  placeholder="Enter your email address"
+                  aria-label="Email address for subscription"
+                  className="flex-1 px-4 py-3 bg-[var(--deep-espresso)]/80 border border-[var(--warm-stone)]/30 rounded-sm text-xs text-[var(--porcelain)] placeholder-[var(--warm-stone)]/50 focus:outline-none focus:border-[var(--champagne)] transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={status === "submitting"}
+                  className="px-6 py-3 bg-[var(--champagne)] text-[var(--near-black)] text-[11px] uppercase tracking-[0.2em] font-semibold rounded-sm hover:bg-white transition-colors duration-200 flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-50"
+                >
+                  <span>{status === "submitting" ? "Enrolling..." : "Subscribe"}</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+
+              {status === "error" && (
+                <p className="text-[11px] text-red-400 text-left font-light">{message}</p>
+              )}
+
+              {status === "success" && (
+                <div className="p-3 bg-[var(--deep-espresso)] border border-[var(--champagne)]/40 rounded-sm text-left text-xs text-[var(--champagne)] flex items-start gap-2 animate-in fade-in">
+                  <CheckCircle2 className="w-4 h-4 text-[var(--champagne)] shrink-0 mt-0.5" />
+                  <span className="font-light text-[11px] text-[var(--porcelain)]">{message}</span>
+                </div>
+              )}
+
+              <p className="text-[10px] text-[var(--warm-stone)]/60 font-light">
+                Discreet correspondence only. Unsubscribe at any time.
+              </p>
+            </form>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,63 +1,118 @@
 @import "tailwindcss";
 
 :root {
-  --font-serif-luxury: var(--font-serif), Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans-clean: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif-luxury: var(--font-serif), "Playfair Display", Georgia, Cambria, serif;
+  --font-sans-clean: var(--font-sans), "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   
-  --bg-primary: #FAF8F5;
-  --bg-secondary: #F4EFEA;
-  --bg-card: #FFFFFF;
-  --text-main: #1C1917;
+  /* Primary Luxury Palette */
+  --color-porcelain: #F8F6F1;
+  --color-ivory: #EFEAE1;
+  --color-espresso: #211C19;
+  --color-nearblack: #151412;
+  --color-champagne: #B49A70;
+  --color-champagne-light: #CBB694;
+  --color-champagne-dark: #8F764F;
+  --color-stone: #D8D0C4;
+  --color-stone-light: #ECE7DE;
+  --color-stone-dark: #8A8275;
+  --color-white: #FFFFFF;
+
+  /* Theme semantic bindings */
+  --bg-primary: var(--color-porcelain);
+  --bg-secondary: var(--color-ivory);
+  --bg-dark: var(--color-nearblack);
+  --bg-espresso: var(--color-espresso);
+  --text-main: var(--color-nearblack);
   --text-muted: #57534E;
-  --text-subtle: #78716C;
-  --accent-gold: #B89758;
-  --accent-gold-light: #CBB079;
-  --accent-gold-dark: #96783E;
-  --accent-gold-subtle: #FAF6ED;
-  --border-subtle: #E7E2D8;
-  --border-strong: #D6CFC3;
+  --text-subtle: #8A8275;
+  --accent-gold: var(--color-champagne);
+  --border-subtle: #E6E0D5;
+  --border-strong: var(--color-stone);
 }
 
 @layer base {
-  body {
-    background-color: var(--bg-primary);
-    color: var(--text-main);
-    font-family: var(--font-sans-clean);
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, .font-serif-luxury {
+  body {
+    background-color: var(--color-porcelain);
+    color: var(--color-nearblack);
+    font-family: var(--font-sans-clean);
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif, .font-serif-luxury {
     font-family: var(--font-serif-luxury);
     letter-spacing: -0.015em;
   }
 }
 
-/* Custom subtle luxury scrollbar */
+/* Custom luxury subtle scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F4EFEA;
+  background: #F8F6F1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D1C7B7;
-  border-radius: 3px;
+  background: #D8D0C4;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B89758;
+  background: #B49A70;
 }
 
-/* Focus styles for keyboard accessibility */
+/* Accessible focus outline */
 :focus-visible {
-  outline: 2px solid #B89758;
-  outline-offset: 2px;
+  outline: 2px solid var(--color-champagne);
+  outline-offset: 3px;
 }
 
 /* Custom text selection */
 ::selection {
-  background: #F2E8D3;
-  color: #1C1917;
+  background: #EFEAE1;
+  color: #151412;
+}
+
+/* Luxury Editorial Utility Classes */
+.bg-porcelain { background-color: var(--color-porcelain); }
+.bg-ivory { background-color: var(--color-ivory); }
+.bg-espresso { background-color: var(--color-espresso); }
+.bg-nearblack { background-color: var(--color-nearblack); }
+.text-champagne { color: var(--color-champagne); }
+.border-champagne { border-color: var(--color-champagne); }
+.border-stone-luxury { border-color: var(--color-stone); }
+
+/* Ambient Film Grain & Atmospheric Noise */
+.bg-grain {
+  background-image: radial-gradient(rgba(21, 20, 18, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.bg-dark-grain {
+  background-image: radial-gradient(rgba(248, 246, 241, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Editorial Masked Reveal Clip-path */
+.clip-text-reveal {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

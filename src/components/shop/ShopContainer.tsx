@@ -6,7 +6,7 @@ import { Product, ProductCategory, ScentFamily, SortOption } from "@/types/produ
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ProductFilters } from "@/components/product/ProductFilters";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Sparkles } from "lucide-react";
 
 interface ShopContainerProps {
   initialProducts: Product[];
@@ -25,7 +25,7 @@ export function ShopContainer({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Directly derive state from URL search params (Single Source of Truth)
+  // Derive state from URL params
   const category: ProductCategory | "all" =
     (searchParams.get("category") as ProductCategory | null) || initialCategory;
   const sort = (searchParams.get("sort") as SortOption) || "featured";
@@ -36,7 +36,6 @@ export function ShopContainer({
   const [inStockOnly, setInStockOnly] = useState(false);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
-  // Update query params in URL
   const updateUrl = (newCat: string, newSort: string, newFam: string, newQ: string) => {
     const params = new URLSearchParams();
     if (newCat && newCat !== "all") params.set("category", newCat);
@@ -73,7 +72,6 @@ export function ShopContainer({
     updateUrl(initialCategory === "all" ? "all" : initialCategory, "featured", "all", "");
   };
 
-  // Filter products client-side for ultra-responsive feedback
   const filteredProducts = useMemo(() => {
     let list = [...initialProducts];
 
@@ -104,7 +102,6 @@ export function ShopContainer({
       );
     }
 
-    // Sort
     switch (sort) {
       case "price-asc":
         return list.sort((a, b) => a.basePriceLKR - b.basePriceLKR);
@@ -138,48 +135,50 @@ export function ShopContainer({
   ];
 
   const breadcrumbs = [
-    { label: "Shop", href: "/shop" },
+    { label: "Catalogue", href: "/shop" },
     ...(categoryName && initialCategory !== "all" ? [{ label: categoryName }] : []),
   ];
 
   return (
-    <div className="py-8 lg:py-12">
+    <div className="py-10 lg:py-16 bg-[var(--porcelain)] text-[var(--near-black)] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Breadcrumbs items={breadcrumbs} />
+        <div className="mb-6">
+          <Breadcrumbs items={breadcrumbs} />
+        </div>
 
-        {/* Page Title & Search */}
-        <div className="pt-2 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-200 mb-8">
+        {/* Page Title & Search Header */}
+        <div className="pt-2 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--warm-stone)]/40 mb-10">
           <div className="space-y-2 max-w-2xl">
-            <span className="text-xs font-semibold tracking-widest uppercase text-amber-800">
-              Authorized Dr. Scent Catalogue
+            <span className="text-[10px] font-medium tracking-[0.25em] uppercase text-[var(--champagne)] block">
+              Official Sri Lanka Franchise Catalogue
             </span>
-            <h1 className="font-serif text-3xl sm:text-4xl text-stone-900 font-normal">
-              {categoryName || "Fragrance & Diffuser Collections"}
+            <h1 className="font-serif text-3xl sm:text-5xl text-[var(--near-black)] font-normal tracking-tight">
+              {categoryName || "Fragrance & Diffusion Architecture"}
             </h1>
-            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[var(--deep-espresso)]/70 font-light leading-relaxed">
               {categoryDescription ||
                 "Explore our complete range of cold-air nebulizers, pure diffuser oils, commercial HVAC systems, and artisanal home fragrance accents."}
             </p>
           </div>
 
-          {/* Quick Search in catalogue */}
-          <div className="w-full md:w-72">
+          {/* Quick Search */}
+          <div className="w-full md:w-80">
             <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-stone-400" />
+              <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-[var(--warm-stone)]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleFilterChange({ query: e.target.value })}
-                placeholder="Filter by keyword or note..."
+                placeholder="Search by note, room or title..."
                 aria-label="Filter products by name or note"
-                className="w-full pl-9 pr-4 py-2 text-xs bg-white border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-amber-800 text-stone-900 placeholder-stone-400"
+                className="w-full pl-10 pr-4 py-2.5 text-xs bg-white border border-[var(--warm-stone)]/50 rounded-sm focus:outline-none focus:border-[var(--champagne)] text-[var(--near-black)] placeholder-[var(--warm-stone)]/80 transition-colors"
               />
             </div>
           </div>
         </div>
 
         {/* Main Grid & Filters Sidebar */}
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-10">
           {/* Left Desktop Sidebar & Mobile Drawer */}
           <ProductFilters
             filters={{
@@ -198,37 +197,37 @@ export function ShopContainer({
 
           {/* Right Product Grid Area */}
           <div className="flex-1 min-w-0">
-            {/* Top Toolbar (Item Count, Mobile Filter Trigger, and Sort Dropdown) */}
-            <div className="bg-white p-3.5 sm:p-4 rounded border border-stone-200 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+            {/* Top Toolbar */}
+            <div className="bg-white/80 backdrop-blur-sm p-4 rounded-sm border border-[var(--warm-stone)]/40 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center justify-between sm:justify-start gap-4">
                 <button
                   type="button"
                   onClick={() => setIsMobileFiltersOpen(true)}
-                  className="lg:hidden inline-flex items-center gap-2 px-3.5 py-2 bg-stone-900 text-stone-100 rounded text-xs font-medium uppercase tracking-wider hover:bg-stone-800 transition-colors"
+                  className="lg:hidden inline-flex items-center gap-2 px-4 py-2 bg-[var(--near-black)] text-[var(--porcelain)] rounded-sm text-xs font-medium uppercase tracking-[0.15em] hover:bg-[var(--champagne)] transition-colors cursor-pointer"
                 >
-                  <Filter className="w-4 h-4" />
-                  Filter Products
+                  <Filter className="w-3.5 h-3.5" />
+                  <span>Filter Creations</span>
                   {isFiltered && (
-                    <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
+                    <span className="w-2 h-2 rounded-full bg-[var(--champagne)] inline-block" />
                   )}
                 </button>
 
-                <span className="text-xs text-stone-500">
-                  Showing <strong className="text-stone-900 font-semibold">{filteredProducts.length}</strong>{" "}
-                  {filteredProducts.length === 1 ? "fragrance creation" : "fragrance creations"}
+                <span className="text-xs text-[var(--deep-espresso)]/70 font-light">
+                  Showing <strong className="text-[var(--near-black)] font-medium">{filteredProducts.length}</strong>{" "}
+                  {filteredProducts.length === 1 ? "instrument / oil" : "instruments & oils"}
                 </span>
               </div>
 
               {/* Sort Select */}
-              <div className="flex items-center gap-2 self-end sm:self-auto">
-                <label htmlFor="sort-select" className="text-xs text-stone-500 whitespace-nowrap">
+              <div className="flex items-center gap-2.5 self-end sm:self-auto">
+                <label htmlFor="sort-select" className="text-xs text-[var(--deep-espresso)]/70 whitespace-nowrap font-light">
                   Sort by:
                 </label>
                 <select
                   id="sort-select"
                   value={sort}
                   onChange={(e) => handleFilterChange({ sort: e.target.value as SortOption })}
-                  className="text-xs bg-stone-50 border border-stone-300 rounded px-2.5 py-1.5 text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-800"
+                  className="text-xs bg-white border border-[var(--warm-stone)]/50 rounded-sm px-3 py-1.5 text-[var(--near-black)] focus:outline-none focus:border-[var(--champagne)] cursor-pointer"
                 >
                   {sortOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -246,7 +245,7 @@ export function ShopContainer({
               emptyMessage={
                 searchQuery
                   ? `No creations found matching "${searchQuery}".`
-                  : "No products match the selected criteria."
+                  : "No instruments or oils match the selected criteria."
               }
             />
           </div>

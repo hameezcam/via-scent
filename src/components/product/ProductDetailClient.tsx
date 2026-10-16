@@ -10,13 +10,16 @@ import {
   RotateCcw,
   Sparkles,
   Award,
+  ArrowRight,
 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { Product, ProductVariant } from "@/types/product";
 import { formatLKR } from "@/config/brand.config";
 import { useCart } from "@/context/CartContext";
 import { ProductGallery } from "./ProductGallery";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { ProductGrid } from "./ProductGrid";
+import { LUXURY_EASE } from "@/config/motion.config";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -46,22 +49,24 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
     if (!product.inStock || !selectedVariant.inStock) return;
     addItem(product, selectedVariant, quantity);
     setAdded(true);
-    setTimeout(() => setAdded(false), 1200);
+    setTimeout(() => setAdded(false), 1400);
   };
 
   const breadcrumbs = [
-    { label: "Shop", href: "/shop" },
+    { label: "Catalogue", href: "/shop" },
     { label: product.categoryName, href: `/shop/${product.category}` },
     { label: product.name },
   ];
 
   return (
-    <div className="py-8 sm:py-12 bg-[#FAF8F5]">
+    <div className="py-10 sm:py-16 bg-[var(--porcelain)] text-[var(--near-black)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Breadcrumbs items={breadcrumbs} />
+        <div className="mb-6">
+          <Breadcrumbs items={breadcrumbs} />
+        </div>
 
         {/* Product Overview Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 pt-4 pb-16 border-b border-stone-200">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 pt-2 pb-20 border-b border-[var(--warm-stone)]/40">
           {/* Left Column: Image Gallery */}
           <div className="lg:col-span-7">
             <ProductGallery
@@ -74,76 +79,79 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
           </div>
 
           {/* Right Column: Buying Controls & Info */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
+          <div className="lg:col-span-5 flex flex-col justify-between space-y-8">
+            <div className="space-y-6">
               {/* Category, SKU & Status */}
-              <div className="flex items-center justify-between text-xs text-stone-500 uppercase tracking-wider">
+              <div className="flex items-center justify-between text-[11px] text-[var(--deep-espresso)]/70 uppercase tracking-[0.2em]">
                 <Link
                   href={`/shop/${product.category}`}
-                  className="hover:text-amber-900 transition-colors font-medium"
+                  className="hover:text-[var(--champagne)] transition-colors font-medium"
                 >
                   {product.categoryName}
                 </Link>
-                <span>SKU: {selectedVariant.sku || product.sku}</span>
+                <span className="font-mono text-[10px]">SKU: {selectedVariant.sku || product.sku}</span>
               </div>
 
               {/* Title & Tagline */}
-              <div>
-                <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal text-stone-900 tracking-tight leading-tight">
+              <div className="space-y-2">
+                <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[var(--near-black)] tracking-tight leading-[1.12]">
                   {product.name}
                 </h1>
-                <p className="text-xs sm:text-sm text-stone-600 mt-1.5 leading-relaxed">
+                <p className="text-xs sm:text-sm text-[var(--deep-espresso)]/80 font-light leading-relaxed">
                   {product.tagline}
                 </p>
               </div>
 
               {/* Price & Availability */}
-              <div className="flex items-baseline gap-3 pt-1">
-                <span className="font-semibold text-2xl sm:text-3xl text-stone-900">
-                  {formatLKR(price, true)}
-                </span>
+              <div className="flex items-baseline gap-4 pt-2 border-t border-b border-[var(--warm-stone)]/30 py-4">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xs tracking-wider uppercase text-[var(--champagne)] font-medium">LKR</span>
+                  <span className="font-serif text-2xl sm:text-3xl text-[var(--near-black)] font-medium">
+                    {price.toLocaleString("en-LK")}
+                  </span>
+                </div>
                 {originalPrice && originalPrice > price && (
-                  <span className="text-sm text-stone-400 line-through">
+                  <span className="text-xs text-[var(--warm-stone)] line-through">
                     {formatLKR(originalPrice, true)}
                   </span>
                 )}
                 <span
-                  className={`text-xs px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider ml-2 ${
+                  className={`text-[10px] px-2.5 py-1 rounded-sm uppercase tracking-widest font-medium ml-auto ${
                     product.inStock && selectedVariant.inStock
-                      ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                      ? "bg-emerald-50 text-emerald-900 border border-emerald-200"
                       : "bg-stone-100 text-stone-500 border border-stone-200"
                   }`}
                 >
-                  {product.inStock && selectedVariant.inStock ? product.stockStatus : "Sold Out"}
+                  {product.inStock && selectedVariant.inStock ? product.stockStatus : "Allocation Filled"}
                 </span>
               </div>
 
               {/* Scent notes highlight if fragrance oil */}
               {product.scentNotes && (
-                <div className="p-3.5 rounded-lg bg-amber-50/70 border border-amber-200/80 text-xs space-y-2">
+                <div className="p-4 rounded-sm bg-[var(--ivory)] border border-[var(--warm-stone)]/60 text-xs space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-700" />
-                      Olfactory Notes
+                    <span className="font-serif text-xs text-[var(--near-black)] tracking-wider uppercase flex items-center gap-1.5 font-medium">
+                      <Sparkles className="w-3.5 h-3.5 text-[var(--champagne)]" />
+                      Olfactory Architecture
                     </span>
                     {product.scentNotes.intensity && (
-                      <span className="text-amber-800 text-[11px] font-medium">
+                      <span className="text-[10px] uppercase tracking-wider text-[var(--champagne)] font-mono">
                         Intensity: {product.scentNotes.intensity}
                       </span>
                     )}
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-stone-700 pt-1 border-t border-amber-200/60">
+                  <div className="grid grid-cols-3 gap-3 text-[var(--deep-espresso)] pt-2 border-t border-[var(--warm-stone)]/40 text-[11px] font-light">
                     <div>
-                      <strong className="text-stone-900 block font-medium">Top</strong>
-                      <span className="text-[11px]">{product.scentNotes.top.join(", ")}</span>
+                      <strong className="text-[var(--near-black)] block font-medium uppercase text-[9px] tracking-wider mb-0.5">Top Note</strong>
+                      <span>{product.scentNotes.top.join(", ")}</span>
                     </div>
                     <div>
-                      <strong className="text-stone-900 block font-medium">Heart</strong>
-                      <span className="text-[11px]">{product.scentNotes.heart.join(", ")}</span>
+                      <strong className="text-[var(--near-black)] block font-medium uppercase text-[9px] tracking-wider mb-0.5">Heart Note</strong>
+                      <span>{product.scentNotes.heart.join(", ")}</span>
                     </div>
                     <div>
-                      <strong className="text-stone-900 block font-medium">Base</strong>
-                      <span className="text-[11px]">{product.scentNotes.base.join(", ")}</span>
+                      <strong className="text-[var(--near-black)] block font-medium uppercase text-[9px] tracking-wider mb-0.5">Base Note</strong>
+                      <span>{product.scentNotes.base.join(", ")}</span>
                     </div>
                   </div>
                 </div>
@@ -151,11 +159,11 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
 
               {/* Variant Selector */}
               {product.variants.length > 1 && (
-                <div className="space-y-2 pt-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-stone-800 block">
-                    Choose Option / Finish:
+                <div className="space-y-2.5 pt-1">
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-[var(--deep-espresso)]/70 font-medium block">
+                    Select Edition / Volume:
                   </label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2.5">
                     {product.variants.map((v) => {
                       const isSelected = selectedVariant.id === v.id;
                       return (
@@ -163,14 +171,14 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
                           key={v.id}
                           type="button"
                           onClick={() => setSelectedVariant(v)}
-                          className={`px-3.5 py-2 rounded text-xs transition-all border ${
+                          className={`px-4 py-2.5 rounded-sm text-xs transition-all duration-200 border cursor-pointer ${
                             isSelected
-                              ? "bg-stone-900 text-stone-100 border-stone-900 font-medium shadow-xs"
-                              : "bg-white border-stone-300 text-stone-700 hover:border-stone-400"
+                              ? "bg-[var(--near-black)] text-[var(--porcelain)] border-[var(--near-black)] shadow-xs"
+                              : "bg-white border-[var(--warm-stone)]/60 text-[var(--deep-espresso)] hover:border-[var(--champagne)]"
                           }`}
                         >
-                          <span>{v.name}</span>
-                          <span className="ml-1.5 opacity-80">({formatLKR(v.priceLKR)})</span>
+                          <span className="font-medium">{v.name}</span>
+                          <span className="ml-2 text-[10px] font-mono opacity-80">({formatLKR(v.priceLKR)})</span>
                         </button>
                       );
                     })}
@@ -179,31 +187,31 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
               )}
 
               {/* Short description */}
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed pt-2">
+              <p className="text-xs sm:text-sm text-[var(--deep-espresso)]/80 leading-relaxed font-light">
                 {product.shortDescription}
               </p>
             </div>
 
             {/* Buying Controls */}
-            <div className="space-y-4 pt-4 border-t border-stone-200">
+            <div className="space-y-5 pt-6 border-t border-[var(--warm-stone)]/40">
               <div className="flex items-center gap-3">
                 {/* Quantity */}
-                <div className="flex items-center border border-stone-300 rounded bg-white">
+                <div className="flex items-center border border-[var(--warm-stone)]/60 rounded-sm bg-white">
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-2 text-stone-600 hover:bg-stone-100 transition-colors"
+                    className="px-3.5 py-3 text-[var(--deep-espresso)] hover:bg-[var(--ivory)] transition-colors cursor-pointer"
                     aria-label="Decrease quantity"
                   >
                     -
                   </button>
-                  <span className="px-3 text-xs font-semibold text-stone-900 min-w-8 text-center">
+                  <span className="px-3 text-xs font-mono font-medium text-[var(--near-black)] min-w-8 text-center">
                     {quantity}
                   </span>
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.min(10, quantity + 1))}
-                    className="px-3 py-2 text-stone-600 hover:bg-stone-100 transition-colors"
+                    className="px-3.5 py-3 text-[var(--deep-espresso)] hover:bg-[var(--ivory)] transition-colors cursor-pointer"
                     aria-label="Increase quantity"
                   >
                     +
@@ -211,56 +219,58 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
                 </div>
 
                 {/* Add to Cart button */}
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={handleAddToCart}
                   disabled={!product.inStock || !selectedVariant.inStock}
-                  className="flex-1 py-3 px-6 bg-stone-900 text-amber-100 hover:bg-stone-800 disabled:opacity-50 text-xs font-semibold tracking-wider uppercase rounded transition-colors flex items-center justify-center gap-2 shadow-sm"
+                  className="flex-1 py-3.5 px-6 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--champagne)] hover:text-white disabled:opacity-40 text-xs font-medium tracking-[0.2em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2.5 shadow-sm cursor-pointer"
                 >
                   {added ? (
                     <>
-                      <Check className="w-4 h-4 text-emerald-400" />
-                      Added to Cart
+                      <Check className="w-4 h-4 text-emerald-300" />
+                      <span>Added to Shopping Bag</span>
                     </>
                   ) : (
                     <>
                       <ShoppingBag className="w-4 h-4" />
-                      Add to Shopping Cart
+                      <span>Acquire Instrument</span>
                     </>
                   )}
-                </button>
+                </motion.button>
               </div>
 
               {/* Direct B2B consultation link for commercial units */}
               {product.category === "commercial-scenting" && (
-                <div className="p-3 bg-stone-100 rounded border border-stone-200 text-xs text-stone-700 flex items-center justify-between">
-                  <span>Planning an HVAC or multi-room installation?</span>
+                <div className="p-3.5 bg-[var(--ivory)] rounded-sm border border-[var(--warm-stone)]/60 text-xs text-[var(--deep-espresso)] flex items-center justify-between">
+                  <span className="font-light">Planning an HVAC or architectural installation?</span>
                   <Link
                     href="/business-scenting/request-quote"
-                    className="font-semibold text-amber-900 underline hover:text-amber-800"
+                    className="font-medium text-[var(--champagne)] hover:underline flex items-center gap-1"
                   >
-                    Request B2B Site Survey →
+                    <span>Request Site Survey</span>
+                    <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
               )}
 
               {/* Trust micro-badges */}
-              <div className="grid grid-cols-2 gap-3 pt-2 text-[11px] text-stone-600">
+              <div className="grid grid-cols-2 gap-3.5 pt-2 text-[11px] text-[var(--deep-espresso)]/80 font-light">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-amber-800 shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-[var(--champagne)] shrink-0" />
                   <span>Official Dr. Scent Franchise Supply</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-amber-800 shrink-0" />
-                  <span>Islandwide Sri Lanka Delivery</span>
+                  <Truck className="w-4 h-4 text-[var(--champagne)] shrink-0" />
+                  <span>Islandwide Tracked Delivery</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-amber-800 shrink-0" />
-                  <span>{product.warrantyPeriod || "Franchise Quality Guarantee"}</span>
+                  <Award className="w-4 h-4 text-[var(--champagne)] shrink-0" />
+                  <span>{product.warrantyPeriod || "6-Month Franchise Warranty"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <RotateCcw className="w-4 h-4 text-amber-800 shrink-0" />
-                  <span>7-Day Return / Replacement Policy</span>
+                  <RotateCcw className="w-4 h-4 text-[var(--champagne)] shrink-0" />
+                  <span>7-Day Return / Replacement Protection</span>
                 </div>
               </div>
             </div>
@@ -268,67 +278,67 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
         </div>
 
         {/* Structured Tabs (Specifications, Description & Usage, Delivery & Warranty) */}
-        <div className="py-12 border-b border-stone-200">
-          <div className="flex border-b border-stone-200 gap-6">
+        <div className="py-14 border-b border-[var(--warm-stone)]/40">
+          <div className="flex border-b border-[var(--warm-stone)]/40 gap-8">
             <button
               type="button"
               onClick={() => setActiveTab("specs")}
-              className={`pb-3 text-xs uppercase tracking-widest font-semibold transition-colors border-b-2 ${
+              className={`pb-3.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors border-b-2 cursor-pointer ${
                 activeTab === "specs"
-                  ? "border-amber-800 text-stone-900"
-                  : "border-transparent text-stone-500 hover:text-stone-800"
+                  ? "border-[var(--near-black)] text-[var(--near-black)]"
+                  : "border-transparent text-[var(--deep-espresso)]/60 hover:text-[var(--near-black)]"
               }`}
             >
-              Specifications & Details
+              Specifications & Engineering
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("usage")}
-              className={`pb-3 text-xs uppercase tracking-widest font-semibold transition-colors border-b-2 ${
+              className={`pb-3.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors border-b-2 cursor-pointer ${
                 activeTab === "usage"
-                  ? "border-amber-800 text-stone-900"
-                  : "border-transparent text-stone-500 hover:text-stone-800"
+                  ? "border-[var(--near-black)] text-[var(--near-black)]"
+                  : "border-transparent text-[var(--deep-espresso)]/60 hover:text-[var(--near-black)]"
               }`}
             >
-              Description & Protocol
+              Narrative & Protocol
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("delivery")}
-              className={`pb-3 text-xs uppercase tracking-widest font-semibold transition-colors border-b-2 ${
+              className={`pb-3.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors border-b-2 cursor-pointer ${
                 activeTab === "delivery"
-                  ? "border-amber-800 text-stone-900"
-                  : "border-transparent text-stone-500 hover:text-stone-800"
+                  ? "border-[var(--near-black)] text-[var(--near-black)]"
+                  : "border-transparent text-[var(--deep-espresso)]/60 hover:text-[var(--near-black)]"
               }`}
             >
-              Delivery & Warranty Policy
+              Fulfillment & Warranty
             </button>
           </div>
 
-          <div className="pt-6">
+          <div className="pt-8">
             {activeTab === "specs" && (
               <div className="space-y-6 max-w-3xl">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {product.specifications.map((spec) => (
                     <div
                       key={spec.label}
-                      className="p-3 bg-white rounded border border-stone-200 flex justify-between text-xs"
+                      className="p-3.5 bg-white rounded-sm border border-[var(--warm-stone)]/40 flex justify-between text-xs"
                     >
-                      <span className="text-stone-500 font-medium">{spec.label}</span>
-                      <span className="text-stone-900 font-semibold text-right">{spec.value}</span>
+                      <span className="text-[var(--deep-espresso)]/70 font-light">{spec.label}</span>
+                      <span className="text-[var(--near-black)] font-medium text-right font-mono">{spec.value}</span>
                     </div>
                   ))}
                 </div>
 
                 {product.features.length > 0 && (
                   <div className="pt-4">
-                    <h4 className="font-serif text-sm font-semibold text-stone-900 mb-2">
-                      Key Highlights & Technology
+                    <h4 className="font-serif text-sm font-medium text-[var(--near-black)] mb-3">
+                      Architectural Highlights & Innovations
                     </h4>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-stone-600">
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-[var(--deep-espresso)]/80 font-light">
                       {product.features.map((f, i) => (
                         <li key={i} className="flex items-center gap-2">
-                          <Check className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                          <Check className="w-3.5 h-3.5 text-[var(--champagne)] shrink-0" />
                           <span>{f}</span>
                         </li>
                       ))}
@@ -339,16 +349,16 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
             )}
 
             {activeTab === "usage" && (
-              <div className="space-y-4 max-w-3xl text-xs sm:text-sm text-stone-600 leading-relaxed">
+              <div className="space-y-4 max-w-3xl text-xs sm:text-sm text-[var(--deep-espresso)]/80 leading-relaxed font-light">
                 <p>{product.description}</p>
                 {product.usageInstructions && product.usageInstructions.length > 0 && (
                   <div className="pt-4">
-                    <h4 className="font-serif text-sm font-semibold text-stone-900 mb-2">
+                    <h4 className="font-serif text-sm font-medium text-[var(--near-black)] mb-2.5">
                       Recommended Operating Protocol
                     </h4>
-                    <ol className="list-decimal list-inside space-y-1.5 text-xs text-stone-600">
+                    <ol className="list-decimal list-inside space-y-2 text-xs text-[var(--deep-espresso)]/80 font-light">
                       {product.usageInstructions.map((instruction, idx) => (
-                        <li key={idx}>{instruction}</li>
+                        <li key={idx} className="leading-relaxed">{instruction}</li>
                       ))}
                     </ol>
                   </div>
@@ -357,15 +367,15 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
             )}
 
             {activeTab === "delivery" && (
-              <div className="space-y-4 max-w-3xl text-xs sm:text-sm text-stone-600 leading-relaxed">
+              <div className="space-y-4 max-w-3xl text-xs sm:text-sm text-[var(--deep-espresso)]/80 leading-relaxed font-light">
                 <p>
-                  <strong>Greater Colombo:</strong> Dispatched via dedicated courier within 24 to 48 hours. Express same-day delivery available upon request.
+                  <strong className="text-[var(--near-black)] font-medium">Greater Colombo & Suburbs:</strong> Dispatched via dedicated courier within 24 to 48 hours. Express same-day delivery available upon request.
                 </p>
                 <p>
-                  <strong>All Other Sri Lankan Provinces:</strong> Islandwide tracked delivery within 2 to 4 business days.
+                  <strong className="text-[var(--near-black)] font-medium">All Provincial Regions in Sri Lanka:</strong> Islandwide tracked delivery within 2 to 4 business days.
                 </p>
                 <p>
-                  <strong>Warranty Coverage:</strong> Official franchisee replacement warranty covers manufacturer mechanical or pump defects. Damaged goods must be reported within 48 hours of receipt.
+                  <strong className="text-[var(--near-black)] font-medium">6-Month Hardware Warranty:</strong> Covers manufacturing, mechanical pump, or nebulization chamber defects through our Colombo service center with genuine Dr. Scent parts.
                 </p>
               </div>
             )}
@@ -377,16 +387,16 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
           <div className="pt-16">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-xs font-semibold tracking-widest uppercase text-amber-800 block mb-1">
-                  Complementary Creations
+                <span className="text-[10px] font-medium tracking-[0.25em] uppercase text-[var(--champagne)] block mb-1">
+                  Complementary Atmospheric Creations
                 </span>
-                <h2 className="font-serif text-2xl sm:text-3xl text-stone-900 font-normal">
+                <h2 className="font-serif text-2xl sm:text-3xl text-[var(--near-black)] font-normal">
                   You May Also Appreciate
                 </h2>
               </div>
               <Link
                 href="/shop"
-                className="text-xs uppercase tracking-wider font-semibold text-stone-800 hover:text-amber-900"
+                className="text-xs uppercase tracking-[0.2em] font-medium text-[var(--near-black)] hover:text-[var(--champagne)] transition-colors"
               >
                 View Full Range →
               </Link>

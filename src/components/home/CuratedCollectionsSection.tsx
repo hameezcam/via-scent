@@ -1,97 +1,187 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Compass, Check, Layers } from "lucide-react";
+import { motion } from "motion/react";
+import { LUXURY_EASE } from "@/config/motion.config";
+
+interface DiscoveryProfile {
+  id: string;
+  name: string;
+  family: string;
+  notes: string[];
+  idealSpace: string;
+  coverage: string;
+  tagline: string;
+  image: string;
+  productSlug: string;
+}
+
+const DISCOVERY_PROFILES: DiscoveryProfile[] = [
+  {
+    id: "woody-oud",
+    name: "Royal Oud & Smoky Amber",
+    family: "Noble Woody Oriental",
+    notes: ["Cardamom", "Smoked Agarwood", "Madagascan Vanilla", "Dark Musk"],
+    idealSpace: "Grand Living Rooms, Private Libraries & Boardrooms",
+    coverage: "Up to 1,500 sq.ft",
+    tagline: "An opulent nocturnal sanctuary evoking ancient spice trade routes and warm cedar embers.",
+    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85",
+    productSlug: "ceylon-oud-and-smoky-amber-oil",
+  },
+  {
+    id: "citrus-tea",
+    name: "White Tea & Morning Bergamot",
+    family: "Crisp Citrus & Botanical",
+    notes: ["Italian Bergamot", "White Tea Buds", "Neroli Petals", "Transparent Cedar"],
+    idealSpace: "Hotel Lobbies, Sunlit Living Areas & Boutiques",
+    coverage: "Up to 1,200 sq.ft",
+    tagline: "Ethereal, uplifting daylight serenity reminiscent of luxury coastal resorts at dawn.",
+    image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85",
+    productSlug: "dr-scent-smart-tower-pro",
+  },
+  {
+    id: "cashmere-rose",
+    name: "Damask Rose & Cashmere Veil",
+    family: "Velvety Floral Musc",
+    notes: ["Bulgarian Rose", "Pink Pepper", "Cashmere Wood", "Golden Amber"],
+    idealSpace: "Master Suites, Private Spas & Executive Lounges",
+    coverage: "Up to 800 sq.ft",
+    tagline: "A delicate yet enveloping tactile warmth designed to quiet the mind after hours.",
+    image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1000&q=85",
+    productSlug: "dr-scent-luxe-portable-diffuser",
+  },
+];
 
 export function CuratedCollectionsSection() {
-  const collections = [
-    {
-      title: "The Sanctuary Residence",
-      subtitle: "Master Suites & Living Lounges",
-      description: "Gentle porcelain diffusers paired with white tea, morning bergamot, and delicate cashmere wood.",
-      image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=85",
-      link: "/shop/home-fragrance",
-      tag: "Home Curation",
-    },
-    {
-      title: "The Executive Nocturne",
-      subtitle: "Boardrooms & Private Offices",
-      description: "Architectural matte black columns dispensing rare agarwood, cardamom, and dark golden amber.",
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=85",
-      link: "/shop/fragrance-oils",
-      tag: "Executive Series",
-    },
-    {
-      title: "The Grand Discovery Flight",
-      subtitle: "Gift Coffers & Host Discovery",
-      description: "Five signature 15ml flacons encased in rigid ivory linen with gold foil hot-stamping.",
-      image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=85",
-      link: "/shop/gift-collections",
-      tag: "Gifting & Bundles",
-    },
-  ];
+  const [selectedId, setSelectedId] = useState(DISCOVERY_PROFILES[0].id);
+  const activeProfile = DISCOVERY_PROFILES.find((p) => p.id === selectedId) || DISCOVERY_PROFILES[0];
 
   return (
-    <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E7E2D8]">
+    <section className="py-24 sm:py-32 bg-[#FAF8F5] border-b border-[#E7E2D8] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase text-amber-800">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Editorial Pairings</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#B49A70]/30 text-[#B49A70] text-[10px] font-semibold tracking-[0.24em] uppercase shadow-xs">
+            <Compass className="w-3.5 h-3.5 text-[#B49A70]" />
+            <span>OLFACTORY FINDER</span>
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl font-normal text-stone-900 tracking-tight">
-            Curated Collections for Every Mood
+          <h2 className="font-serif text-3xl sm:text-5xl font-normal text-[#151412] tracking-tight leading-[1.15]">
+            Discover your spatial signature.
           </h2>
-          <p className="text-sm text-stone-600">
-            Harmonious pairings of cold-air diffusion instruments and artisanal fragrance profiles.
+          <p className="text-sm sm:text-base text-[#57534E] leading-relaxed">
+            Select an olfactive profile below to inspect how cold-air nebulization pairs note hierarchies with architectural dimensions.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {collections.map((col) => (
-            <div
-              key={col.title}
-              className="group flex flex-col bg-white rounded-lg border border-stone-200 overflow-hidden hover:shadow-xl transition-all duration-300"
-            >
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
-                <Image
-                  src={col.image}
-                  alt={col.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-                />
-                <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-amber-200 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded">
-                  {col.tag}
-                </div>
-              </div>
+        {/* Profile Selector Tabs */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
+          {DISCOVERY_PROFILES.map((profile) => {
+            const isSelected = profile.id === selectedId;
+            return (
+              <button
+                key={profile.id}
+                type="button"
+                onClick={() => setSelectedId(profile.id)}
+                className={`px-5 py-3 rounded-full text-xs font-semibold tracking-[0.16em] uppercase transition-all duration-300 cursor-pointer flex items-center gap-2 border ${
+                  isSelected
+                    ? "bg-[#151412] text-[#B49A70] border-[#151412] shadow-md"
+                    : "bg-[#FFFFFF] text-[#211C19] border-[#E7E2D8] hover:border-[#B49A70]"
+                }`}
+              >
+                <span>{profile.name}</span>
+                {isSelected && <Check className="w-3.5 h-3.5 text-[#B49A70]" />}
+              </button>
+            );
+          })}
+        </div>
 
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <span className="text-[11px] uppercase tracking-wider text-amber-800 font-semibold block mb-1">
-                    {col.subtitle}
-                  </span>
-                  <h3 className="font-serif text-xl font-medium text-stone-900 group-hover:text-amber-900 transition-colors">
-                    {col.title}
-                  </h3>
-                  <p className="text-xs text-stone-600 leading-relaxed mt-2">
-                    {col.description}
-                  </p>
-                </div>
+        {/* Dynamic Interactive Presentation Panel */}
+        <motion.div
+          key={activeProfile.id}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: LUXURY_EASE }}
+          className="bg-[#FFFFFF] border border-[#E7E2D8] rounded-2xl overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+        >
+          {/* Visual Showcase */}
+          <div className="lg:col-span-5 relative aspect-[4/3] lg:aspect-square w-full bg-stone-100 overflow-hidden">
+            <Image
+              src={activeProfile.image}
+              alt={activeProfile.name}
+              fill
+              sizes="(max-width: 1024px) 100vw, 40vw"
+              className="object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#151412]/80 text-[#B49A70] backdrop-blur-xs border border-[#B49A70]/30">
+              {activeProfile.family}
+            </div>
+          </div>
 
-                <div className="pt-3 border-t border-stone-100">
-                  <Link
-                    href={col.link}
-                    className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider font-semibold text-stone-900 hover:text-amber-800 transition-colors"
+          {/* Detailed Olfactory Breakdown */}
+          <div className="lg:col-span-7 p-6 sm:p-10 space-y-6 text-left">
+            <div>
+              <span className="text-[10px] tracking-[0.2em] uppercase font-bold text-[#B49A70] block mb-1">
+                Spatial Profile & Notes
+              </span>
+              <h3 className="font-serif text-2xl sm:text-3xl font-semibold text-[#151412]">
+                {activeProfile.name}
+              </h3>
+              <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed mt-2 max-w-xl">
+                {activeProfile.tagline}
+              </p>
+            </div>
+
+            {/* Note Pyramids */}
+            <div className="space-y-3 pt-2">
+              <span className="text-[10px] tracking-widest uppercase font-semibold text-[#8A8275] block">
+                Olfactory Hierarchy
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {activeProfile.notes.map((note) => (
+                  <span
+                    key={note}
+                    className="px-3 py-1.5 rounded-md bg-[#FAF8F5] border border-[#E7E2D8] text-xs font-medium text-[#151412]"
                   >
-                    <span>Explore Collection</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-stone-400 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
+                    {note}
+                  </span>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+
+            {/* Environmental Suitability */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-[#EFEAE1]">
+              <div>
+                <span className="text-[10px] text-[#8A8275] uppercase tracking-wider block">Recommended Setting</span>
+                <span className="font-serif text-xs sm:text-sm font-semibold text-[#151412] mt-0.5 block">
+                  {activeProfile.idealSpace}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] text-[#8A8275] uppercase tracking-wider block">Effective Coverage</span>
+                <span className="font-serif text-xs sm:text-sm font-semibold text-[#151412] mt-0.5 block">
+                  {activeProfile.coverage}
+                </span>
+              </div>
+            </div>
+
+            {/* Direct Action */}
+            <div className="pt-2">
+              <Link
+                href={`/products/${activeProfile.productSlug}`}
+                className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#151412] hover:bg-[#211C19] text-[#B49A70] text-xs font-semibold tracking-[0.2em] uppercase rounded transition-colors shadow-xs"
+              >
+                <span>View Product Formulation</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+
       </div>
     </section>
   );

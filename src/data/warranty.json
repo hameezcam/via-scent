@@ -1,5 +1,67 @@
 [
   {
+    "id": "war-1792170877559-797",
+    "claimNumber": "WAR-20261016-921",
+    "orderNumber": "VIA-20261014-9988",
+    "productSku": "DRS-DIFF-01",
+    "productName": "Dr. Scent Smart Diffuser",
+    "customerName": "Mahela Jayawardene",
+    "customerEmail": "mahela@example.com",
+    "customerPhone": "+94773344556",
+    "purchaseDate": "2026-10-16T17:14:37.559Z",
+    "warrantyDurationMonths": 6,
+    "reportedIssue": "Nozzle clogged after 2 months of regular use",
+    "evidenceNotes": "Purchased with official franchisee receipt",
+    "submittedAt": "2026-10-16T17:14:37.559Z",
+    "status": "APPROVED_REPAIR",
+    "history": [
+      {
+        "timestamp": "2026-10-16T17:14:37.559Z",
+        "status": "SUBMITTED",
+        "note": "Warranty claim logged under 6-month franchisee coverage. Awaiting technician evaluation.",
+        "updatedBy": "mahela@example.com"
+      },
+      {
+        "timestamp": "2026-10-16T17:14:37.560Z",
+        "status": "APPROVED_REPAIR",
+        "note": "Warranty evaluation updated from SUBMITTED to APPROVED_REPAIR. Pump ultrasonically cleaned and nozzle replaced under warranty",
+        "updatedBy": "technician@viascent.lk"
+      }
+    ],
+    "resolutionNotes": "Pump ultrasonically cleaned and nozzle replaced under warranty"
+  },
+  {
+    "id": "war-1792169985286-174",
+    "claimNumber": "WAR-20261016-966",
+    "orderNumber": "VIA-20261014-9988",
+    "productSku": "DRS-DIFF-01",
+    "productName": "Dr. Scent Smart Diffuser",
+    "customerName": "Mahela Jayawardene",
+    "customerEmail": "mahela@example.com",
+    "customerPhone": "+94773344556",
+    "purchaseDate": "2026-10-16T16:59:45.286Z",
+    "warrantyDurationMonths": 6,
+    "reportedIssue": "Nozzle clogged after 2 months of regular use",
+    "evidenceNotes": "Purchased with official franchisee receipt",
+    "submittedAt": "2026-10-16T16:59:45.286Z",
+    "status": "APPROVED_REPAIR",
+    "history": [
+      {
+        "timestamp": "2026-10-16T16:59:45.286Z",
+        "status": "SUBMITTED",
+        "note": "Warranty claim logged under 6-month franchisee coverage. Awaiting technician evaluation.",
+        "updatedBy": "mahela@example.com"
+      },
+      {
+        "timestamp": "2026-10-16T16:59:45.288Z",
+        "status": "APPROVED_REPAIR",
+        "note": "Warranty evaluation updated from SUBMITTED to APPROVED_REPAIR. Pump ultrasonically cleaned and nozzle replaced under warranty",
+        "updatedBy": "technician@viascent.lk"
+      }
+    ],
+    "resolutionNotes": "Pump ultrasonically cleaned and nozzle replaced under warranty"
+  },
+  {
     "id": "war-1792089416872-5",
     "claimNumber": "WAR-20261015-221",
     "orderNumber": "VIA-20261014-9988",
