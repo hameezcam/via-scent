@@ -1,5 +1,200 @@
 [
   {
+    "id": "audit-1792117836223-913",
+    "timestamp": "2026-10-16T02:30:36.223Z",
+    "category": "CATALOGUE",
+    "action": "DELETE_PRODUCT",
+    "performedBy": "admin@viascent.lk",
+    "details": "Permanently deleted product \"Dr. Scent HVAC Central Scent System 5000\" (DSC-HVAC-5000) from catalogue.",
+    "previousValue": {
+      "id": "prod-diff-03",
+      "slug": "dr-scent-hvac-commercial-system-5000",
+      "name": "Dr. Scent HVAC Central Scent System 5000",
+      "tagline": "Commercial AHU/HVAC duct-integrated scent architecture for large venues",
+      "sku": "DSC-HVAC-5000",
+      "category": "commercial-scenting",
+      "categoryName": "Commercial Scenting",
+      "basePriceLKR": 145000,
+      "images": [
+        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=85",
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=85"
+      ],
+      "featured": true,
+      "isBestseller": false,
+      "isNew": false,
+      "inStock": true,
+      "stockStatus": "In Stock",
+      "coverageArea": "Up to 5,000 sq.ft (500 m²)",
+      "bottleVolume": "500ml / 1,000ml bottle",
+      "shortDescription": "Direct HVAC ductwork integration unit. Delivers completely invisible, uniform scent distribution across entire hotel lobbies, conference centres, and flagship retail.",
+      "description": "Designed specifically for mechanical contractors, facility directors, and luxury hoteliers. The HVAC 5000 connects directly into central air handling units (AHU) or duct systems. Utilizing advanced dual-fluid sub-micron atomization, the fragrance molecules stay suspended in airflow without adhering to duct walls or filters.",
+      "usageInstructions": [
+        "Professional mounting to wall or direct duct connection bracket.",
+        "Install the high-pressure PTFE tube into the supply air plenum.",
+        "Insert 500ml or 1,000ml Dr. Scent commercial fragrance bottle.",
+        "Configure operating calendar through onboard LCD or remote Wi-Fi module."
+      ],
+      "features": [
+        "Seamless integration with building management systems (BMS)",
+        "Continuous airflow sensing prevents dispersal when ventilation is inactive",
+        "Massive 5,000 sq.ft coverage capacity from a single discrete unit",
+        "Industrial-grade twin diaphragm pump with 10,000h lifespan rating",
+        "Compliant with international building air safety guidelines"
+      ],
+      "specifications": [
+        {
+          "label": "Coverage",
+          "value": "Up to 5,000 sq.ft (500 m²)"
+        },
+        {
+          "label": "Bottle Capacity",
+          "value": "500ml or 1000ml"
+        },
+        {
+          "label": "Connection",
+          "value": "Standard HVAC duct probe tube included"
+        },
+        {
+          "label": "Voltage",
+          "value": "110V - 240V AC universal"
+        },
+        {
+          "label": "Noise Level",
+          "value": "< 35 dB (installed inside plant/ceiling)"
+        }
+      ],
+      "variants": [
+        {
+          "id": "var-hvac-500",
+          "sku": "DSC-HVAC-500ML",
+          "name": "500ml System Package",
+          "priceLKR": 145000,
+          "inStock": true,
+          "attributes": {
+            "capacity": "500ml Reservoir"
+          }
+        },
+        {
+          "id": "var-hvac-1000",
+          "sku": "DSC-HVAC-1000ML",
+          "name": "1000ml High-Capacity Package",
+          "priceLKR": 175000,
+          "inStock": true,
+          "attributes": {
+            "capacity": "1000ml Extended Reservoir"
+          }
+        }
+      ],
+      "drScentAuthorized": true,
+      "warrantyPeriod": "2 Year Commercial Warranty & Service Plan",
+      "isPublished": true,
+      "isArchived": false,
+      "inventoryCount": 25,
+      "warrantyDurationMonths": 24
+    }
+  },
+  {
+    "id": "audit-1792117830998-604",
+    "timestamp": "2026-10-16T02:30:30.998Z",
+    "category": "CATALOGUE",
+    "action": "DELETE_PRODUCT",
+    "performedBy": "admin@viascent.lk",
+    "details": "Permanently deleted product \"Dr. Scent Smart Aroma Tower Pro\" (DSC-TWR-PRO-02) from catalogue.",
+    "previousValue": {
+      "id": "prod-diff-02",
+      "slug": "dr-scent-smart-tower-pro",
+      "name": "Dr. Scent Smart Aroma Tower Pro",
+      "tagline": "Bluetooth-controlled architectural scenting for residences & upscale retail - Updated",
+      "sku": "DSC-TWR-PRO-02",
+      "category": "aroma-diffusers",
+      "categoryName": "Aroma Diffusers",
+      "basePriceLKR": 68500,
+      "images": [
+        "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85",
+        "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
+        "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1000&q=85"
+      ],
+      "featured": true,
+      "isBestseller": true,
+      "isNew": true,
+      "inStock": true,
+      "stockStatus": "In Stock",
+      "coverageArea": "Up to 1,500 sq.ft (150 m²)",
+      "bottleVolume": "150ml refillable reservoir",
+      "shortDescription": "Standing column diffuser with integrated smartphone Bluetooth scheduling. Perfect for living rooms, hotel suites, and boutique showrooms.",
+      "description": "A statement piece in modern interior architecture. The Smart Aroma Tower Pro delivers continuous, finely calibrated fragrance dispersal across spacious open-plan homes and retail settings. Set individual operating schedules, work hours, and scent intensities per day of the week via the companion iOS and Android app.",
+      "usageInstructions": [
+        "Open the top locking latch with the included safety key.",
+        "Fill the 150ml internal container with Dr. Scent fragrance oil.",
+        "Connect to the 230V AC adapter.",
+        "Pair with the mobile app via Bluetooth to establish daily operating hours and intensity levels."
+      ],
+      "features": [
+        "Bluetooth 5.0 smart scheduling app",
+        "Covers up to 1,500 sq.ft with uniform atomization",
+        "Direct oil nebulization without heat or water condensation",
+        "Heavy weighted stainless base with anti-tip dampeners",
+        "Tamper-resistant lock for hospitality & commercial areas"
+      ],
+      "specifications": [
+        {
+          "label": "Coverage",
+          "value": "Up to 1,500 sq.ft (approx. 150 m²)"
+        },
+        {
+          "label": "Oil Capacity",
+          "value": "150ml"
+        },
+        {
+          "label": "Dimensions",
+          "value": "112mm x 112mm x 285mm"
+        },
+        {
+          "label": "Power",
+          "value": "12V DC / 8W (Adapter Included)"
+        },
+        {
+          "label": "Controls",
+          "value": "Bluetooth App + Manual touch panel"
+        },
+        {
+          "label": "Warranty",
+          "value": "1 Year Official Franchise Warranty"
+        }
+      ],
+      "variants": [
+        {
+          "id": "var-twr-blk",
+          "sku": "DSC-TWR-BLK",
+          "name": "Satin Noir",
+          "priceLKR": 68500,
+          "inStock": true,
+          "attributes": {
+            "color": "Satin Noir",
+            "finish": "Powder-coated Matte Steel"
+          }
+        },
+        {
+          "id": "var-twr-wht",
+          "sku": "DSC-TWR-WHT",
+          "name": "Warm Alabaster",
+          "priceLKR": 68500,
+          "inStock": true,
+          "attributes": {
+            "color": "Warm Alabaster",
+            "finish": "Ceramic Matte Texture"
+          }
+        }
+      ],
+      "drScentAuthorized": true,
+      "warrantyPeriod": "1 Year Official Warranty",
+      "isPublished": true,
+      "isArchived": false,
+      "inventoryCount": 25,
+      "warrantyDurationMonths": 6
+    }
+  },
+  {
     "id": "audit-1792089416878-49",
     "timestamp": "2026-10-15T18:36:56.878Z",
     "category": "DELIVERY",
