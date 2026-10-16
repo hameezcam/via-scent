@@ -20,6 +20,13 @@ import {
   ShieldCheck,
   Check,
   ArrowUpRight,
+  UploadCloud,
+  Upload,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+  Link2,
+  AlertCircle,
 } from "lucide-react";
 import {
   Product,
@@ -68,6 +75,10 @@ export default function AdminProductsPage() {
   // Tab 2: Images Gallery
   const [images, setImages] = useState<string[]>([]);
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isDragActive, setIsDragActive] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   // Tab 3: Olfactory & Specs
   const [scentFamily, setScentFamily] = useState<ScentFamily | "">("");
@@ -149,6 +160,9 @@ export default function AdminProductsPage() {
       "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
     ]);
     setNewImageUrl("");
+    setUploadError(null);
+    setIsUploading(false);
+    setIsDragActive(false);
 
     setScentFamily("");
     setScentIntensity("Moderate");
@@ -215,6 +229,9 @@ export default function AdminProductsPage() {
 
     setImages(p.images ? [...p.images] : []);
     setNewImageUrl("");
+    setUploadError(null);
+    setIsUploading(false);
+    setIsDragActive(false);
 
     setScentFamily(p.scentFamily || "");
     setScentIntensity(p.scentNotes?.intensity || "Moderate");
@@ -262,6 +279,53 @@ export default function AdminProductsPage() {
       const remainder = prev.filter((_, idx) => idx !== indexToPrimary);
       return [selected, ...remainder];
     });
+  };
+
+  const handleMoveImage = (index: number, direction: "left" | "right") => {
+    setImages((prev) => {
+      const targetIndex = direction === "left" ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= prev.length) return prev;
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[targetIndex];
+      copy[targetIndex] = temp;
+      return copy;
+    });
+  };
+
+  const handleFileUpload = async (files: FileList | File[] | null) => {
+    if (!files || files.length === 0) return;
+    setUploadError(null);
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+      }
+
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to upload image(s).");
+      }
+
+      if (data.urls && Array.isArray(data.urls) && data.urls.length > 0) {
+        setImages((prev) => [...prev, ...data.urls]);
+      } else if (data.url) {
+        setImages((prev) => [...prev, data.url]);
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error uploading image from computer.";
+      setUploadError(message);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // Specs helpers
@@ -617,6 +681,7 @@ export default function AdminProductsPage() {
                               src={p.images[0]}
                               alt={p.name}
                               fill
+                              unoptimized={p.images[0]?.startsWith("data:")}
                               className="object-cover"
                               sizes="48px"
                             />
@@ -1058,10 +1123,106 @@ export default function AdminProductsPage() {
               {/* TAB 2: IMAGES GALLERY */}
               {activeTab === "images" && (
                 <div className="space-y-6">
-                  {/* Add Image URL */}
-                  <div className="p-4 bg-stone-50 rounded-xl border border-stone-200 space-y-3">
-                    <span className="font-semibold text-stone-900 uppercase tracking-wider block text-[11px]">
-                      Add Image URL to Gallery
+                  {/* Upload from Local Computer */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsDragActive(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsDragActive(false);
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsDragActive(false);
+                      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        handleFileUpload(e.dataTransfer.files);
+                      }
+                    }}
+                    className={`relative p-6 rounded-xl border-2 border-dashed transition-all text-center ${
+                      isDragActive
+                        ? "border-amber-700 bg-amber-50/80 ring-2 ring-amber-700/20"
+                        : "border-stone-300 bg-stone-50/80 hover:border-amber-700/50 hover:bg-stone-50"
+                    }`}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/avif,image/gif,image/svg+xml"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          handleFileUpload(e.target.files);
+                          e.target.value = "";
+                        }
+                      }}
+                    />
+
+                    {isUploading ? (
+                      <div className="py-6 flex flex-col items-center justify-center gap-2 text-stone-700">
+                        <Loader2 className="w-8 h-8 text-amber-800 animate-spin" />
+                        <span className="text-xs font-semibold uppercase tracking-wider text-stone-900">
+                          Uploading image from your computer...
+                        </span>
+                        <span className="text-[11px] text-stone-500">
+                          Processing and appending to product gallery
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-amber-900/10 border border-amber-800/20 flex items-center justify-center text-amber-800">
+                          <UploadCloud className="w-6 h-6 text-amber-800" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-stone-900 uppercase tracking-wider">
+                            Upload Images from Local Computer
+                          </p>
+                          <p className="text-[11px] text-stone-500 mt-0.5">
+                            Drag and drop photos here, or click the button below to browse files
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="px-4 py-2 bg-amber-900 hover:bg-amber-950 text-amber-100 text-xs font-semibold rounded uppercase tracking-wider flex items-center gap-2 transition-colors shadow-xs cursor-pointer"
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Choose Photos from Computer</span>
+                        </button>
+                        <span className="text-[10px] text-stone-400">
+                          Supports PNG, JPG, JPEG, WebP, AVIF up to 10MB each. Select multiple files at once.
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {uploadError && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-xs flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                        <span>{uploadError}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setUploadError(null)}
+                        className="text-red-600 hover:text-red-900 text-xs font-bold px-1"
+                        title="Dismiss error"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Add Image URL fallback */}
+                  <div className="p-4 bg-stone-50 rounded-xl border border-stone-200 space-y-2">
+                    <span className="font-semibold text-stone-900 uppercase tracking-wider block text-[11px] flex items-center gap-1.5">
+                      <Link2 className="w-3.5 h-3.5 text-stone-500" />
+                      <span>Or Add Web Image URL (Unsplash / CDN)</span>
                     </span>
                     <div className="flex gap-2">
                       <input
@@ -1075,10 +1236,10 @@ export default function AdminProductsPage() {
                         type="button"
                         onClick={handleAddImage}
                         disabled={!newImageUrl.trim()}
-                        className="px-4 py-2 bg-stone-900 text-amber-100 hover:bg-stone-800 disabled:opacity-50 text-xs font-semibold rounded uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+                        className="px-4 py-2 bg-stone-900 text-amber-100 hover:bg-stone-800 disabled:opacity-50 text-xs font-semibold rounded uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <Plus className="w-4 h-4" />
-                        <span>Add to Gallery</span>
+                        <span>Add URL</span>
                       </button>
                     </div>
                   </div>
@@ -1097,61 +1258,92 @@ export default function AdminProductsPage() {
                     {images.length === 0 ? (
                       <div className="p-8 text-center border-2 border-dashed border-stone-200 rounded-xl text-stone-400">
                         <ImageIcon className="w-10 h-10 mx-auto mb-2 text-stone-300" />
-                        <p>No images in gallery. Add at least one image URL above.</p>
+                        <p className="text-xs">No images in gallery. Upload from your computer or enter an image URL above.</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        {images.map((imgUrl, index) => (
-                          <div
-                            key={index}
-                            className="relative group bg-stone-100 rounded-lg overflow-hidden border border-stone-200 shadow-2xs aspect-[4/5] flex flex-col justify-between"
-                          >
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={imgUrl}
-                                alt={`Product preview ${index + 1}`}
-                                fill
-                                className="object-cover"
-                                sizes="200px"
-                              />
-                            </div>
+                        {images.map((imgUrl, index) => {
+                          const isLocal = imgUrl.startsWith("/uploads/") || imgUrl.startsWith("data:");
+                          return (
+                            <div
+                              key={index}
+                              className="relative group bg-stone-100 rounded-lg overflow-hidden border border-stone-200 shadow-2xs aspect-[4/5] flex flex-col justify-between"
+                            >
+                              <div className="relative w-full h-full">
+                                <Image
+                                  src={imgUrl}
+                                  alt={`Product preview ${index + 1}`}
+                                  fill
+                                  unoptimized={imgUrl.startsWith("data:")}
+                                  className="object-cover"
+                                  sizes="200px"
+                                />
+                              </div>
 
-                            {/* Badge */}
-                            <div className="absolute top-2 left-2 z-10">
-                              {index === 0 ? (
-                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-900 text-amber-100 uppercase tracking-wider shadow-xs">
-                                  Cover Photo
-                                </span>
-                              ) : (
-                                <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-black/60 text-white backdrop-blur-xs">
-                                  Photo #{index + 1}
-                                </span>
-                              )}
-                            </div>
+                              {/* Badges */}
+                              <div className="absolute top-2 left-2 z-10 flex flex-col gap-1 items-start">
+                                {index === 0 ? (
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-900 text-amber-100 uppercase tracking-wider shadow-xs">
+                                    Cover Photo
+                                  </span>
+                                ) : (
+                                  <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-black/60 text-white backdrop-blur-xs">
+                                    Photo #{index + 1}
+                                  </span>
+                                )}
+                                {isLocal && (
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-medium bg-emerald-900/80 text-emerald-100 backdrop-blur-xs">
+                                    Local File
+                                  </span>
+                                )}
+                              </div>
 
-                            {/* Action Bar on Hover */}
-                            <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-stone-950/80 to-transparent flex items-center justify-between gap-2 z-10">
-                              {index !== 0 && (
+                              {/* Action Bar */}
+                              <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-stone-950/90 via-stone-950/60 to-transparent flex items-center justify-between gap-1 z-10">
+                                <div className="flex items-center gap-1">
+                                  {index > 0 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleMoveImage(index, "left")}
+                                      className="p-1 bg-white/80 hover:bg-white text-stone-900 rounded transition-colors"
+                                      title="Move Left (Earlier in gallery)"
+                                    >
+                                      <ChevronLeft className="w-3.5 h-3.5" />
+                                    </button>
+                                  )}
+                                  {index < images.length - 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleMoveImage(index, "right")}
+                                      className="p-1 bg-white/80 hover:bg-white text-stone-900 rounded transition-colors"
+                                      title="Move Right (Later in gallery)"
+                                    >
+                                      <ChevronRight className="w-3.5 h-3.5" />
+                                    </button>
+                                  )}
+                                  {index !== 0 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleMakeImagePrimary(index)}
+                                      className="text-[10px] bg-amber-100 hover:bg-white text-amber-950 px-2 py-1 rounded font-semibold transition-colors"
+                                      title="Make this the cover photo"
+                                    >
+                                      Make Cover
+                                    </button>
+                                  )}
+                                </div>
                                 <button
                                   type="button"
-                                  onClick={() => handleMakeImagePrimary(index)}
-                                  className="text-[10px] bg-white/90 hover:bg-white text-stone-900 px-2 py-1 rounded font-medium transition-colors"
-                                  title="Make this the cover photo"
+                                  onClick={() => handleRemoveImage(index)}
+                                  className="p-1 text-red-300 hover:text-red-100 hover:bg-red-950/60 rounded transition-colors ml-auto"
+                                  title="Remove photo"
                                 >
-                                  Make Cover
+                                  <Trash2 className="w-4 h-4" />
                                 </button>
-                              )}
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveImage(index)}
-                                className="p-1 text-red-300 hover:text-red-100 hover:bg-red-950/50 rounded transition-colors ml-auto"
-                                title="Remove photo"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
                   </div>

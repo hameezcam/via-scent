@@ -34,6 +34,7 @@ export function ProductGallery({
           alt={`${productName} - View ${activeImageIndex + 1}`}
           fill
           priority
+          unoptimized={typeof currentImage === "string" && currentImage.startsWith("data:")}
           sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover object-center transition-all duration-300"
         />
@@ -75,6 +76,7 @@ export function ProductGallery({
                   src={img}
                   alt={`${productName} thumbnail ${idx + 1}`}
                   fill
+                  unoptimized={typeof img === "string" && img.startsWith("data:")}
                   sizes="80px"
                   className="object-cover"
                 />

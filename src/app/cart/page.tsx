@@ -87,6 +87,7 @@ export default function CartPage() {
                       src={item.image}
                       alt={item.productName}
                       fill
+                      unoptimized={typeof item.image === "string" && item.image.startsWith("data:")}
                       className="object-cover"
                       sizes="112px"
                     />

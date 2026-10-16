@@ -48,6 +48,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
                 alt={product.name}
                 fill
                 priority={priority}
+                unoptimized={typeof product.images[0] === "string" && product.images[0].startsWith("data:")}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                 onError={() => setImageError(true)}
