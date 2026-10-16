@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, ShoppingBag, ArrowRight, Check, ShieldCheck, Sparkles } from "lucide-react";
+import { X, ShoppingBag, ArrowRight, Check, ShieldCheck, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { Product } from "@/types/product";
 import { formatLKR } from "@/config/brand.config";
 import { useCart } from "@/context/CartContext";
@@ -20,6 +20,7 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   if (!isOpen || !product) return null;
 
@@ -62,16 +63,49 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
 
           <div className="grid grid-cols-1 md:grid-cols-2">
             {/* Image side */}
-            <div className="relative aspect-square md:aspect-auto h-72 md:h-full bg-stone-100">
-              {product.images[0] ? (
-                <Image
-                  src={product.images[0]}
-                  alt={product.name}
-                  fill
-                  unoptimized={typeof product.images[0] === "string" && product.images[0].startsWith("data:")}
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+            <div className="relative aspect-square md:aspect-auto h-72 md:h-full bg-stone-100 overflow-hidden">
+              {product.images && product.images.length > 0 ? (
+                <>
+                  <Image
+                    src={product.images[activeImageIndex] || product.images[0]}
+                    alt={`${product.name} - View ${activeImageIndex + 1}`}
+                    fill
+                    unoptimized={typeof (product.images[activeImageIndex] || product.images[0]) === "string" && (product.images[activeImageIndex] || product.images[0]).startsWith("data:")}
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+
+                  {product.images.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveImageIndex((prev) => (prev <= 0 ? product.images.length - 1 : prev - 1));
+                        }}
+                        aria-label="Previous image"
+                        className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-stone-900 border border-stone-200/90 shadow-sm flex items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                      >
+                        <ChevronLeft className="w-4 h-4 text-stone-800" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveImageIndex((prev) => (prev >= product.images.length - 1 ? 0 : prev + 1));
+                        }}
+                        aria-label="Next image"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-stone-900 border border-stone-200/90 shadow-sm flex items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                      >
+                        <ChevronRight className="w-4 h-4 text-stone-800" />
+                      </button>
+
+                      <div className="absolute bottom-2.5 right-2.5 z-10 px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/60 text-white backdrop-blur-xs select-none">
+                        {activeImageIndex + 1} / {product.images.length}
+                      </div>
+                    </>
+                  )}
+                </>
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center bg-[#F5F2EB] p-8 text-center">
                   <ShieldCheck className="w-10 h-10 text-amber-800 mb-2" />
@@ -80,7 +114,7 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                   </span>
                 </div>
               )}
-              <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+              <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
                 {product.isBestseller && <Badge variant="gold">Bestseller</Badge>}
                 {product.isNew && <Badge variant="dark">New Arrival</Badge>}
               </div>

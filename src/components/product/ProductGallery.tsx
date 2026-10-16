@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/common/Badge";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ProductGalleryProps {
   images: string[];
@@ -22,16 +22,46 @@ export function ProductGallery({
 }: ProductGalleryProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const displayImages = images.length > 0 ? images : ["/placeholder.jpg"];
-  const currentImage = displayImages[activeImageIndex] || displayImages[0];
+  const displayImages = images && images.length > 0 ? images : ["/placeholder.jpg"];
+  const safeIndex = activeImageIndex >= displayImages.length ? 0 : activeImageIndex;
+  const currentImage = displayImages[safeIndex] || displayImages[0];
+
+  // Reset to first image if images prop changes
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [images]);
+
+  const handlePrev = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setActiveImageIndex((prev) => (prev <= 0 ? displayImages.length - 1 : prev - 1));
+  }, [displayImages.length]);
+
+  const handleNext = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setActiveImageIndex((prev) => (prev >= displayImages.length - 1 ? 0 : prev + 1));
+  }, [displayImages.length]);
 
   return (
-    <div className="space-y-4">
+    <div
+      className="space-y-4 focus:outline-none"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (displayImages.length <= 1) return;
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          handlePrev();
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          handleNext();
+        }
+      }}
+      aria-label="Product image gallery (use arrow keys to change images)"
+    >
       {/* Main Image Frame */}
-      <div className="relative aspect-[4/5] sm:aspect-square w-full rounded-lg overflow-hidden bg-stone-100 border border-stone-200">
+      <div className="relative group aspect-[4/5] sm:aspect-square w-full rounded-lg overflow-hidden bg-stone-100 border border-stone-200">
         <Image
           src={currentImage}
-          alt={`${productName} - View ${activeImageIndex + 1}`}
+          alt={`${productName} - View ${safeIndex + 1}`}
           fill
           priority
           unoptimized={typeof currentImage === "string" && currentImage.startsWith("data:")}
@@ -51,13 +81,40 @@ export function ProductGallery({
             <span>Authorized Supply</span>
           </div>
         )}
+
+        {/* Navigation Arrows */}
+        {displayImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Previous image"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-stone-900 border border-stone-200/90 shadow-md backdrop-blur-xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-800"
+            >
+              <ChevronLeft className="w-5 h-5 text-stone-800" />
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Next image"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-stone-900 border border-stone-200/90 shadow-md backdrop-blur-xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-800"
+            >
+              <ChevronRight className="w-5 h-5 text-stone-800" />
+            </button>
+
+            {/* Photo Counter Indicator */}
+            <div className="absolute bottom-3 right-3 z-10 px-2.5 py-1 rounded-full text-[11px] font-medium bg-black/60 text-white backdrop-blur-xs tracking-wider select-none">
+              {safeIndex + 1} / {displayImages.length}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Thumbnails */}
       {displayImages.length > 1 && (
         <div className="flex gap-3 overflow-x-auto pb-1" role="tablist" aria-label="Product image thumbnails">
           {displayImages.map((img, idx) => {
-            const isSelected = idx === activeImageIndex;
+            const isSelected = idx === safeIndex;
             return (
               <button
                 key={idx}
@@ -66,9 +123,9 @@ export function ProductGallery({
                 aria-selected={isSelected}
                 aria-label={`View image ${idx + 1}`}
                 onClick={() => setActiveImageIndex(idx)}
-                className={`relative w-20 h-20 rounded border-2 overflow-hidden flex-shrink-0 transition-all ${
+                className={`relative w-20 h-20 rounded border-2 overflow-hidden flex-shrink-0 transition-all cursor-pointer ${
                   isSelected
-                    ? "border-amber-800 shadow-xs ring-1 ring-amber-800"
+                    ? "border-amber-800 shadow-xs ring-2 ring-amber-800/40 opacity-100"
                     : "border-stone-200 hover:border-stone-400 opacity-70 hover:opacity-100"
                 }`}
               >
