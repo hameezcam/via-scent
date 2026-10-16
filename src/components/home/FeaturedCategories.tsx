@@ -29,16 +29,23 @@ export function FeaturedCategories() {
           </p>
         </div>
 
-        {/* Editorial Asymmetric Grid */}
+        {/* Editorial Balanced Asymmetric Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {featuredCategories.map((cat, idx) => {
-            const isWide = idx === 0;
-            const isMedium = idx === 1 || idx === 2;
-            const colSpan = isWide
-              ? "md:col-span-8 aspect-[16/10] md:aspect-[16/9]"
-              : isMedium
-              ? "md:col-span-4 aspect-[4/5]"
-              : "md:col-span-6 aspect-[16/10]";
+            // Dynamic balanced editorial layout:
+            // Row 1: 7 cols + 5 cols (same height)
+            // Row 2: 5 cols + 7 cols (same height)
+            // Row 3 (if present): 12 cols full-width
+            const colSpan =
+              idx === 0
+                ? "md:col-span-7 h-[360px] sm:h-[420px] lg:h-[460px]"
+                : idx === 1
+                ? "md:col-span-5 h-[360px] sm:h-[420px] lg:h-[460px]"
+                : idx === 2
+                ? "md:col-span-5 h-[360px] sm:h-[420px] lg:h-[460px]"
+                : idx === 3
+                ? "md:col-span-7 h-[360px] sm:h-[420px] lg:h-[460px]"
+                : "md:col-span-12 h-[260px] sm:h-[300px] lg:h-[320px]";
 
             return (
               <motion.div
@@ -51,32 +58,34 @@ export function FeaturedCategories() {
               >
                 <Link
                   href={`/shop/${cat.id}`}
-                  className="group relative block w-full h-full rounded-2xl overflow-hidden border border-[#E7E2D8] hover:border-[#B49A70]/80 shadow-xs hover:shadow-xl transition-all duration-500 bg-[#151412]"
+                  className="group relative block w-full h-full rounded-2xl overflow-hidden border border-[#E7E2D8] hover:border-[#B49A70]/80 shadow-xs hover:shadow-2xl transition-all duration-500 bg-[#151412]"
                 >
                   {/* Category Atmospheric Image */}
                   <Image
                     src={cat.image}
                     alt={cat.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out brightness-[0.82] group-hover:brightness-[0.9]"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 60vw"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out brightness-[0.80] group-hover:brightness-[0.90]"
                   />
 
-                  {/* Gradient Scrim */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#151412]/90 via-[#151412]/40 to-transparent group-hover:from-[#151412]/95 transition-colors" />
+                  {/* Gradient Scrim for Contrast & Readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#151412]/95 via-[#151412]/40 to-transparent group-hover:from-[#151412]/90 transition-colors duration-500" />
 
                   {/* Content Container */}
                   <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end text-[#F8F6F1] z-10">
-                    <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#B49A70] block mb-1">
+                    <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[#B49A70] block mb-1.5 drop-shadow-xs">
                       {cat.tagline}
                     </span>
-                    <h3 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight flex items-center justify-between">
-                      <span>{cat.name}</span>
-                      <span className="w-9 h-9 rounded-full bg-white/10 group-hover:bg-[#B49A70] text-[#FFFFFF] group-hover:text-[#151412] backdrop-blur-xs flex items-center justify-center transition-all duration-300 group-hover:translate-x-1">
+                    <div className="flex items-center justify-between gap-4">
+                      <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-medium tracking-tight text-white">
+                        {cat.name}
+                      </h3>
+                      <span className="w-10 h-10 shrink-0 rounded-full bg-white/15 backdrop-blur-sm group-hover:bg-[#B49A70] text-[#FFFFFF] group-hover:text-[#151412] flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:scale-105 shadow-sm">
                         <ArrowRight className="w-4 h-4" />
                       </span>
-                    </h3>
-                    <p className="text-xs sm:text-sm text-[#D8D0C4] line-clamp-2 max-w-md mt-2 leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity">
+                    </div>
+                    <p className="text-xs sm:text-sm text-[#D8D0C4] line-clamp-2 max-w-lg mt-2.5 leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity">
                       {cat.description}
                     </p>
                   </div>

@@ -7,7 +7,7 @@ export const CATEGORIES: CategoryInfo[] = [
     tagline: "Cold-Air Micro-Nebulization Technology",
     description:
       "Waterless, heatless cold-air diffusers engineered to atomize pure fragrance oil into an invisible, residue-free ambient mist.",
-    image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/categories/aroma-diffusers.jpg",
     featuredInHome: true,
   },
   {
@@ -16,7 +16,7 @@ export const CATEGORIES: CategoryInfo[] = [
     tagline: "Pure Essential & Artisanal Perfume Blends",
     description:
       "Formulated for cold-air diffusion with verified IFRA standards, evoking timeless botanical and architectural profiles.",
-    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/categories/fragrance-oils.jpg",
     featuredInHome: true,
   },
   {
@@ -25,7 +25,7 @@ export const CATEGORIES: CategoryInfo[] = [
     tagline: "HVAC & High-Capacity Architectural Systems",
     description:
       "Discreet, multi-zone automated scent diffusers designed for luxury hotels, commercial towers, boutiques, and wellness spaces.",
-    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/categories/commercial-scenting.jpg",
     featuredInHome: true,
   },
   {
@@ -34,7 +34,7 @@ export const CATEGORIES: CategoryInfo[] = [
     tagline: "Room Sprays & Acoustic Nebulizers",
     description:
       "Elevate private residences, master suites, and personal studios with layered olfactive warmth and effortless elegance.",
-    image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/categories/home-fragrance.jpg",
     featuredInHome: true,
   },
   {
@@ -43,8 +43,8 @@ export const CATEGORIES: CategoryInfo[] = [
     tagline: "Curated Discovery Sets & Host Gifts",
     description:
       "Exquisite boxed sets featuring miniature diffuser instruments and complementary fragrance discovery flights.",
-    image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1200&q=80",
-    featuredInHome: true,
+    image: "/images/categories/gift-collections.jpg",
+    featuredInHome: false,
   },
 ];
 
