@@ -1,21 +1,30 @@
-import { neon, NeonQueryFunction } from "@neondatabase/serverless";
+import { Pool } from "pg";
 import { PRODUCTS } from "@/data/products";
 import { Product } from "@/types/product";
 
 /**
- * Universal Database Connection Helper for Vercel Postgres / Neon.
+ * Universal Database Connection Layer for PostgreSQL:
+ * - Prisma Postgres (db.prisma.io)
+ * - Vercel Postgres / Neon
+ * - Standard PostgreSQL (Supabase, AWS RDS, Docker, etc.)
  * 
- * Works out-of-the-box with Vercel Postgres environment variables:
+ * Automatically detects:
+ * - DATABASE_POSTGRES_URL
+ * - DATABASE_PRISMA_DATABASE_URL
  * - POSTGRES_URL
  * - DATABASE_URL
  * - POSTGRES_PRISMA_URL
- * 
- * When running locally without database credentials, gracefully falls back
- * to in-memory / local JSON storage so development and testing never break.
  */
+
+export type SqlFunction = (
+  strings: TemplateStringsArray,
+  ...values: any[]
+) => Promise<any[]>;
 
 function getConnectionString(): string | null {
   const raw = (
+    process.env.DATABASE_POSTGRES_URL ||
+    process.env.DATABASE_PRISMA_DATABASE_URL ||
     process.env.POSTGRES_URL ||
     process.env.DATABASE_URL ||
     process.env.POSTGRES_PRISMA_URL ||
@@ -25,7 +34,7 @@ function getConnectionString(): string | null {
   const trimmed = raw.trim();
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
     const errorMsg =
-      "Invalid DATABASE_URL: The connection string must start with 'postgres://' or 'postgresql://' (e.g. postgresql://user:pass@host/db?sslmode=require). It looks like an HTTP/REST API URL was entered instead.";
+      "Invalid DATABASE_URL: The connection string must start with 'postgres://' or 'postgresql://' (e.g. postgresql://user:pass@host/db?sslmode=require).";
     console.error(`[Database] ${errorMsg}`);
     throw new Error(errorMsg);
   }
@@ -36,22 +45,47 @@ export function isPostgresConfigured(): boolean {
   try {
     return Boolean(getConnectionString());
   } catch {
-    return true; // Still considered configured so the explicit error surfaces to the admin UI
+    return true;
   }
 }
 
-let sqlClient: NeonQueryFunction<false, false> | null = null;
-let initPromise: Promise<void> | null = null;
+const globalForDb = globalThis as unknown as {
+  postgresPool?: Pool;
+  sqlClient?: SqlFunction;
+  initPromise?: Promise<void> | null;
+};
 
-export function getDb(): NeonQueryFunction<false, false> | null {
+export function getDb(): SqlFunction | null {
   const connectionString = getConnectionString();
   if (!connectionString) {
     return null;
   }
-  if (!sqlClient) {
-    sqlClient = neon(connectionString);
+
+  if (!globalForDb.postgresPool) {
+    globalForDb.postgresPool = new Pool({
+      connectionString,
+      ssl: { rejectUnauthorized: false },
+      max: 10,
+      idleTimeoutMillis: 30000,
+    });
   }
-  return sqlClient;
+
+  if (!globalForDb.sqlClient) {
+    const pool = globalForDb.postgresPool;
+    globalForDb.sqlClient = async (strings: TemplateStringsArray, ...values: any[]) => {
+      let text = "";
+      for (let i = 0; i < strings.length; i++) {
+        text += strings[i];
+        if (i < values.length) {
+          text += `$${i + 1}`;
+        }
+      }
+      const res = await pool.query(text, values);
+      return res.rows;
+    };
+  }
+
+  return globalForDb.sqlClient;
 }
 
 /**
@@ -62,11 +96,11 @@ export async function ensureDbInitialized(): Promise<void> {
   const sql = getDb();
   if (!sql) return;
 
-  if (initPromise) {
-    return initPromise;
+  if (globalForDb.initPromise) {
+    return globalForDb.initPromise;
   }
 
-  initPromise = (async () => {
+  globalForDb.initPromise = (async () => {
     try {
       // 1. Products Table
       await sql`
@@ -149,7 +183,7 @@ export async function ensureDbInitialized(): Promise<void> {
         );
       `;
 
-      // Migration: convert any existing JSONB columns to TEXT to prevent Neon driver type mismatch
+      // Migration: convert any existing JSONB columns to TEXT to prevent driver type mismatch
       try {
         await sql`
           DO $$
@@ -198,11 +232,11 @@ export async function ensureDbInitialized(): Promise<void> {
           END $$;
         `;
       } catch (migErr) {
-        console.warn("[Database] Non-critical migration warning:", migErr);
+        console.warn("[Database] Non-critical migration notice:", migErr);
       }
 
       // 7. Seed Initial Master Catalogue if table is empty
-      const rows = await sql`SELECT COUNT(*)::int as count FROM products`;
+      const rows = await sql`SELECT COUNT(*)::int as count FROM products;`;
       const count = Number(rows[0]?.count ?? 0);
 
       if (count === 0) {
@@ -238,11 +272,10 @@ export async function ensureDbInitialized(): Promise<void> {
       }
     } catch (err) {
       console.error("[Database] Initialization warning:", err);
-      // Allow caller to retry on next request if initialization failed
-      initPromise = null;
+      globalForDb.initPromise = null;
       throw err;
     }
   })();
 
-  return initPromise;
+  return globalForDb.initPromise;
 }
