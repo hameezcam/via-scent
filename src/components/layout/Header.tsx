@@ -9,34 +9,81 @@ import { useCart } from "@/context/CartContext";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { MobileNav } from "./MobileNav";
 
-const MEGA_CATEGORIES = [
+export interface NavDropdownItem {
+  label: string;
+  href: string;
+}
+
+export interface NavMenuItem {
+  id: string;
+  label: string;
+  href: string;
+  items?: NavDropdownItem[];
+}
+
+export const MAIN_NAV_ITEMS: NavMenuItem[] = [
   {
-    title: "Aroma Diffusers",
-    slug: "aroma-diffusers",
-    tagline: "Cold-Air Micro-Nebulization",
-    image: "/images/categories/aroma-diffusers.jpg",
-    href: "/shop/aroma-diffusers",
+    id: "all",
+    label: "ALL",
+    href: "/shop",
   },
   {
-    title: "Fragrance Oils",
-    slug: "fragrance-oils",
-    tagline: "100% Pure Undiluted Blends",
-    image: "/images/categories/fragrance-oils.jpg",
+    id: "aroma-oil",
+    label: "AROMA OIL",
     href: "/shop/fragrance-oils",
+    items: [
+      { label: "Car Scent", href: "/shop/fragrance-oils?q=car" },
+      { label: "Dr. Scent's Choice", href: "/shop/fragrance-oils?q=choice" },
+      { label: "F&B", href: "/shop/fragrance-oils?q=f%26b" },
+      { label: "Floral", href: "/shop/fragrance-oils?family=floral" },
+      { label: "Fresh", href: "/shop/fragrance-oils?family=fresh" },
+      { label: "Fruity", href: "/shop/fragrance-oils?family=fruity" },
+      { label: "Oriental", href: "/shop/fragrance-oils?family=woody-oriental" },
+      { label: "Premium Collection", href: "/shop/fragrance-oils?q=premium" },
+    ],
   },
   {
-    title: "Commercial Scenting",
-    slug: "commercial-scenting",
-    tagline: "HVAC & Architectural Systems",
-    image: "/images/categories/commercial-scenting.jpg",
+    id: "diffuser",
+    label: "DIFFUSER",
+    href: "/shop/aroma-diffusers",
+    items: [
+      { label: "Diffuser", href: "/shop/aroma-diffusers" },
+      { label: "Car Diffuser", href: "/shop/aroma-diffusers?q=car" },
+      { label: "Dispenser", href: "/shop/aroma-diffusers?q=dispenser" },
+      { label: "Reed Diffuser", href: "/shop/home-fragrance?q=reed" },
+    ],
+  },
+  {
+    id: "best-sellers",
+    label: "BEST SELLERS",
+    href: "/shop?sort=bestselling",
+    items: [
+      { label: "Diffusers", href: "/shop/aroma-diffusers?sort=bestselling" },
+      { label: "Aroma Oils", href: "/shop/fragrance-oils?sort=bestselling" },
+      { label: "Sprays", href: "/shop/home-fragrance?q=spray&sort=bestselling" },
+      { label: "Reed Diffusers", href: "/shop/home-fragrance?q=reed&sort=bestselling" },
+      { label: "Candles", href: "/shop/home-fragrance?q=candle&sort=bestselling" },
+    ],
+  },
+  {
+    id: "sprays",
+    label: "SPRAYS",
+    href: "/shop/home-fragrance?q=spray",
+    items: [
+      { label: "Fabric Spray", href: "/shop/home-fragrance?q=fabric+spray" },
+      { label: "Odor Eliminator", href: "/shop/home-fragrance?q=odor+eliminator" },
+      { label: "Aerosol", href: "/shop/home-fragrance?q=aerosol" },
+    ],
+  },
+  {
+    id: "services",
+    label: "SERVICES",
     href: "/business-scenting",
-  },
-  {
-    title: "Home Fragrance",
-    slug: "home-fragrance",
-    tagline: "Atmospheric Living Collections",
-    image: "/images/categories/home-fragrance.jpg",
-    href: "/home-fragrance",
+    items: [
+      { label: "B2B Sales", href: "/business-scenting" },
+      { label: "Franchise", href: "/contact?topic=franchise" },
+      { label: "Rental Services", href: "/business-scenting/request-quote" },
+    ],
   },
 ];
 
@@ -48,7 +95,7 @@ export function Header() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isCollectionsOpen, setIsCollectionsOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
 
   useEffect(() => {
@@ -101,114 +148,72 @@ export function Header() {
             </div>
 
             {/* Center: Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-7" aria-label="Main Navigation">
-              <Link
-                href="/shop"
-                className={`text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] relative py-2 ${
-                  pathname === "/shop" ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
-                }`}
-              >
-                Shop All
-              </Link>
+            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8" aria-label="Main Navigation">
+              {MAIN_NAV_ITEMS.map((item) => {
+                const hasDropdown = Boolean(item.items && item.items.length > 0);
+                const isOpen = activeDropdown === item.id;
+                const isCurrent =
+                  pathname === item.href ||
+                  (item.href !== "/shop" && pathname.startsWith(item.href));
 
-              {/* Collections Mega Menu Trigger */}
-              <div
-                className="relative"
-                onMouseEnter={() => setIsCollectionsOpen(true)}
-                onMouseLeave={() => setIsCollectionsOpen(false)}
-              >
-                <Link
-                  href="/shop"
-                  className={`inline-flex items-center gap-1.5 text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
-                    pathname.startsWith("/shop/") ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
-                  }`}
-                >
-                  <span>Collections</span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 text-[#8A8275] transition-transform duration-200 ${
-                      isCollectionsOpen ? "rotate-180 text-[#B49A70]" : ""
-                    }`}
-                  />
-                </Link>
+                if (!hasDropdown) {
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      className={`text-xs tracking-[0.16em] uppercase font-semibold transition-colors py-2 relative hover:text-[#B49A70] ${
+                        pathname === item.href ? "text-[#B49A70] font-bold" : "text-[#211C19]"
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {pathname === item.href && (
+                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B49A70]" />
+                      )}
+                    </Link>
+                  );
+                }
 
-                {/* Wide Luxury Mega Menu */}
-                {isCollectionsOpen && (
-                  <div className="absolute top-full -left-20 w-[720px] pt-3 z-50">
-                    <div className="bg-[#FFFFFF] rounded-xl shadow-2xl border border-[#E7E2D8] p-6 grid grid-cols-4 gap-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                      {MEGA_CATEGORIES.map((cat) => (
-                        <Link
-                          key={cat.slug}
-                          href={cat.href}
-                          onClick={() => setIsCollectionsOpen(false)}
-                          className="group/card flex flex-col rounded-lg overflow-hidden border border-[#EFEAE1] hover:border-[#B49A70]/60 transition-all bg-[#FAF8F5]"
-                        >
-                          <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
-                            <Image
-                              src={cat.image}
-                              alt={cat.title}
-                              fill
-                              sizes="160px"
-                              className="object-cover group-hover/card:scale-105 transition-transform duration-500 ease-out"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                          </div>
-                          <div className="p-3">
-                            <h4 className="font-serif text-xs font-semibold text-[#151412] group-hover/card:text-[#B49A70] transition-colors">
-                              {cat.title}
-                            </h4>
-                            <p className="text-[10px] text-[#8A8275] tracking-wide mt-0.5 line-clamp-1">
-                              {cat.tagline}
-                            </p>
-                          </div>
-                        </Link>
-                      ))}
-                      <div className="col-span-4 pt-3 border-t border-[#EFEAE1] flex items-center justify-between text-xs">
-                        <span className="text-[#8A8275] tracking-wide">
-                          Official Dr. Scent Franchise Supply for Sri Lanka
-                        </span>
-                        <Link
-                          href="/shop"
-                          onClick={() => setIsCollectionsOpen(false)}
-                          className="text-[#B49A70] hover:text-[#8F764F] font-semibold uppercase tracking-wider flex items-center gap-1"
-                        >
-                          <span>View Complete Catalogue</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </Link>
+                return (
+                  <div
+                    key={item.id}
+                    className="relative py-2"
+                    onMouseEnter={() => setActiveDropdown(item.id)}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                  >
+                    <Link
+                      href={item.href}
+                      className={`inline-flex items-center gap-1 text-xs tracking-[0.16em] uppercase font-semibold transition-colors hover:text-[#B49A70] py-1 ${
+                        isOpen || isCurrent ? "text-[#B49A70]" : "text-[#211C19]"
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                          isOpen ? "rotate-180 text-[#B49A70]" : "text-[#8A8275]"
+                        }`}
+                      />
+                    </Link>
+
+                    {/* Luxury Dropdown Menu */}
+                    {isOpen && (
+                      <div className="absolute top-full left-0 pt-2 z-50 min-w-[220px]">
+                        <div className="bg-[#FFFFFF] rounded-xl shadow-2xl border border-[#E7E2D8] py-2 animate-in fade-in slide-in-from-top-2 duration-150 overflow-hidden">
+                          {item.items?.map((sub) => (
+                            <Link
+                              key={sub.label}
+                              href={sub.href}
+                              onClick={() => setActiveDropdown(null)}
+                              className="block px-5 py-2.5 text-[13px] font-normal text-[#151412] hover:text-[#B49A70] hover:bg-[#FAF8F5] transition-all"
+                            >
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
-                )}
-              </div>
-
-              <Link
-                href="/home-fragrance"
-                className={`text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
-                  pathname.startsWith("/home-fragrance") ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
-                }`}
-              >
-                Home Fragrance
-              </Link>
-
-              <Link
-                href="/business-scenting"
-                className={`inline-flex items-center gap-1.5 text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
-                  pathname.startsWith("/business-scenting") ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
-                }`}
-              >
-                <span>Business Scenting</span>
-                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold tracking-wider bg-[#211C19] text-[#B49A70] uppercase">
-                  B2B
-                </span>
-              </Link>
-
-              <Link
-                href="/about"
-                className={`text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
-                  pathname === "/about" ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
-                }`}
-              >
-                Our Story
-              </Link>
+                );
+              })}
             </nav>
 
             {/* Right: Actions (Search, Account, Cart) */}
