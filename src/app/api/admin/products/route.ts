@@ -8,8 +8,11 @@ export const dynamic = "force-dynamic";
 function purgeStorefrontCache(slug?: string) {
   try {
     revalidatePath("/", "layout");
+    revalidatePath("/", "page");
     revalidatePath("/shop", "page");
     revalidatePath("/shop/[category]", "page");
+    revalidatePath("/home-fragrance", "page");
+    revalidatePath("/business-scenting", "page");
     if (slug) {
       revalidatePath(`/products/${slug}`, "page");
     }

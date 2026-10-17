@@ -19,7 +19,7 @@ import {
   Home as HomeIcon,
 } from "lucide-react";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
-import { BRAND_CONFIG } from "@/config/brand.config";
+import { BRAND_CONFIG, formatLKR } from "@/config/brand.config";
 import { productService } from "@/services/product.service";
 import { ProductCard } from "@/components/product/ProductCard";
 import { HomeConsultationForm } from "@/components/home-fragrance/HomeConsultationForm";
@@ -36,13 +36,19 @@ export const metadata = {
 export default async function HomeFragranceMarketingPage() {
   const breadcrumbs = [{ label: "Home Fragrance Architecture" }];
 
-  // Fetch residential products
+  // Fetch residential products from database / catalogue
   const allOils = await productService.getByCategory("fragrance-oils");
   const homeInstruments = await productService.getByCategory("home-fragrance");
   const aromaDiffusers = await productService.getByCategory("aroma-diffusers");
 
-  // Combine top home friendly products
-  const featuredHomeOils = allOils.slice(0, 4);
+  // Combine all diffusers and hardware products from catalogue
+  const liveHardware = [
+    ...aromaDiffusers,
+    ...homeInstruments.filter((h) => !aromaDiffusers.some((a) => a.id === h.id)),
+  ];
+
+  // Combine top home friendly oils
+  const featuredHomeOils = allOils.slice(0, 8);
 
   const residentialPillars = [
     {
@@ -116,6 +122,7 @@ export default async function HomeFragranceMarketingPage() {
 
   const instruments = [
     {
+      id: "inst-ceramic",
       title: "Architectural Ceramic Nebulizer",
       subtitle: "Hand-Poured Porcelain with Halo Illumination",
       coverage: "Up to 600 sq.ft (60 m²)",
@@ -127,6 +134,7 @@ export default async function HomeFragranceMarketingPage() {
       badge: "Best for Master Suites",
     },
     {
+      id: "inst-portable",
       title: "Dr. Scent Portable Ambient Diffuser",
       subtitle: "Cordless Anodized Aluminum Nebulizer",
       coverage: "Up to 300 sq.ft (30 m²)",
@@ -138,6 +146,7 @@ export default async function HomeFragranceMarketingPage() {
       badge: "Rechargeable & Cordless",
     },
     {
+      id: "inst-tower",
       title: "Dr. Scent Smart Aroma Tower Pro",
       subtitle: "Floor-Standing Column for Expansive Residences",
       coverage: "Up to 1,500 sq.ft (150 m²)",
@@ -149,6 +158,7 @@ export default async function HomeFragranceMarketingPage() {
       badge: "High-Capacity Coverage",
     },
     {
+      id: "inst-discovery",
       title: "The Grand Discovery Scent Flight",
       subtitle: "Curated 5 x 15ml Pure Diffuser Oils",
       coverage: "5 Distinct Olfactory Worlds",
@@ -393,53 +403,72 @@ export default async function HomeFragranceMarketingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {instruments.map((inst) => (
-              <div
-                key={inst.title}
-                className="bg-[#FFFFFF] rounded-2xl border border-[#E7E2D8] hover:border-[#B49A70]/60 shadow-xs hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="relative aspect-[4/3] w-full bg-[#FAF8F5] overflow-hidden">
-                    <Image
-                      src={inst.image}
-                      alt={inst.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                    />
-                    <div className="absolute top-3 left-3 bg-[#151412]/85 backdrop-blur-xs text-[#B49A70] text-[9px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full border border-[#B49A70]/30">
-                      {inst.badge}
+          {/* Dynamic hardware from catalogue or curated fallback */}
+          {(() => {
+            const hardwareToShow = liveHardware.length > 0
+              ? liveHardware.map((prod) => ({
+                  id: prod.id,
+                  title: prod.name,
+                  subtitle: prod.tagline || `${prod.categoryName || "Aroma Diffuser"} Instrument`,
+                  coverage: prod.coverageArea || "Residential Cold-Air Nebulization",
+                  price: formatLKR(prod.basePriceLKR),
+                  description: prod.shortDescription || prod.description,
+                  image: prod.images[0] || "/images/categories/aroma-diffusers.jpg",
+                  link: `/products/${prod.slug}`,
+                  badge: prod.isNew ? "New Arrival" : prod.isBestseller ? "Bestseller" : "Official Dr. Scent",
+                }))
+              : instruments;
+
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {hardwareToShow.map((inst) => (
+                  <div
+                    key={inst.id || inst.title}
+                    className="bg-[#FFFFFF] rounded-2xl border border-[#E7E2D8] hover:border-[#B49A70]/60 shadow-xs hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col justify-between group"
+                  >
+                    <div>
+                      <div className="relative aspect-[4/3] w-full bg-[#FAF8F5] overflow-hidden">
+                        <Image
+                          src={inst.image}
+                          alt={inst.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                          className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                        />
+                        <div className="absolute top-3 left-3 bg-[#151412]/85 backdrop-blur-xs text-[#B49A70] text-[9px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full border border-[#B49A70]/30">
+                          {inst.badge}
+                        </div>
+                      </div>
+
+                      <div className="p-6 space-y-3">
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#B49A70] block">
+                          {inst.coverage}
+                        </span>
+                        <h3 className="font-serif text-xl font-medium text-[#151412] leading-snug">
+                          {inst.title}
+                        </h3>
+                        <p className="text-xs text-[#57534E] leading-relaxed line-clamp-3 font-light">
+                          {inst.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="p-6 pt-0 border-t border-[#E7E2D8]/60 mt-4 flex items-center justify-between">
+                      <span className="font-serif text-base font-semibold text-[#151412]">
+                        {inst.price}
+                      </span>
+                      <Link
+                        href={inst.link}
+                        className="px-4 py-2 bg-[#151412] text-[#F8F6F1] hover:bg-[#B49A70] hover:text-[#151412] text-[10px] uppercase tracking-[0.18em] font-semibold rounded-xl transition-colors shadow-xs"
+                      >
+                        View Instrument
+                      </Link>
                     </div>
                   </div>
-
-                  <div className="p-6 space-y-3">
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#B49A70] block">
-                      {inst.coverage}
-                    </span>
-                    <h3 className="font-serif text-xl font-medium text-[#151412] leading-snug">
-                      {inst.title}
-                    </h3>
-                    <p className="text-xs text-[#57534E] leading-relaxed line-clamp-3 font-light">
-                      {inst.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-6 pt-0 border-t border-[#E7E2D8]/60 mt-4 flex items-center justify-between">
-                  <span className="font-serif text-base font-semibold text-[#151412]">
-                    {inst.price}
-                  </span>
-                  <Link
-                    href={inst.link}
-                    className="px-4 py-2 bg-[#151412] text-[#F8F6F1] hover:bg-[#B49A70] hover:text-[#151412] text-[10px] uppercase tracking-[0.18em] font-semibold rounded-xl transition-colors shadow-xs"
-                  >
-                    View Instrument
-                  </Link>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            );
+          })()}
         </section>
 
         {/* 5. Signature Pure Fragrance Formulations */}

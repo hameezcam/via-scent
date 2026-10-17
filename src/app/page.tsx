@@ -18,7 +18,12 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const bestsellers = await productService.getBestsellers(4);
+  const bestsellers = await productService.getBestsellers(8);
+  const allProducts = await productService.getAll();
+  const productsToDisplay =
+    bestsellers.length >= 4
+      ? bestsellers.slice(0, 4)
+      : [...bestsellers, ...allProducts.filter((p) => !bestsellers.some((b) => b.id === p.id))].slice(0, 4);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -29,7 +34,7 @@ export default async function HomePage() {
       <FeaturedCategories />
 
       {/* 4.C Bestsellers */}
-      <BestsellersSection products={bestsellers} />
+      <BestsellersSection products={productsToDisplay} />
 
       {/* 4.D Brand Experience */}
       <BrandExperienceSection />
