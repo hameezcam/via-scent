@@ -15,16 +15,29 @@ import { Product } from "@/types/product";
  */
 
 function getConnectionString(): string | null {
-  return (
+  const raw = (
     process.env.POSTGRES_URL ||
     process.env.DATABASE_URL ||
     process.env.POSTGRES_PRISMA_URL ||
     null
   );
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    const errorMsg =
+      "Invalid DATABASE_URL: The connection string must start with 'postgres://' or 'postgresql://' (e.g. postgresql://user:pass@host/db?sslmode=require). It looks like an HTTP/REST API URL was entered instead.";
+    console.error(`[Database] ${errorMsg}`);
+    throw new Error(errorMsg);
+  }
+  return trimmed;
 }
 
 export function isPostgresConfigured(): boolean {
-  return Boolean(getConnectionString());
+  try {
+    return Boolean(getConnectionString());
+  } catch {
+    return true; // Still considered configured so the explicit error surfaces to the admin UI
+  }
 }
 
 let sqlClient: NeonQueryFunction<false, false> | null = null;
