@@ -39,6 +39,136 @@ import { formatLKR } from "@/config/brand.config";
 
 type ModalTab = "basic" | "images" | "specs" | "content" | "variants";
 
+/**
+ * Safely parse API responses preventing SyntaxError on HTML / plain text error pages (e.g. 413, 502).
+ */
+async function parseApiResponse<T = any>(
+  res: Response
+): Promise<{ ok: boolean; data: T | null; error: string | null }> {
+  let text = "";
+  try {
+    text = await res.text();
+  } catch {
+    return { ok: false, data: null, error: "Unable to read server response." };
+  }
+
+  let parsed: any = null;
+  if (text) {
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      // Body is not JSON (e.g. "Request Entity Too Large", HTML error, etc.)
+    }
+  }
+
+  if (res.ok) {
+    return { ok: true, data: parsed, error: null };
+  }
+
+  // Handle payload too large / 413 specifically
+  if (
+    res.status === 413 ||
+    text.toLowerCase().includes("request entity too large") ||
+    text.toLowerCase().includes("payload too large")
+  ) {
+    return {
+      ok: false,
+      data: parsed,
+      error:
+        "The uploaded images or product payload exceed the server payload limit. High-resolution images are automatically compressed, but please try uploading fewer images at once.",
+    };
+  }
+
+  const errorMsg =
+    parsed?.error ||
+    parsed?.message ||
+    (text.length < 150 && text.trim()
+      ? text.trim()
+      : `Server request failed with status ${res.status} (${res.statusText || "Error"})`);
+
+  return { ok: false, data: parsed, error: errorMsg };
+}
+
+/**
+ * Compress and downscale an image file client-side before uploading.
+ * Reduces 5MB-12MB camera/phone photos to ~150KB-250KB WebP/JPEG,
+ * preventing HTTP 413 errors and dramatically accelerating uploads.
+ */
+async function compressImageFile(file: File, maxDimension = 1600, quality = 0.85): Promise<File> {
+  if (typeof window === "undefined") return file;
+  if (!file.type.startsWith("image/") || file.type === "image/svg+xml" || file.type === "image/gif") {
+    return file;
+  }
+
+  // If already under 250KB, keep as is
+  if (file.size < 250 * 1024) {
+    return file;
+  }
+
+  return new Promise((resolve) => {
+    try {
+      const img = new window.Image();
+      const objectUrl = URL.createObjectURL(file);
+
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        let { width, height } = img;
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const outputMime = file.type === "image/png" ? "image/webp" : file.type;
+        canvas.toBlob(
+          (blob) => {
+            if (!blob || blob.size >= file.size) {
+              resolve(file);
+            } else {
+              const ext = outputMime === "image/webp" ? ".webp" : ".jpg";
+              const newName = file.name.replace(/\.[^/.]+$/, "") + ext;
+              const compressedFile = new File([blob], newName, {
+                type: blob.type || outputMime,
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            }
+          },
+          outputMime,
+          quality
+        );
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(file);
+      };
+
+      img.src = objectUrl;
+    } catch {
+      resolve(file);
+    }
+  });
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,11 +244,9 @@ export default function AdminProductsPage() {
     async function fetchProducts() {
       try {
         const res = await fetch("/api/admin/products");
-        if (res.ok) {
-          const data = await res.json();
-          if (!ignore) {
-            setProducts(data);
-          }
+        const parsed = await parseApiResponse<Product[]>(res);
+        if (parsed.ok && parsed.data && !ignore) {
+          setProducts(parsed.data);
         }
       } catch (e) {
         console.error("Failed to load products", e);
@@ -299,26 +427,40 @@ export default function AdminProductsPage() {
     setIsUploading(true);
 
     try {
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append("files", files[i]);
+      const rawFileList = Array.from(files);
+
+      // 1. Client-side compression for every image to guarantee tiny payloads
+      const compressedFiles = await Promise.all(
+        rawFileList.map((f) => compressImageFile(f))
+      );
+
+      // 2. Upload files in individual requests to guarantee safe body limits
+      const uploadedUrls: string[] = [];
+
+      for (const file of compressedFiles) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const parsed = await parseApiResponse<{ url?: string; urls?: string[]; error?: string }>(res);
+
+        if (!parsed.ok || !parsed.data) {
+          throw new Error(parsed.error || `Failed to upload "${file.name}".`);
+        }
+
+        if (parsed.data.url) {
+          uploadedUrls.push(parsed.data.url);
+        } else if (parsed.data.urls && parsed.data.urls.length > 0) {
+          uploadedUrls.push(...parsed.data.urls);
+        }
       }
 
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to upload image(s).");
-      }
-
-      if (data.urls && Array.isArray(data.urls) && data.urls.length > 0) {
-        setImages((prev) => [...prev, ...data.urls]);
-      } else if (data.url) {
-        setImages((prev) => [...prev, data.url]);
+      if (uploadedUrls.length > 0) {
+        setImages((prev) => [...prev, ...uploadedUrls]);
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error uploading image from computer.";
@@ -394,9 +536,9 @@ export default function AdminProductsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, action: "toggle_publish" }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setProducts((prev) => prev.map((p) => (p.id === id ? data.product : p)));
+      const parsed = await parseApiResponse<{ product: Product }>(res);
+      if (parsed.ok && parsed.data?.product) {
+        setProducts((prev) => prev.map((p) => (p.id === id ? parsed.data!.product : p)));
       }
     } catch (e) {
       console.error("Failed to toggle publish", e);
@@ -411,9 +553,9 @@ export default function AdminProductsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, action: "archive" }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setProducts((prev) => prev.map((p) => (p.id === id ? data.product : p)));
+      const parsed = await parseApiResponse<{ product: Product }>(res);
+      if (parsed.ok && parsed.data?.product) {
+        setProducts((prev) => prev.map((p) => (p.id === id ? parsed.data!.product : p)));
       }
     } catch (e) {
       console.error("Failed to archive product", e);
@@ -433,7 +575,8 @@ export default function AdminProductsPage() {
         method: "DELETE",
       });
 
-      if (res.ok) {
+      const parsed = await parseApiResponse<{ message?: string }>(res);
+      if (parsed.ok) {
         setProducts((prev) => prev.filter((p) => p.id !== id));
         if (editingProduct?.id === id) {
           setIsModalOpen(false);
@@ -441,8 +584,7 @@ export default function AdminProductsPage() {
         setProductToDelete(null);
         setFeedback({ type: "success", text: `Product "${name}" was permanently deleted.` });
       } else {
-        const data = await res.json();
-        setFeedback({ type: "error", text: data.error || "Failed to delete product." });
+        setFeedback({ type: "error", text: parsed.error || "Failed to delete product." });
         setProductToDelete(null);
       }
     } catch (e) {
@@ -548,14 +690,14 @@ export default function AdminProductsPage() {
           }),
         });
 
-        if (res.ok) {
-          const data = await res.json();
-          setProducts((prev) => prev.map((p) => (p.id === editingProduct.id ? data.product : p)));
+        const parsed = await parseApiResponse<{ product: Product }>(res);
+
+        if (parsed.ok && parsed.data?.product) {
+          setProducts((prev) => prev.map((p) => (p.id === editingProduct.id ? parsed.data!.product : p)));
           setFeedback({ type: "success", text: "Product updated successfully and synced to storefront." });
           setTimeout(() => setIsModalOpen(false), 900);
         } else {
-          const err = await res.json();
-          setFeedback({ type: "error", text: err.error || "Failed to update product." });
+          setFeedback({ type: "error", text: parsed.error || "Failed to update product." });
         }
       } else {
         // Create
@@ -565,14 +707,14 @@ export default function AdminProductsPage() {
           body: JSON.stringify(payload),
         });
 
-        if (res.ok) {
-          const data = await res.json();
-          setProducts((prev) => [data.product, ...prev]);
+        const parsed = await parseApiResponse<{ product: Product }>(res);
+
+        if (parsed.ok && parsed.data?.product) {
+          setProducts((prev) => [parsed.data!.product, ...prev]);
           setFeedback({ type: "success", text: "New product created and published to catalogue." });
           setTimeout(() => setIsModalOpen(false), 900);
         } else {
-          const err = await res.json();
-          setFeedback({ type: "error", text: err.error || "Failed to create product." });
+          setFeedback({ type: "error", text: parsed.error || "Failed to create product." });
         }
       }
     } catch (e: unknown) {

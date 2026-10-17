@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const uploadedUrls: string[] = [];
 
     // Ensure uploads directory exists if writable
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    const uploadsDir = path.resolve(process.cwd(), "public", "uploads");
 
     for (const file of rawFiles) {
       if (!file.type.startsWith("image/")) {
