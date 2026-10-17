@@ -76,11 +76,42 @@ export function ShopContainer({
     let list = [...initialProducts];
 
     if (category !== "all") {
-      list = list.filter((p) => p.category === category);
+      if (category === "sprays") {
+        list = list.filter(
+          (p) =>
+            p.category === "sprays" ||
+            p.category === "home-fragrance" ||
+            p.name.toLowerCase().includes("spray") ||
+            p.description.toLowerCase().includes("spray")
+        );
+      } else {
+        list = list.filter((p) => p.category === category);
+      }
     }
 
     if (scentFamily !== "all") {
-      list = list.filter((p) => p.scentFamily === scentFamily);
+      const fam = scentFamily.toLowerCase();
+      list = list.filter((p) => {
+        if (p.scentFamily && p.scentFamily.toLowerCase() === fam) return true;
+        if (p.scentNotes) {
+          const allNotes = [
+            ...(p.scentNotes.top || []),
+            ...(p.scentNotes.heart || []),
+            ...(p.scentNotes.base || []),
+          ].map((n) => n.toLowerCase());
+          if (allNotes.some((n) => n.includes(fam))) return true;
+        }
+        if (fam === "car-scent" && (p.name.toLowerCase().includes("car") || p.tagline.toLowerCase().includes("car"))) return true;
+        if (fam === "fb" && (p.name.toLowerCase().includes("f&b") || p.categoryName?.includes("F&B") || p.category === "commercial-scenting")) return true;
+        if (fam === "choice" && (p.isBestseller || p.featured)) return true;
+        if (fam === "premium" && (p.featured || p.basePriceLKR >= 30000 || p.name.toLowerCase().includes("royal") || p.name.toLowerCase().includes("luxe"))) return true;
+        if (fam === "woody" && (p.scentFamily === "woody" || p.name.toLowerCase().includes("oud") || p.name.toLowerCase().includes("amber") || p.name.toLowerCase().includes("santal"))) return true;
+        if (fam === "fresh" && (p.scentFamily === "fresh" || p.name.toLowerCase().includes("fresh") || p.name.toLowerCase().includes("tea") || p.name.toLowerCase().includes("cypress"))) return true;
+        if (fam === "floral" && (p.scentFamily === "floral" || p.name.toLowerCase().includes("rose") || p.name.toLowerCase().includes("floral") || p.name.toLowerCase().includes("botanical"))) return true;
+        if (fam === "fruity" && (p.scentFamily === "fruity" || p.name.toLowerCase().includes("fig") || p.name.toLowerCase().includes("citrus") || p.name.toLowerCase().includes("bergamot"))) return true;
+        if (fam === "oriental" && (p.scentFamily === "oriental" || p.name.toLowerCase().includes("oud") || p.name.toLowerCase().includes("cardamom") || p.name.toLowerCase().includes("amber"))) return true;
+        return false;
+      });
     }
 
     if (inStockOnly) {

@@ -617,6 +617,7 @@ export default function AdminProductsPage() {
       "commercial-scenting": "Commercial Scenting",
       "home-fragrance": "Home Fragrance",
       "gift-collections": "Gift Collections",
+      "sprays": "Room & Fabric Sprays",
     };
 
     const hasScentNotes = topNotes || heartNotes || baseNotes;
@@ -1129,6 +1130,7 @@ export default function AdminProductsPage() {
                         <option value="fragrance-oils">Fragrance Oils</option>
                         <option value="commercial-scenting">Commercial Scent Systems</option>
                         <option value="home-fragrance">Home Fragrance</option>
+                        <option value="sprays">Room &amp; Fabric Sprays</option>
                         <option value="gift-collections">Gift Collections</option>
                       </select>
                     </div>

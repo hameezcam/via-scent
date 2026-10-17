@@ -1,5 +1,34 @@
 [
   {
+    "name": "Dr. Scent Sovereign Gold Diffuser",
+    "slug": "dr-scent-sovereign-gold-diffuser",
+    "sku": "DSC-SOV-01",
+    "category": "aroma-diffusers",
+    "categoryName": "Aroma Diffusers",
+    "basePriceLKR": 89000,
+    "images": [
+      "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=1200"
+    ],
+    "isPublished": true,
+    "isNew": true,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "inventoryCount": 15,
+    "shortDescription": "Gold edition diffuser.",
+    "description": "Gold edition diffuser description.",
+    "features": [
+      "Waterless"
+    ],
+    "usageInstructions": [
+      "Plug and play"
+    ],
+    "specifications": [],
+    "variants": [],
+    "id": "prod-1792242015190",
+    "isArchived": false,
+    "warrantyDurationMonths": 6
+  },
+  {
     "name": "Dr. Scent Aura Halo Diffuser",
     "tagline": "",
     "slug": "via-scent-vh-00001",

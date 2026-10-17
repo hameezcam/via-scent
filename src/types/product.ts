@@ -7,7 +7,8 @@ export type ProductCategory =
   | "fragrance-oils"
   | "commercial-scenting"
   | "home-fragrance"
-  | "gift-collections";
+  | "gift-collections"
+  | "sprays";
 
 export type ScentFamily =
   | "woody"
@@ -16,7 +17,12 @@ export type ScentFamily =
   | "oriental"
   | "fresh"
   | "amber"
-  | "gourmand";
+  | "gourmand"
+  | "fruity"
+  | "fb"
+  | "choice"
+  | "car-scent"
+  | "premium";
 
 export interface ScentNotes {
   top: string[];
