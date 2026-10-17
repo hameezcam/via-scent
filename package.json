@@ -10,6 +10,7 @@
     "test": "jiti ./test/run-all.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
     "lucide-react": "^1.57.0",
     "motion": "^14.3.0",
     "next": "16.4.1",

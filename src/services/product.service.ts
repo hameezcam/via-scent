@@ -8,6 +8,7 @@ import {
   ProductFilterParams,
   SortOption,
 } from "../types/product";
+import { isPostgresConfigured, getDb, ensureDbInitialized } from "@/lib/db";
 
 const CUSTOM_PRODUCTS_PATH = path.join(process.cwd(), "src/data/custom-products.json");
 
@@ -16,6 +17,12 @@ const CUSTOM_PRODUCTS_PATH = path.join(process.cwd(), "src/data/custom-products.
  * 
  * Supports storefront filtering as well as administrative CRUD:
  * Create, Edit, Publish/Unpublish, Archive, and Batch Import.
+ * 
+ * Dual-Mode Persistence:
+ * - When Vercel Postgres / Neon is configured (POSTGRES_URL / DATABASE_URL),
+ *   all products are saved and retrieved directly from PostgreSQL.
+ * - When running locally without database credentials, gracefully falls back
+ *   to local custom-products.json.
  */
 export interface IProductService {
   getAll(params?: ProductFilterParams): Promise<Product[]>;
@@ -77,8 +84,25 @@ class ProductServiceImpl implements IProductService {
   }
 
   async getAll(params?: ProductFilterParams): Promise<Product[]> {
-    // Storefront queries only return published, non-archived products
-    let result = this.getMasterCatalogue().filter((p) => p.isPublished !== false && !p.isArchived);
+    let result: Product[] = [];
+
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        const rows = await sql`
+          SELECT data FROM products 
+          WHERE is_published = true AND is_archived = false 
+          ORDER BY created_at DESC;
+        `;
+        result = rows.map((r) => r.data as Product);
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL query error, falling back to local catalogue:", err);
+        result = this.getMasterCatalogue().filter((p) => p.isPublished !== false && !p.isArchived);
+      }
+    } else {
+      result = this.getMasterCatalogue().filter((p) => p.isPublished !== false && !p.isArchived);
+    }
 
     if (!params) return result;
 
@@ -127,10 +151,41 @@ class ProductServiceImpl implements IProductService {
   }
 
   async getAllAdmin(): Promise<Product[]> {
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        const rows = await sql`
+          SELECT data FROM products 
+          ORDER BY created_at DESC;
+        `;
+        return rows.map((r) => r.data as Product);
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL query error, falling back to local catalogue:", err);
+        return [...this.getMasterCatalogue()];
+      }
+    }
     return [...this.getMasterCatalogue()];
   }
 
   async getBySlug(slug: string): Promise<Product | null> {
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        const rows = await sql`
+          SELECT data FROM products 
+          WHERE slug = ${slug} AND is_published = true AND is_archived = false 
+          LIMIT 1;
+        `;
+        if (rows && rows.length > 0) {
+          return rows[0].data as Product;
+        }
+        return null;
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL getBySlug error:", err);
+      }
+    }
     const product = this.getMasterCatalogue().find(
       (p) => p.slug === slug && p.isPublished !== false && !p.isArchived
     );
@@ -138,6 +193,23 @@ class ProductServiceImpl implements IProductService {
   }
 
   async getById(id: string): Promise<Product | null> {
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        const rows = await sql`
+          SELECT data FROM products 
+          WHERE id = ${id} 
+          LIMIT 1;
+        `;
+        if (rows && rows.length > 0) {
+          return rows[0].data as Product;
+        }
+        return null;
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL getById error:", err);
+      }
+    }
     const product = this.getMasterCatalogue().find((p) => p.id === id);
     return product ? { ...product } : null;
   }
@@ -186,7 +258,6 @@ class ProductServiceImpl implements IProductService {
 
   async createProduct(productInput: Omit<Product, "id">, _adminUser: string = "admin@viascent.lk"): Promise<Product> {
     void _adminUser;
-    const catalog = this.getMasterCatalogue();
     const id = `prod-${Date.now()}`;
     const newProduct: Product = {
       ...productInput,
@@ -197,6 +268,36 @@ class ProductServiceImpl implements IProductService {
       warrantyDurationMonths: productInput.warrantyDurationMonths || 6,
     };
 
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        await sql`
+          INSERT INTO products (
+            id, slug, sku, name, category, base_price_lkr,
+            is_published, is_archived, featured, is_bestseller, is_new, data
+          ) VALUES (
+            ${newProduct.id},
+            ${newProduct.slug},
+            ${newProduct.sku},
+            ${newProduct.name},
+            ${newProduct.category},
+            ${newProduct.basePriceLKR},
+            ${newProduct.isPublished ?? true},
+            ${newProduct.isArchived ?? false},
+            ${Boolean(newProduct.featured)},
+            ${Boolean(newProduct.isBestseller)},
+            ${Boolean(newProduct.isNew)},
+            ${JSON.stringify(newProduct)}
+          );
+        `;
+        return newProduct;
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL createProduct error, writing locally:", err);
+      }
+    }
+
+    const catalog = this.getMasterCatalogue();
     catalog.unshift(newProduct);
     this.saveCatalogue(catalog);
     return newProduct;
@@ -204,6 +305,40 @@ class ProductServiceImpl implements IProductService {
 
   async updateProduct(id: string, updates: Partial<Product>, _adminUser: string = "admin@viascent.lk"): Promise<Product> {
     void _adminUser;
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        const existing = await this.getById(id);
+        if (!existing) {
+          throw new Error(`Product with ID ${id} not found.`);
+        }
+        const updated: Product = {
+          ...existing,
+          ...updates,
+        };
+        await sql`
+          UPDATE products SET
+            slug = ${updated.slug},
+            sku = ${updated.sku},
+            name = ${updated.name},
+            category = ${updated.category},
+            base_price_lkr = ${updated.basePriceLKR},
+            is_published = ${updated.isPublished ?? true},
+            is_archived = ${updated.isArchived ?? false},
+            featured = ${Boolean(updated.featured)},
+            is_bestseller = ${Boolean(updated.isBestseller)},
+            is_new = ${Boolean(updated.isNew)},
+            data = ${JSON.stringify(updated)},
+            updated_at = NOW()
+          WHERE id = ${id};
+        `;
+        return updated;
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL updateProduct error, updating locally:", err);
+      }
+    }
+
     const catalog = this.getMasterCatalogue();
     const index = catalog.findIndex((p) => p.id === id);
     if (index === -1) {
@@ -222,6 +357,29 @@ class ProductServiceImpl implements IProductService {
 
   async togglePublishStatus(id: string, _adminUser: string = "admin@viascent.lk"): Promise<Product> {
     void _adminUser;
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        const existing = await this.getById(id);
+        if (!existing) {
+          throw new Error(`Product with ID ${id} not found.`);
+        }
+        const newStatus = !existing.isPublished;
+        const updated: Product = { ...existing, isPublished: newStatus };
+        await sql`
+          UPDATE products SET
+            is_published = ${newStatus},
+            data = ${JSON.stringify(updated)},
+            updated_at = NOW()
+          WHERE id = ${id};
+        `;
+        return updated;
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL togglePublishStatus error:", err);
+      }
+    }
+
     const catalog = this.getMasterCatalogue();
     const product = catalog.find((p) => p.id === id);
     if (!product) {
@@ -235,6 +393,29 @@ class ProductServiceImpl implements IProductService {
 
   async archiveProduct(id: string, _adminUser: string = "admin@viascent.lk"): Promise<Product> {
     void _adminUser;
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        const existing = await this.getById(id);
+        if (!existing) {
+          throw new Error(`Product with ID ${id} not found.`);
+        }
+        const updated: Product = { ...existing, isArchived: true, isPublished: false };
+        await sql`
+          UPDATE products SET
+            is_archived = true,
+            is_published = false,
+            data = ${JSON.stringify(updated)},
+            updated_at = NOW()
+          WHERE id = ${id};
+        `;
+        return updated;
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL archiveProduct error:", err);
+      }
+    }
+
     const catalog = this.getMasterCatalogue();
     const product = catalog.find((p) => p.id === id);
     if (!product) {
@@ -249,6 +430,17 @@ class ProductServiceImpl implements IProductService {
 
   async deleteProduct(id: string, _adminUser: string = "admin@viascent.lk"): Promise<boolean> {
     void _adminUser;
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        await sql`DELETE FROM products WHERE id = ${id};`;
+        return true;
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL deleteProduct error:", err);
+      }
+    }
+
     const catalog = this.getMasterCatalogue();
     const index = catalog.findIndex((p) => p.id === id);
     if (index === -1) {
@@ -262,6 +454,46 @@ class ProductServiceImpl implements IProductService {
 
   async importCatalogue(newProducts: Product[], _adminUser: string = "admin@viascent.lk"): Promise<number> {
     void _adminUser;
+    if (isPostgresConfigured()) {
+      try {
+        await ensureDbInitialized();
+        const sql = getDb()!;
+        let count = 0;
+        for (const item of newProducts) {
+          const prodId = item.id || `prod-import-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+          const full: Product = {
+            ...item,
+            id: prodId,
+            isPublished: item.isPublished !== undefined ? item.isPublished : true,
+            isArchived: false,
+          };
+          await sql`
+            INSERT INTO products (
+              id, slug, sku, name, category, base_price_lkr,
+              is_published, is_archived, featured, is_bestseller, is_new, data
+            ) VALUES (
+              ${full.id}, ${full.slug}, ${full.sku}, ${full.name}, ${full.category},
+              ${full.basePriceLKR}, ${full.isPublished ?? true}, false,
+              ${Boolean(full.featured)}, ${Boolean(full.isBestseller)}, ${Boolean(full.isNew)},
+              ${JSON.stringify(full)}
+            )
+            ON CONFLICT (id) DO UPDATE SET
+              slug = EXCLUDED.slug,
+              sku = EXCLUDED.sku,
+              name = EXCLUDED.name,
+              category = EXCLUDED.category,
+              base_price_lkr = EXCLUDED.base_price_lkr,
+              data = EXCLUDED.data,
+              updated_at = NOW();
+          `;
+          count++;
+        }
+        return count;
+      } catch (err) {
+        console.error("[ProductService] PostgreSQL importCatalogue error:", err);
+      }
+    }
+
     const catalog = this.getMasterCatalogue();
     let importedCount = 0;
 
