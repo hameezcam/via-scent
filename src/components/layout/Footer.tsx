@@ -59,12 +59,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/shop/commercial-scenting" className="hover:text-[var(--porcelain)] transition-colors">
+                <Link href="/business-scenting" className="hover:text-[var(--porcelain)] transition-colors">
                   Commercial Scenting
                 </Link>
               </li>
               <li>
-                <Link href="/shop/home-fragrance" className="hover:text-[var(--porcelain)] transition-colors">
+                <Link href="/home-fragrance" className="hover:text-[var(--porcelain)] transition-colors">
                   Home Fragrance
                 </Link>
               </li>

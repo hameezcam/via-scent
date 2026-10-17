@@ -14,29 +14,29 @@ const MEGA_CATEGORIES = [
     title: "Aroma Diffusers",
     slug: "aroma-diffusers",
     tagline: "Cold-Air Micro-Nebulization",
-    image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=600&q=80",
+    image: "/images/categories/aroma-diffusers.jpg",
     href: "/shop/aroma-diffusers",
   },
   {
     title: "Fragrance Oils",
     slug: "fragrance-oils",
     tagline: "100% Pure Undiluted Blends",
-    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80",
+    image: "/images/categories/fragrance-oils.jpg",
     href: "/shop/fragrance-oils",
   },
   {
     title: "Commercial Scenting",
     slug: "commercial-scenting",
     tagline: "HVAC & Architectural Systems",
-    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
-    href: "/shop/commercial-scenting",
+    image: "/images/categories/commercial-scenting.jpg",
+    href: "/business-scenting",
   },
   {
     title: "Home Fragrance",
     slug: "home-fragrance",
     tagline: "Atmospheric Living Collections",
-    image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=600&q=80",
-    href: "/shop/home-fragrance",
+    image: "/images/categories/home-fragrance.jpg",
+    href: "/home-fragrance",
   },
 ];
 
@@ -181,9 +181,9 @@ export function Header() {
               </div>
 
               <Link
-                href="/shop/home-fragrance"
+                href="/home-fragrance"
                 className={`text-xs tracking-[0.16em] uppercase font-medium transition-colors hover:text-[#B49A70] py-2 ${
-                  pathname === "/shop/home-fragrance" ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
+                  pathname.startsWith("/home-fragrance") ? "text-[#B49A70] font-semibold" : "text-[#211C19]"
                 }`}
               >
                 Home Fragrance

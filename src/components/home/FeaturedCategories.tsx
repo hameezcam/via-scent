@@ -47,6 +47,13 @@ export function FeaturedCategories() {
                 ? "md:col-span-7 h-[360px] sm:h-[420px] lg:h-[460px]"
                 : "md:col-span-12 h-[260px] sm:h-[300px] lg:h-[320px]";
 
+            const destinationHref =
+              cat.id === "home-fragrance"
+                ? "/home-fragrance"
+                : cat.id === "commercial-scenting"
+                ? "/business-scenting"
+                : `/shop/${cat.id}`;
+
             return (
               <motion.div
                 key={cat.id}
@@ -57,7 +64,7 @@ export function FeaturedCategories() {
                 className={colSpan}
               >
                 <Link
-                  href={`/shop/${cat.id}`}
+                  href={destinationHref}
                   className="group relative block w-full h-full rounded-2xl overflow-hidden border border-[#E7E2D8] hover:border-[#B49A70]/80 shadow-xs hover:shadow-2xl transition-all duration-500 bg-[#151412]"
                 >
                   {/* Category Atmospheric Image */}
