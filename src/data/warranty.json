@@ -1,5 +1,36 @@
 [
   {
+    "id": "war-1792240358828-231",
+    "claimNumber": "WAR-20261017-633",
+    "orderNumber": "VIA-20261014-9988",
+    "productSku": "DRS-DIFF-01",
+    "productName": "Dr. Scent Smart Diffuser",
+    "customerName": "Mahela Jayawardene",
+    "customerEmail": "mahela@example.com",
+    "customerPhone": "+94773344556",
+    "purchaseDate": "2026-10-17T12:32:38.828Z",
+    "warrantyDurationMonths": 6,
+    "reportedIssue": "Nozzle clogged after 2 months of regular use",
+    "evidenceNotes": "Purchased with official franchisee receipt",
+    "submittedAt": "2026-10-17T12:32:38.828Z",
+    "status": "APPROVED_REPAIR",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.828Z",
+        "status": "SUBMITTED",
+        "note": "Warranty claim logged under 6-month franchisee coverage. Awaiting technician evaluation.",
+        "updatedBy": "mahela@example.com"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.831Z",
+        "status": "APPROVED_REPAIR",
+        "note": "Warranty evaluation updated from SUBMITTED to APPROVED_REPAIR. Pump ultrasonically cleaned and nozzle replaced under warranty",
+        "updatedBy": "technician@viascent.lk"
+      }
+    ],
+    "resolutionNotes": "Pump ultrasonically cleaned and nozzle replaced under warranty"
+  },
+  {
     "id": "war-1792170877559-797",
     "claimNumber": "WAR-20261016-921",
     "orderNumber": "VIA-20261014-9988",

@@ -18,12 +18,21 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const bestsellers = await productService.getBestsellers(8);
   const allProducts = await productService.getAll();
-  const productsToDisplay =
-    bestsellers.length >= 4
-      ? bestsellers.slice(0, 4)
-      : [...bestsellers, ...allProducts.filter((p) => !bestsellers.some((b) => b.id === p.id))].slice(0, 4);
+  const newProducts = allProducts.filter((p) => p.isNew);
+  const featured = allProducts.filter((p) => p.featured);
+  const bestsellers = allProducts.filter((p) => p.isBestseller);
+
+  // Combine uniquely preserving order: new arrivals first, then featured, then bestsellers, then remaining
+  const seen = new Set<string>();
+  const productsToDisplay = [];
+  for (const p of [...newProducts, ...featured, ...bestsellers, ...allProducts]) {
+    if (!seen.has(p.id)) {
+      seen.add(p.id);
+      productsToDisplay.push(p);
+    }
+    if (productsToDisplay.length >= 8) break;
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

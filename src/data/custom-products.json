@@ -1,5 +1,97 @@
 [
   {
+    "name": "Dr. Scent Aura Halo Diffuser",
+    "tagline": "",
+    "slug": "via-scent-vh-00001",
+    "sku": "DSC-VH-00001",
+    "category": "aroma-diffusers",
+    "categoryName": "Aroma Diffusers",
+    "basePriceLKR": 100000,
+    "images": [
+      "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=1200"
+    ],
+    "featured": false,
+    "isBestseller": false,
+    "isNew": true,
+    "inStock": true,
+    "stockStatus": "In Stock",
+    "inventoryCount": 12,
+    "drScentAuthorized": true,
+    "coverageArea": "Up to 300 sq.ft (30 m²)",
+    "bottleVolume": "10ml - 15ml",
+    "shortDescription": "Crafted with precision cold-air nebulization technology.",
+    "description": "Engineered to atomize 100% pure fragrance oil into an invisible, residue-free micro-mist without heat or dilution.",
+    "features": [
+      "Patented cold-air micro-droplet nebulization",
+      "No water or heat required — 100% oil integrity"
+    ],
+    "usageInstructions": [
+      "Insert fragrance oil bottle directly into the quick-lock nozzle.",
+      "Power on using touch sensor and select desired interval intensity."
+    ],
+    "specifications": [
+      {
+        "label": "Coverage",
+        "value": "Up to 300 sq.ft"
+      },
+      {
+        "label": "Origin",
+        "value": "Authorized Dr. Scent Franchise Supply"
+      }
+    ],
+    "variants": [
+      {
+        "id": "var-1792238870381-1",
+        "sku": "DSC-NEW-318-STD",
+        "name": "Standard Edition",
+        "priceLKR": 28500,
+        "inStock": true,
+        "attributes": {
+          "finish": "Matte Anodized"
+        }
+      }
+    ],
+    "warrantyPeriod": "6 Month Official Franchisee Warranty",
+    "warrantyDurationMonths": 6,
+    "isPublished": true,
+    "id": "prod-1792239388943",
+    "isArchived": false
+  },
+  {
+    "name": "Dr. Scent Aura Halo Diffuser",
+    "tagline": "Sculptural Halo Nebulizer with Warm Ambient Illumination",
+    "slug": "dr-scent-aura-halo-diffuser",
+    "sku": "DSC-VH-00001",
+    "category": "aroma-diffusers",
+    "categoryName": "Aroma Diffusers",
+    "basePriceLKR": 100000,
+    "images": [
+      "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=1200"
+    ],
+    "shortDescription": "Cold-air aroma nebulizer with circular halo silhouette and touch controls.",
+    "description": "Precision engineered for luxury living spaces and residences.",
+    "features": [
+      "Waterless sub-micron nebulization",
+      "Integrated halo ambient lighting"
+    ],
+    "usageInstructions": [
+      "Insert 15ml bottle and power on."
+    ],
+    "specifications": [
+      {
+        "label": "Coverage",
+        "value": "Up to 500 sq.ft"
+      }
+    ],
+    "variants": [],
+    "isPublished": true,
+    "id": "prod-1792237283061",
+    "isArchived": false,
+    "inventoryCount": 10,
+    "warrantyDurationMonths": 6
+  },
+  {
     "id": "prod-oil-01",
     "slug": "ceylon-oud-and-smoky-amber-oil",
     "name": "Royal Oud & Amber Noir",

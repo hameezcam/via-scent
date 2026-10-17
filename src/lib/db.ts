@@ -69,7 +69,7 @@ export async function ensureDbInitialized(): Promise<void> {
           featured BOOLEAN DEFAULT false,
           is_bestseller BOOLEAN DEFAULT false,
           is_new BOOLEAN DEFAULT false,
-          data JSONB NOT NULL,
+          data TEXT NOT NULL,
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
@@ -84,7 +84,7 @@ export async function ensureDbInitialized(): Promise<void> {
           total_lkr NUMERIC(12, 2) NOT NULL,
           status VARCHAR(50) NOT NULL,
           payment_status VARCHAR(50) NOT NULL,
-          data JSONB NOT NULL,
+          data TEXT NOT NULL,
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
@@ -97,7 +97,7 @@ export async function ensureDbInitialized(): Promise<void> {
           claim_number VARCHAR(100) UNIQUE NOT NULL,
           order_id VARCHAR(100) NOT NULL,
           status VARCHAR(50) NOT NULL,
-          data JSONB NOT NULL,
+          data TEXT NOT NULL,
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
@@ -109,7 +109,7 @@ export async function ensureDbInitialized(): Promise<void> {
           id VARCHAR(100) PRIMARY KEY,
           registration_number VARCHAR(100) UNIQUE NOT NULL,
           serial_number VARCHAR(100),
-          data JSONB NOT NULL,
+          data TEXT NOT NULL,
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
@@ -122,7 +122,7 @@ export async function ensureDbInitialized(): Promise<void> {
           category VARCHAR(100) NOT NULL,
           action VARCHAR(100) NOT NULL,
           performed_by VARCHAR(255),
-          data JSONB NOT NULL,
+          data TEXT NOT NULL,
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
       `;
@@ -131,10 +131,62 @@ export async function ensureDbInitialized(): Promise<void> {
       await sql`
         CREATE TABLE IF NOT EXISTS settings (
           id VARCHAR(50) PRIMARY KEY,
-          data JSONB NOT NULL,
+          data TEXT NOT NULL,
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
       `;
+
+      // Migration: convert any existing JSONB columns to TEXT to prevent Neon driver type mismatch
+      try {
+        await sql`
+          DO $$
+          BEGIN
+            IF EXISTS (
+              SELECT 1 FROM information_schema.columns 
+              WHERE table_name = 'products' AND column_name = 'data' AND data_type = 'jsonb'
+            ) THEN
+              ALTER TABLE products ALTER COLUMN data TYPE text;
+            END IF;
+
+            IF EXISTS (
+              SELECT 1 FROM information_schema.columns 
+              WHERE table_name = 'orders' AND column_name = 'data' AND data_type = 'jsonb'
+            ) THEN
+              ALTER TABLE orders ALTER COLUMN data TYPE text;
+            END IF;
+
+            IF EXISTS (
+              SELECT 1 FROM information_schema.columns 
+              WHERE table_name = 'returns' AND column_name = 'data' AND data_type = 'jsonb'
+            ) THEN
+              ALTER TABLE returns ALTER COLUMN data TYPE text;
+            END IF;
+
+            IF EXISTS (
+              SELECT 1 FROM information_schema.columns 
+              WHERE table_name = 'warranties' AND column_name = 'data' AND data_type = 'jsonb'
+            ) THEN
+              ALTER TABLE warranties ALTER COLUMN data TYPE text;
+            END IF;
+
+            IF EXISTS (
+              SELECT 1 FROM information_schema.columns 
+              WHERE table_name = 'audit_logs' AND column_name = 'data' AND data_type = 'jsonb'
+            ) THEN
+              ALTER TABLE audit_logs ALTER COLUMN data TYPE text;
+            END IF;
+
+            IF EXISTS (
+              SELECT 1 FROM information_schema.columns 
+              WHERE table_name = 'settings' AND column_name = 'data' AND data_type = 'jsonb'
+            ) THEN
+              ALTER TABLE settings ALTER COLUMN data TYPE text;
+            END IF;
+          END $$;
+        `;
+      } catch (migErr) {
+        console.warn("[Database] Non-critical migration warning:", migErr);
+      }
 
       // 7. Seed Initial Master Catalogue if table is empty
       const rows = await sql`SELECT COUNT(*)::int as count FROM products`;

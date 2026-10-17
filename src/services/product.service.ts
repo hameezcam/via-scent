@@ -44,6 +44,20 @@ export interface IProductService {
   importCatalogue(products: Product[], adminUser?: string): Promise<number>;
 }
 
+function parseProductRow(row: Record<string, any>): Product {
+  if (!row || !row.data) {
+    return row as unknown as Product;
+  }
+  if (typeof row.data === "string") {
+    try {
+      return JSON.parse(row.data);
+    } catch {
+      return row.data as unknown as Product;
+    }
+  }
+  return row.data as Product;
+}
+
 class ProductServiceImpl implements IProductService {
   private inMemoryCatalogue: Product[] | null = null;
 
@@ -95,7 +109,7 @@ class ProductServiceImpl implements IProductService {
           WHERE is_published = true AND is_archived = false 
           ORDER BY created_at DESC;
         `;
-        result = rows.map((r) => r.data as Product);
+        result = rows.map(parseProductRow);
       } catch (err) {
         console.error("[ProductService] PostgreSQL query error, falling back to local catalogue:", err);
         result = this.getMasterCatalogue().filter((p) => p.isPublished !== false && !p.isArchived);
@@ -159,7 +173,7 @@ class ProductServiceImpl implements IProductService {
           SELECT data FROM products 
           ORDER BY created_at DESC;
         `;
-        return rows.map((r) => r.data as Product);
+        return rows.map(parseProductRow);
       } catch (err) {
         console.error("[ProductService] PostgreSQL query error, falling back to local catalogue:", err);
         return [...this.getMasterCatalogue()];
@@ -179,7 +193,7 @@ class ProductServiceImpl implements IProductService {
           LIMIT 1;
         `;
         if (rows && rows.length > 0) {
-          return rows[0].data as Product;
+          return parseProductRow(rows[0]);
         }
         return null;
       } catch (err) {
@@ -203,7 +217,7 @@ class ProductServiceImpl implements IProductService {
           LIMIT 1;
         `;
         if (rows && rows.length > 0) {
-          return rows[0].data as Product;
+          return parseProductRow(rows[0]);
         }
         return null;
       } catch (err) {
@@ -291,9 +305,18 @@ class ProductServiceImpl implements IProductService {
             ${JSON.stringify(newProduct)}
           );
         `;
+        // Also keep local file in sync if accessible
+        try {
+          const catalog = this.getMasterCatalogue();
+          catalog.unshift(newProduct);
+          this.saveCatalogue(catalog);
+        } catch {
+          // Non-critical local save warning
+        }
         return newProduct;
       } catch (err) {
-        console.error("[ProductService] PostgreSQL createProduct error, writing locally:", err);
+        console.error("[ProductService] PostgreSQL createProduct error:", err);
+        throw new Error(`Failed to save product to database: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 
@@ -333,9 +356,20 @@ class ProductServiceImpl implements IProductService {
             updated_at = NOW()
           WHERE id = ${id};
         `;
+        try {
+          const catalog = this.getMasterCatalogue();
+          const index = catalog.findIndex((p) => p.id === id);
+          if (index !== -1) {
+            catalog[index] = updated;
+            this.saveCatalogue(catalog);
+          }
+        } catch {
+          // Non-critical local cache
+        }
         return updated;
       } catch (err) {
-        console.error("[ProductService] PostgreSQL updateProduct error, updating locally:", err);
+        console.error("[ProductService] PostgreSQL updateProduct error:", err);
+        throw new Error(`Failed to update product in database: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 
@@ -374,9 +408,20 @@ class ProductServiceImpl implements IProductService {
             updated_at = NOW()
           WHERE id = ${id};
         `;
+        try {
+          const catalog = this.getMasterCatalogue();
+          const index = catalog.findIndex((p) => p.id === id);
+          if (index !== -1) {
+            catalog[index] = updated;
+            this.saveCatalogue(catalog);
+          }
+        } catch {
+          // Non-critical
+        }
         return updated;
       } catch (err) {
         console.error("[ProductService] PostgreSQL togglePublishStatus error:", err);
+        throw new Error(`Failed to toggle publish status: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 
@@ -410,9 +455,20 @@ class ProductServiceImpl implements IProductService {
             updated_at = NOW()
           WHERE id = ${id};
         `;
+        try {
+          const catalog = this.getMasterCatalogue();
+          const index = catalog.findIndex((p) => p.id === id);
+          if (index !== -1) {
+            catalog[index] = updated;
+            this.saveCatalogue(catalog);
+          }
+        } catch {
+          // Non-critical
+        }
         return updated;
       } catch (err) {
         console.error("[ProductService] PostgreSQL archiveProduct error:", err);
+        throw new Error(`Failed to archive product: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 
@@ -435,9 +491,20 @@ class ProductServiceImpl implements IProductService {
         await ensureDbInitialized();
         const sql = getDb()!;
         await sql`DELETE FROM products WHERE id = ${id};`;
+        try {
+          const catalog = this.getMasterCatalogue();
+          const index = catalog.findIndex((p) => p.id === id);
+          if (index !== -1) {
+            catalog.splice(index, 1);
+            this.saveCatalogue(catalog);
+          }
+        } catch {
+          // Non-critical
+        }
         return true;
       } catch (err) {
         console.error("[ProductService] PostgreSQL deleteProduct error:", err);
+        throw new Error(`Failed to delete product: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 
@@ -483,6 +550,11 @@ class ProductServiceImpl implements IProductService {
               name = EXCLUDED.name,
               category = EXCLUDED.category,
               base_price_lkr = EXCLUDED.base_price_lkr,
+              is_published = EXCLUDED.is_published,
+              is_archived = EXCLUDED.is_archived,
+              featured = EXCLUDED.featured,
+              is_bestseller = EXCLUDED.is_bestseller,
+              is_new = EXCLUDED.is_new,
               data = EXCLUDED.data,
               updated_at = NOW();
           `;
@@ -491,6 +563,7 @@ class ProductServiceImpl implements IProductService {
         return count;
       } catch (err) {
         console.error("[ProductService] PostgreSQL importCatalogue error:", err);
+        throw new Error(`Failed to import catalogue: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 

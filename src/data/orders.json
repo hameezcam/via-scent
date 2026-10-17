@@ -1,5 +1,481 @@
 [
   {
+    "id": "ord-1792240358690-9520",
+    "orderNumber": "VIA-20261017-9520",
+    "createdAt": "2026-10-17T12:32:38.690Z",
+    "customer": {
+      "fullName": "Kusal Mendis",
+      "email": "kusal@example.com",
+      "phone": "+94772233445",
+      "addressLine1": "Moratuwa",
+      "city": "Moratuwa",
+      "district": "Colombo",
+      "postalCode": "10400"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 500,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29000
+    },
+    "payment": {
+      "method": "cod",
+      "status": "unpaid"
+    },
+    "status": "placed_cod",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.690Z",
+        "status": "placed_cod",
+        "note": "Order placed via Cash on Delivery (COD). Unpaid, awaiting courier delivery and payment collection.",
+        "updatedBy": "kusal@example.com"
+      }
+    ]
+  },
+  {
+    "id": "ord-1792240358568-3310",
+    "orderNumber": "VIA-20261017-3310",
+    "createdAt": "2026-10-17T12:32:38.568Z",
+    "customer": {
+      "fullName": "Chamari Atapattu",
+      "email": "chamari@example.com",
+      "phone": "+94771122334",
+      "addressLine1": "Colombo 07",
+      "city": "Colombo",
+      "district": "Colombo",
+      "postalCode": "00700"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 500,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29000
+    },
+    "payment": {
+      "method": "cod",
+      "status": "unpaid"
+    },
+    "status": "placed_cod",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.568Z",
+        "status": "placed_cod",
+        "note": "Order placed via Cash on Delivery (COD). Unpaid, awaiting courier delivery and payment collection.",
+        "updatedBy": "chamari@example.com"
+      }
+    ]
+  },
+  {
+    "id": "ord-1792240358440-9827",
+    "orderNumber": "VIA-20261017-9827",
+    "createdAt": "2026-10-17T12:32:38.440Z",
+    "customer": {
+      "fullName": "Impostor Client",
+      "email": "hacker@example.com",
+      "phone": "+94770000000",
+      "addressLine1": "Unknown",
+      "city": "Colombo",
+      "district": "Colombo",
+      "postalCode": "00100"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 500,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29000
+    },
+    "payment": {
+      "method": "online_gateway",
+      "status": "failed",
+      "gateway": "payhere_sri_lanka",
+      "failureReason": "Invalid gateway signature response."
+    },
+    "status": "pending_payment",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.440Z",
+        "status": "pending_payment",
+        "note": "Order created. Pending online digital payment gateway verification.",
+        "updatedBy": "hacker@example.com"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.442Z",
+        "status": "pending_payment",
+        "note": "Online payment failed signature verification.",
+        "updatedBy": "gateway_webhook"
+      }
+    ]
+  },
+  {
+    "id": "ord-1792240358312-3500",
+    "orderNumber": "VIA-20261017-3500",
+    "createdAt": "2026-10-17T12:32:38.312Z",
+    "customer": {
+      "fullName": "Rohan De Silva",
+      "email": "rohan@example.com",
+      "phone": "+94774567890",
+      "addressLine1": "20 Havelock Rd",
+      "city": "Colombo",
+      "district": "Colombo",
+      "postalCode": "00500"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 500,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29000
+    },
+    "payment": {
+      "method": "online_gateway",
+      "status": "paid",
+      "gateway": "payhere_sri_lanka",
+      "transactionId": "TXN-101",
+      "paidAt": "2026-10-17T12:32:38.313Z"
+    },
+    "status": "confirmed",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.312Z",
+        "status": "pending_payment",
+        "note": "Order created. Pending online digital payment gateway verification.",
+        "updatedBy": "rohan@example.com"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.313Z",
+        "status": "confirmed",
+        "note": "Online payment authorized and verified via gateway transaction ID: TXN-101.",
+        "updatedBy": "gateway_webhook"
+      }
+    ]
+  },
+  {
+    "id": "ord-1792240358205-9841",
+    "orderNumber": "VIA-20261017-9841",
+    "createdAt": "2026-10-17T12:32:38.205Z",
+    "customer": {
+      "fullName": "Dilshan Mendis",
+      "email": "dilshan@example.com",
+      "phone": "+94773456789",
+      "addressLine1": "15 Flower Rd",
+      "city": "Colombo",
+      "district": "Colombo",
+      "postalCode": "00700"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 500,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29000
+    },
+    "payment": {
+      "method": "online_gateway",
+      "status": "paid",
+      "gateway": "payhere_sri_lanka",
+      "transactionId": "PAYHERE-TXN-88401",
+      "paidAt": "2026-10-17T12:32:38.206Z"
+    },
+    "status": "confirmed",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.205Z",
+        "status": "pending_payment",
+        "note": "Order created. Pending online digital payment gateway verification.",
+        "updatedBy": "dilshan@example.com"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.206Z",
+        "status": "confirmed",
+        "note": "Online payment authorized and verified via gateway transaction ID: PAYHERE-TXN-88401.",
+        "updatedBy": "gateway_webhook"
+      }
+    ]
+  },
+  {
+    "id": "ord-1792240358091-6321",
+    "orderNumber": "VIA-20261017-6321",
+    "createdAt": "2026-10-17T12:32:38.092Z",
+    "customer": {
+      "fullName": "Sunil Jayawardena",
+      "email": "sunil@example.com",
+      "phone": "+94765432109",
+      "addressLine1": "88 Marine Drive",
+      "city": "Colombo",
+      "district": "Colombo",
+      "postalCode": "00300"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 500,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29000
+    },
+    "payment": {
+      "method": "cod",
+      "status": "paid",
+      "collectedAt": "2026-10-17T12:32:38.093Z",
+      "collectedBy": "cashier@viascent.lk",
+      "receiptNumber": "REC-COD-9912"
+    },
+    "status": "placed_cod",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.092Z",
+        "status": "placed_cod",
+        "note": "Order placed via Cash on Delivery (COD). Unpaid, awaiting courier delivery and payment collection.",
+        "updatedBy": "sunil@example.com"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.093Z",
+        "status": "placed_cod",
+        "note": "Payment collection of LKR 29000 confirmed by cashier@viascent.lk. Receipt #REC-COD-9912. Cash collected at doorstep by rider",
+        "updatedBy": "cashier@viascent.lk"
+      }
+    ]
+  },
+  {
+    "id": "ord-1792240357973-3919",
+    "orderNumber": "VIA-20261017-3919",
+    "createdAt": "2026-10-17T12:32:37.973Z",
+    "customer": {
+      "fullName": "Anura Silva",
+      "email": "anura@example.com",
+      "phone": "+94712345678",
+      "addressLine1": "10 Temple Rd",
+      "city": "Colombo",
+      "district": "Colombo",
+      "postalCode": "00500"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 500,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29000
+    },
+    "payment": {
+      "method": "cod",
+      "status": "unpaid"
+    },
+    "status": "placed_cod",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:37.973Z",
+        "status": "placed_cod",
+        "note": "Order placed via Cash on Delivery (COD). Unpaid, awaiting courier delivery and payment collection.",
+        "updatedBy": "anura@example.com"
+      }
+    ]
+  },
+  {
+    "id": "ord-1792240357765-1732",
+    "orderNumber": "VIA-20261017-1732",
+    "createdAt": "2026-10-17T12:32:37.765Z",
+    "customer": {
+      "fullName": "Kamal Perera",
+      "email": "kamal@example.com",
+      "phone": "+94779876543",
+      "addressLine1": "45 Kandy Rd",
+      "city": "Kandy",
+      "district": "Kandy",
+      "postalCode": "20000"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 750,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29250
+    },
+    "payment": {
+      "method": "cod",
+      "status": "unpaid"
+    },
+    "status": "placed_cod",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:37.765Z",
+        "status": "placed_cod",
+        "note": "Order placed via Cash on Delivery (COD). Unpaid, awaiting courier delivery and payment collection.",
+        "updatedBy": "kamal@example.com"
+      }
+    ]
+  },
+  {
+    "id": "ord-1792240357657-1845",
+    "orderNumber": "VIA-20261017-1845",
+    "createdAt": "2026-10-17T12:32:37.657Z",
+    "customer": {
+      "fullName": "Nimal Fernando",
+      "email": "nimal@example.com",
+      "phone": "+94771234567",
+      "addressLine1": "123 Galle Rd",
+      "city": "Colombo",
+      "district": "Colombo",
+      "postalCode": "00300"
+    },
+    "items": [
+      {
+        "productId": "prod-diff-01",
+        "productSlug": "dr-scent-luxe-portable-diffuser",
+        "productName": "Dr. Scent Portable Ambient Diffuser",
+        "variantId": "var-port-blk",
+        "variantName": "Matte Obsidian Black",
+        "sku": "DSC-PORT-BLK",
+        "category": "aroma-diffusers",
+        "unitPriceLKR": 28500,
+        "quantity": 1,
+        "lineTotalLKR": 28500,
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85"
+      }
+    ],
+    "pricingSnapshot": {
+      "merchandiseSubtotalLKR": 28500,
+      "deliveryFeeLKR": 500,
+      "discountLKR": 0,
+      "taxLKR": 0,
+      "totalLKR": 29000
+    },
+    "payment": {
+      "method": "cod",
+      "status": "unpaid"
+    },
+    "status": "placed_cod",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:37.657Z",
+        "status": "placed_cod",
+        "note": "Order placed via Cash on Delivery (COD). Unpaid, awaiting courier delivery and payment collection.",
+        "updatedBy": "nimal@example.com"
+      }
+    ]
+  },
+  {
     "id": "ord-1792170877555-1825",
     "orderNumber": "VIA-20261016-1825",
     "createdAt": "2026-10-16T17:14:37.555Z",

@@ -1,5 +1,81 @@
 [
   {
+    "id": "ret-1792240358691-912",
+    "returnNumber": "RET-20261017-904",
+    "orderNumber": "VIA-20261017-9520",
+    "customerName": "Kusal Mendis",
+    "customerEmail": "kusal@example.com",
+    "customerPhone": "+94772233445",
+    "itemSku": "DSC-PORT-01",
+    "itemName": "Dr. Scent Portable Ambient Diffuser",
+    "reason": "Defective unit",
+    "details": "Pump not atomizing",
+    "submittedAt": "2026-10-17T12:32:38.691Z",
+    "orderDate": "2026-10-17T12:32:38.690Z",
+    "isWithin7Days": true,
+    "status": "REFUNDED",
+    "refundMethod": "bank_transfer_cod",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.691Z",
+        "status": "REQUESTED",
+        "note": "Return request submitted within approved 7-day policy window. Awaiting administrative inspection.",
+        "updatedBy": "kusal@example.com"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.692Z",
+        "status": "UNDER_REVIEW",
+        "note": "Return status transitioned from REQUESTED to UNDER_REVIEW. Reviewing customer photo evidence",
+        "updatedBy": "admin@viascent.lk"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.693Z",
+        "status": "APPROVED",
+        "note": "Return status transitioned from UNDER_REVIEW to APPROVED. Replacement or refund authorized",
+        "updatedBy": "admin@viascent.lk"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.695Z",
+        "status": "RECEIVED",
+        "note": "Return status transitioned from APPROVED to RECEIVED. Defective unit arrived at Colombo warehouse",
+        "updatedBy": "warehouse@viascent.lk"
+      },
+      {
+        "timestamp": "2026-10-17T12:32:38.696Z",
+        "status": "REFUNDED",
+        "note": "Return status transitioned from RECEIVED to REFUNDED. Bank transfer SLIPS confirmed",
+        "updatedBy": "finance@viascent.lk"
+      }
+    ],
+    "assessmentNotes": "Bank transfer SLIPS confirmed",
+    "refundAmountLKR": 35000
+  },
+  {
+    "id": "ret-1792240358571-215",
+    "returnNumber": "RET-20261017-585",
+    "orderNumber": "VIA-20261017-3310",
+    "customerName": "Chamari Atapattu",
+    "customerEmail": "chamari@example.com",
+    "customerPhone": "+94771122334",
+    "itemSku": "DSC-PORT-01",
+    "itemName": "Dr. Scent Portable Ambient Diffuser",
+    "reason": "Damaged in transit",
+    "details": "Outer glass vial was cracked during delivery",
+    "submittedAt": "2026-10-17T12:32:38.571Z",
+    "orderDate": "2026-10-17T12:32:38.568Z",
+    "isWithin7Days": true,
+    "status": "REQUESTED",
+    "refundMethod": "bank_transfer_cod",
+    "history": [
+      {
+        "timestamp": "2026-10-17T12:32:38.571Z",
+        "status": "REQUESTED",
+        "note": "Return request submitted within approved 7-day policy window. Awaiting administrative inspection.",
+        "updatedBy": "chamari@example.com"
+      }
+    ]
+  },
+  {
     "id": "ret-1792170877556-965",
     "returnNumber": "RET-20261016-462",
     "orderNumber": "VIA-20261016-1825",
