@@ -5,7 +5,6 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { TrustedPartnersSection } from "@/components/home/TrustedPartnersSection";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { B2BFeatureSection } from "@/components/home/B2BFeatureSection";
-import { CuratedCollectionsSection } from "@/components/home/CuratedCollectionsSection";
 import { TrustSection } from "@/components/home/TrustSection";
 import { RecentlyAddedSection } from "@/components/home/RecentlyAddedSection";
 
@@ -47,9 +46,6 @@ export default async function HomePage() {
 
       {/* 4.E Business Scenting Feature */}
       <B2BFeatureSection />
-
-      {/* 4.F Curated Collections */}
-      <CuratedCollectionsSection />
 
       {/* 4.G Trust & Service Information */}
       <TrustSection />
