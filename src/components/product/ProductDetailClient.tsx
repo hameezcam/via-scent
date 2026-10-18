@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ShoppingBag,
   Check,
@@ -11,6 +12,7 @@ import {
   Sparkles,
   Award,
   ArrowRight,
+  Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Product, ProductVariant } from "@/types/product";
@@ -27,6 +29,7 @@ interface ProductDetailClientProps {
 }
 
 export function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
+  const router = useRouter();
   const { addItem } = useCart();
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
     product.variants[0] || {
@@ -50,6 +53,12 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
     addItem(product, selectedVariant, quantity);
     setAdded(true);
     setTimeout(() => setAdded(false), 1400);
+  };
+
+  const handleBuyNow = () => {
+    if (!product.inStock || !selectedVariant.inStock) return;
+    addItem(product, selectedVariant, quantity);
+    router.push("/checkout");
   };
 
   const breadcrumbs = [
@@ -194,9 +203,9 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
 
             {/* Buying Controls */}
             <div className="space-y-5 pt-6 border-t border-[var(--warm-stone)]/40">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 {/* Quantity */}
-                <div className="flex items-center border border-[var(--warm-stone)]/60 rounded-sm bg-white">
+                <div className="flex items-center justify-between sm:justify-start border border-[var(--warm-stone)]/60 rounded-sm bg-white shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -224,19 +233,31 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
                   type="button"
                   onClick={handleAddToCart}
                   disabled={!product.inStock || !selectedVariant.inStock}
-                  className="flex-1 py-3.5 px-6 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--champagne)] hover:text-white disabled:opacity-40 text-xs font-medium tracking-[0.2em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2.5 shadow-sm cursor-pointer"
+                  className="flex-1 py-3.5 px-5 border border-[var(--near-black)] bg-white text-[var(--near-black)] hover:bg-[var(--near-black)] hover:text-white disabled:opacity-40 text-xs font-medium tracking-[0.16em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                 >
                   {added ? (
                     <>
-                      <Check className="w-4 h-4 text-emerald-300" />
-                      <span>Added to Shopping Bag</span>
+                      <Check className="w-4 h-4 text-emerald-600" />
+                      <span>Added to Cart</span>
                     </>
                   ) : (
                     <>
                       <ShoppingBag className="w-4 h-4" />
-                      <span>Acquire Instrument</span>
+                      <span>Add to Cart</span>
                     </>
                   )}
+                </motion.button>
+
+                {/* Buy Now button */}
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={handleBuyNow}
+                  disabled={!product.inStock || !selectedVariant.inStock}
+                  className="flex-1 py-3.5 px-5 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--champagne)] hover:text-white disabled:opacity-40 text-xs font-medium tracking-[0.16em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+                >
+                  <Zap className="w-4 h-4 text-[var(--champagne)]" />
+                  <span>Buy Now</span>
                 </motion.button>
               </div>
 
