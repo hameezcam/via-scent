@@ -137,13 +137,18 @@ export function Header() {
                 <Menu className="w-6 h-6" />
               </button>
 
-              <Link href="/" className="flex flex-col group select-none">
-                <span className="font-serif text-2xl sm:text-3xl tracking-[0.22em] font-semibold text-[#151412] group-hover:text-[#B49A70] transition-colors">
-                  VIA SCENT
-                </span>
-                <span className="text-[9px] tracking-[0.24em] uppercase text-[#8A8275] font-medium -mt-1 group-hover:text-[#151412] transition-colors">
-                  Dr. Scent Franchise Partner
-                </span>
+              <Link href="/" className="flex items-center group select-none py-1">
+                <div className="relative h-11 w-44 sm:h-13 sm:w-52 transition-transform duration-200 group-hover:scale-[1.02]">
+                  <Image
+                    src="/images/via-scent-logo.png"
+                    alt="VIA SCENT Sri Lanka - Fragrances • Aroma • Lifestyle"
+                    fill
+                    priority
+                    unoptimized
+                    className="object-contain object-left"
+                    sizes="(max-width: 640px) 176px, 208px"
+                  />
+                </div>
               </Link>
             </div>
 

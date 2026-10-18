@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, ChevronRight, ShieldCheck, Phone, Mail, Building2, User } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
@@ -55,15 +56,20 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
       {/* Drawer */}
       <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-[#FAF8F5] shadow-2xl flex flex-col z-50 border-r border-[#E7E2D8] animate-in slide-in-from-left duration-300">
         {/* Drawer Header */}
-        <div className="p-5 border-b border-[#E7E2D8] flex items-center justify-between bg-[#FFFFFF]">
-          <div>
-            <span className="font-serif text-lg tracking-[0.2em] font-semibold text-[#151412] block">
-              {BRAND_CONFIG.brandName}
-            </span>
-            <span className="text-[9px] tracking-widest text-[#B49A70] font-semibold uppercase block">
-              {BRAND_CONFIG.franchiseStatement}
-            </span>
-          </div>
+        <div className="p-4 border-b border-[#E7E2D8] flex items-center justify-between bg-[#FFFFFF]">
+          <Link href="/" onClick={onClose} className="block py-1">
+            <div className="relative h-10 w-36">
+              <Image
+                src="/images/via-scent-logo.png"
+                alt="VIA SCENT Sri Lanka"
+                fill
+                priority
+                unoptimized
+                className="object-contain object-left"
+                sizes="144px"
+              />
+            </div>
+          </Link>
           <button
             onClick={onClose}
             className="p-2 text-[#8A8275] hover:text-[#151412] rounded-md transition-colors"
