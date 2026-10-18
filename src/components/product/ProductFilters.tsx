@@ -28,7 +28,7 @@ export interface SubOption {
 }
 
 export interface CollectionConfig {
-  id: "aroma-oil" | "diffuser" | "bestsellers" | "sprays";
+  id: "aroma-oil" | "diffuser" | "bestsellers" | "sprays" | "candles";
   label: string;
   categoryParam: string;
   sectionTitle: string;
@@ -93,9 +93,24 @@ export const COLLECTIONS_HIERARCHY: CollectionConfig[] = [
       { label: "Aerosol", value: "aerosol" },
     ],
   },
+  {
+    id: "candles",
+    label: "Candles",
+    categoryParam: "candles",
+    sectionTitle: "CANDLE TYPE",
+    allLabel: "All Candles",
+    subOptions: [
+      { label: "Scented Candle", value: "scented-candle" },
+      { label: "Soy Wax Candle", value: "soy-wax" },
+      { label: "Luxury 3-Wick", value: "luxury-3-wick" },
+    ],
+  },
 ];
 
-export function resolveCollectionId(category: string, sort?: string): "all" | "aroma-oil" | "diffuser" | "bestsellers" | "sprays" {
+export function resolveCollectionId(
+  category: string,
+  sort?: string
+): "all" | "aroma-oil" | "diffuser" | "bestsellers" | "sprays" | "candles" {
   if (sort === "bestselling" || category === "bestsellers" || category === "best-sellers") {
     return "bestsellers";
   }
@@ -107,6 +122,9 @@ export function resolveCollectionId(category: string, sort?: string): "all" | "a
   }
   if (category === "sprays" || category === "home-fragrance") {
     return "sprays";
+  }
+  if (category === "candles") {
+    return "candles";
   }
   return "all";
 }

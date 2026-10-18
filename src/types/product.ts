@@ -9,7 +9,9 @@ export type ProductCategory =
   | "home-fragrance"
   | "gift-collections"
   | "sprays"
-  | "best-sellers";
+  | "best-sellers"
+  | "reed-diffusers"
+  | "candles";
 
 export type ScentFamily =
   | "woody"

@@ -87,6 +87,8 @@ export function ShopContainer({
     const isAromaOil = categoryParam === "aroma-oil" || categoryParam === "fragrance-oils";
     const isDiffuser = categoryParam === "diffuser" || categoryParam === "aroma-diffusers";
     const isSprays = categoryParam === "sprays" || categoryParam === "home-fragrance";
+    const isCandles = categoryParam === "candles";
+    const isReedDiffusers = categoryParam === "reed-diffusers";
 
     // 1. Filter by Collection
     if (isBestsellers) {
@@ -113,6 +115,20 @@ export function ShopContainer({
           p.category === "sprays" ||
           p.category === "home-fragrance" ||
           p.name.toLowerCase().includes("spray")
+      );
+    } else if (isCandles) {
+      list = list.filter(
+        (p) =>
+          p.category === "candles" ||
+          p.name.toLowerCase().includes("candle") ||
+          p.description.toLowerCase().includes("candle")
+      );
+    } else if (isReedDiffusers) {
+      list = list.filter(
+        (p) =>
+          p.category === "reed-diffusers" ||
+          p.name.toLowerCase().includes("reed") ||
+          p.description.toLowerCase().includes("reed")
       );
     } else if (categoryParam !== "all") {
       list = list.filter((p) => p.category === categoryParam);
@@ -296,6 +312,23 @@ export function ShopContainer({
               p.name.toLowerCase().includes("aerosol") ||
               p.description.toLowerCase().includes("aerosol") ||
               p.tagline.toLowerCase().includes("aerosol")
+          );
+        }
+      } else if (isCandles) {
+        if (s === "scented-candle" || s === "scented-candles") {
+          list = list.filter(
+            (p) => p.name.toLowerCase().includes("scented") || !p.name.toLowerCase().includes("soy")
+          );
+        } else if (s === "soy-wax") {
+          list = list.filter(
+            (p) => p.name.toLowerCase().includes("soy") || p.description.toLowerCase().includes("soy")
+          );
+        } else if (s === "luxury-3-wick") {
+          list = list.filter(
+            (p) =>
+              p.name.toLowerCase().includes("3-wick") ||
+              p.name.toLowerCase().includes("wick") ||
+              p.name.toLowerCase().includes("luxury")
           );
         }
       }

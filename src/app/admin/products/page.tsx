@@ -615,10 +615,12 @@ export default function AdminProductsPage() {
     setFeedback(null);
 
     const categoryNamesMap: Record<ProductCategory, string> = {
-      "aroma-diffusers": "Diffuser",
-      "fragrance-oils": "Aroma Oil",
-      "best-sellers": "Best Sellers",
+      "aroma-diffusers": "Diffusers",
+      "fragrance-oils": "Aroma Oils",
       "sprays": "Sprays",
+      "reed-diffusers": "Reed Diffusers",
+      "candles": "Candles",
+      "best-sellers": "Best Sellers",
       "commercial-scenting": "Commercial Scenting",
       "home-fragrance": "Home Fragrance",
       "gift-collections": "Gift Collections",
@@ -740,7 +742,9 @@ export default function AdminProductsPage() {
     const matchesCat =
       categoryFilter === "ALL" ||
       p.category === categoryFilter ||
-      (categoryFilter === "best-sellers" && (p.isBestseller || p.category === "best-sellers"));
+      (categoryFilter === "best-sellers" && (p.isBestseller || p.category === "best-sellers")) ||
+      (categoryFilter === "candles" && (p.category === "candles" || p.name.toLowerCase().includes("candle"))) ||
+      (categoryFilter === "reed-diffusers" && (p.category === "reed-diffusers" || p.name.toLowerCase().includes("reed")));
     return matchesSearch && matchesCat;
   });
 
@@ -787,11 +791,13 @@ export default function AdminProductsPage() {
             className="px-3 py-1.5 bg-stone-50 border border-stone-300 rounded text-stone-800 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
           >
             <option value="ALL">All Categories</option>
-            <option value="fragrance-oils">Aroma Oil</option>
-            <option value="aroma-diffusers">Diffuser</option>
-            <option value="best-sellers">Best Sellers</option>
+            <option value="aroma-diffusers">Diffusers</option>
+            <option value="fragrance-oils">Aroma Oils</option>
             <option value="sprays">Sprays</option>
+            <option value="reed-diffusers">Reed Diffusers</option>
+            <option value="candles">Candles</option>
             <optgroup label="Other Categories">
+              <option value="best-sellers">Best Sellers</option>
               <option value="commercial-scenting">Commercial Scent Systems</option>
               <option value="home-fragrance">Home Fragrance</option>
               <option value="gift-collections">Gift Collections</option>
@@ -1154,11 +1160,13 @@ export default function AdminProductsPage() {
                         }}
                         className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
                       >
-                        <option value="fragrance-oils">Aroma Oil</option>
-                        <option value="aroma-diffusers">Diffuser</option>
-                        <option value="best-sellers">Best Sellers</option>
+                        <option value="aroma-diffusers">Diffusers</option>
+                        <option value="fragrance-oils">Aroma Oils</option>
                         <option value="sprays">Sprays</option>
+                        <option value="reed-diffusers">Reed Diffusers</option>
+                        <option value="candles">Candles</option>
                         <optgroup label="Other Categories">
+                          <option value="best-sellers">Best Sellers</option>
                           <option value="commercial-scenting">Commercial Scent Systems</option>
                           <option value="home-fragrance">Home Fragrance</option>
                           <option value="gift-collections">Gift Collections</option>
@@ -1182,6 +1190,14 @@ export default function AdminProductsPage() {
                         className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
                       >
                         <option value="">-- Select Product Type --</option>
+                        {category === "aroma-diffusers" && (
+                          <>
+                            <option value="diffuser">Diffuser</option>
+                            <option value="car-diffuser">Car Diffuser</option>
+                            <option value="dispenser">Dispenser</option>
+                            <option value="reed-diffuser">Reed Diffuser</option>
+                          </>
+                        )}
                         {category === "fragrance-oils" && (
                           <>
                             <option value="car-scent">Car Scent</option>
@@ -1194,12 +1210,26 @@ export default function AdminProductsPage() {
                             <option value="premium">Premium Collection</option>
                           </>
                         )}
-                        {category === "aroma-diffusers" && (
+                        {category === "sprays" && (
                           <>
-                            <option value="diffuser">Diffuser</option>
-                            <option value="car-diffuser">Car Diffuser</option>
-                            <option value="dispenser">Dispenser</option>
-                            <option value="reed-diffuser">Reed Diffuser</option>
+                            <option value="fabric-spray">Fabric Spray</option>
+                            <option value="odor-eliminator">Odor Eliminator</option>
+                            <option value="aerosol">Aerosol</option>
+                          </>
+                        )}
+                        {category === "reed-diffusers" && (
+                          <>
+                            <option value="reed-diffuser">Classic Reed Diffuser</option>
+                            <option value="luxury-reed">Luxury Vessel</option>
+                            <option value="refill">Refill Oil &amp; Sticks</option>
+                          </>
+                        )}
+                        {category === "candles" && (
+                          <>
+                            <option value="scented-candle">Scented Candle</option>
+                            <option value="soy-wax">Soy Wax Candle</option>
+                            <option value="luxury-3-wick">Luxury 3-Wick Candle</option>
+                            <option value="travel-candle">Travel Candle</option>
                           </>
                         )}
                         {category === "best-sellers" && (

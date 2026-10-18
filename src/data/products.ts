@@ -38,6 +38,24 @@ export const CATEGORIES: CategoryInfo[] = [
     featuredInHome: true,
   },
   {
+    id: "reed-diffusers",
+    name: "Reed Diffusers",
+    tagline: "Continuous Passive Atmosphere Scenting",
+    description:
+      "Hand-blown tinted glass vessels with high-porosity rattan reeds delivering continuous, subtle scenting without heat or power.",
+    image: "/images/categories/aroma-diffusers.jpg",
+    featuredInHome: false,
+  },
+  {
+    id: "candles",
+    name: "Candles",
+    tagline: "Hand-Poured Botanical & Soy Wax Candles",
+    description:
+      "Artisanal scented candles crafted with pure soy and coconut wax, cotton wicks, and Dr. Scent fragrances for warm ambient illumination.",
+    image: "/images/categories/home-fragrance.jpg",
+    featuredInHome: false,
+  },
+  {
     id: "commercial-scenting",
     name: "Commercial Scenting",
     tagline: "HVAC & High-Capacity Architectural Systems",
@@ -826,8 +844,8 @@ export const PRODUCTS: Product[] = [
     name: "Dr. Scent Rattan Architectural Reed Diffuser",
     tagline: "Continuous passive diffusion in mouth-blown tinted glass with porous black rattan reeds",
     sku: "DSC-REED-RO-01",
-    category: "home-fragrance",
-    categoryName: "Diffuser",
+    category: "reed-diffusers",
+    categoryName: "Reed Diffusers",
     basePriceLKR: 14500,
     images: [
       "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1000&q=85",
@@ -878,7 +896,7 @@ export const PRODUCTS: Product[] = [
     name: "Dr. Scent Hand-Poured Artisanal Scented Candle",
     tagline: "Natural soy and coconut wax blend with dual braided cotton wicks in ceramic vessel",
     sku: "DSC-CNDL-AMB-01",
-    category: "home-fragrance",
+    category: "candles",
     categoryName: "Candles",
     basePriceLKR: 12500,
     images: [
