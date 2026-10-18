@@ -1,5 +1,7 @@
 import { productService } from "@/services/product.service";
+import { partnerService } from "@/services/partner.service";
 import { HeroSection } from "@/components/home/HeroSection";
+import { TrustedPartnersSection } from "@/components/home/TrustedPartnersSection";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { BestsellersSection } from "@/components/home/BestsellersSection";
 import { BrandExperienceSection } from "@/components/home/BrandExperienceSection";
@@ -18,7 +20,10 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const allProducts = await productService.getAll();
+  const [allProducts, partners] = await Promise.all([
+    productService.getAll(),
+    partnerService.getAll(true),
+  ]);
   const newProducts = allProducts.filter((p) => p.isNew);
   const featured = allProducts.filter((p) => p.featured);
   const bestsellers = allProducts.filter((p) => p.isBestseller);
@@ -38,6 +43,9 @@ export default async function HomePage() {
     <div className="flex flex-col min-h-screen">
       {/* 4.A Hero */}
       <HeroSection />
+
+      {/* 4.A.2 Our Trusted Partners Slideshow */}
+      <TrustedPartnersSection initialPartners={partners} />
 
       {/* 4.B Featured Categories */}
       <FeaturedCategories />

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "partner-danube",
+    "name": "Danube Home",
+    "logoUrl": "/images/partners/danube-home.svg",
+    "websiteUrl": "https://danubehome.com",
+    "displayOrder": 1,
+    "isActive": true,
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "partner-adcoop",
+    "name": "ADCOOP",
+    "logoUrl": "/images/partners/adcoop.svg",
+    "websiteUrl": "https://adcoop.com",
+    "displayOrder": 2,
+    "isActive": true,
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "partner-sharjah-coop",
+    "name": "Sharjah Co-op",
+    "logoUrl": "/images/partners/sharjah-coop.svg",
+    "websiteUrl": "https://shjcoop.ae",
+    "displayOrder": 3,
+    "isActive": true,
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "partner-pan-home",
+    "name": "PAN Home",
+    "logoUrl": "/images/partners/pan-home.svg",
+    "websiteUrl": "https://panhomestores.com",
+    "displayOrder": 4,
+    "isActive": true,
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "partner-lulu",
+    "name": "LuLu Hypermarket",
+    "logoUrl": "/images/partners/lulu.svg",
+    "websiteUrl": "https://luluhypermarket.com",
+    "displayOrder": 5,
+    "isActive": true,
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  }
+]

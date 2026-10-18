@@ -58,7 +58,7 @@ export interface StoreSettings {
 export interface AuditLogEntry {
   id: string;
   timestamp: string;
-  category: "DELIVERY" | "PAYMENTS" | "RETURNS" | "WARRANTY" | "BRAND" | "ORDERS" | "CATALOGUE";
+  category: "DELIVERY" | "PAYMENTS" | "RETURNS" | "WARRANTY" | "BRAND" | "ORDERS" | "CATALOGUE" | "PARTNERS";
   action: string;
   performedBy: string; // e.g. "admin@viascent.lk"
   details: string;

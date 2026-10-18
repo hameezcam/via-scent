@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 80" width="100%" height="100%" fill="none">
+  <g fill="#151412">
+    <!-- Arabic "تعاونية الشارقة" -->
+    <text x="130" y="38" font-family="'Segoe UI', Tahoma, Arial, sans-serif" font-weight="800" font-size="26" text-anchor="middle" direction="rtl">تعاونية الشارقة</text>
+    
+    <!-- English "SHARJAH CO-OP" -->
+    <text x="130" y="66" font-family="system-ui, -apple-system, 'Segoe UI', Montserrat, Arial, sans-serif" font-weight="900" font-size="19" letter-spacing="2" text-anchor="middle">SHARJAH CO-OP</text>
+  </g>
+</svg>
