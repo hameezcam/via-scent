@@ -93,7 +93,7 @@ export function HeroSection() {
               transition={{ ...heroTransition, delay: 0.5 }}
               className="text-[#D8D0C4] text-sm sm:text-base lg:text-lg max-w-xl font-normal leading-relaxed tracking-wide pt-1"
             >
-              Cold-air micro-nebulization technology engineered with pure, undiluted fragrance formulations. We sculpt the olfactory identity of Sri Lanka’s most distinguished residences, boutique hotels, and executive spaces.
+              Discover considered fragrances and refined scenting experiences for the spaces you call your own.
             </motion.p>
 
             {/* Staged Call To Action Buttons */}
@@ -105,18 +105,18 @@ export function HeroSection() {
             >
               <Link
                 href="/shop"
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#B49A70] hover:bg-[#CBB694] text-[#151412] text-xs font-bold tracking-[0.2em] uppercase rounded transition-all duration-300 shadow-lg hover:shadow-[#B49A70]/20"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#B49A70] hover:bg-[#CBB694] text-[#151412] text-xs font-bold tracking-[0.2em] uppercase rounded transition-all duration-300 shadow-lg hover:shadow-[#B49A70]/20 cursor-pointer"
               >
-                <span>Discover the Collection</span>
+                <span>Explore the Collection</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
 
               <Link
                 href="/business-scenting"
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-4 bg-[#211C19]/80 hover:bg-[#211C19] border border-[#B49A70]/30 hover:border-[#B49A70] text-[#EFEAE1] hover:text-[#FFFFFF] text-xs font-semibold tracking-[0.18em] uppercase rounded backdrop-blur-xs transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2.5 px-7 py-4 bg-[#211C19]/80 hover:bg-[#211C19] border border-[#B49A70]/30 hover:border-[#B49A70] text-[#EFEAE1] hover:text-[#FFFFFF] text-xs font-semibold tracking-[0.18em] uppercase rounded backdrop-blur-xs transition-all duration-300 cursor-pointer"
               >
                 <Building2 className="w-4 h-4 text-[#B49A70]" />
-                <span>Explore Scenting Solutions</span>
+                <span>Discover Business Scenting</span>
               </Link>
             </motion.div>
           </div>

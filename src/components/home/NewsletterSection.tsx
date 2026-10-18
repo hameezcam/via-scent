@@ -12,7 +12,7 @@ export function NewsletterSection() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@") || !email.includes(".")) {
       setStatus("error");
@@ -21,13 +21,29 @@ export function NewsletterSection() {
     }
 
     setStatus("submitting");
-    setTimeout(() => {
-      setStatus("success");
-      setMessage(
-        "Welcome to the Olfactory Gazette. You will receive private announcements for rare seasonal formulations and private franchise exhibitions."
-      );
-      setEmail("");
-    }, 600);
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setStatus("success");
+        setMessage(data.message || "Thank you for subscribing to The Olfactory Gazette.");
+        setEmail("");
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Unable to complete subscription. Please try again.");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Network error occurred. Please check your connection and try again.");
+    }
   };
 
   return (

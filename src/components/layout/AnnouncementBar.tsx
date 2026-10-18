@@ -3,44 +3,86 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { X, Sparkles, ShieldCheck } from "lucide-react";
+import { useReducedMotion } from "motion/react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 
-const ANNOUNCEMENTS = [
-  {
-    prefix: "An atmosphere, uniquely yours.",
-    highlight: "Official Dr. Scent Franchise Partner in Sri Lanka",
-    href: "/about",
-    linkText: "Our Story",
-  },
-  {
-    prefix: "Complimentary Delivery",
-    highlight: "Islandwide White-Glove Shipping on orders over LKR 100,000",
-    href: "/shipping",
-    linkText: "Delivery Terms",
-  },
-  {
-    prefix: "Architectural Scenting",
-    highlight: "Private B2B Olfactory Consultations for Hotels, Spas & Retail",
-    href: "/business-scenting/request-quote",
-    linkText: "Request Quote",
-  },
-];
+interface DeliveryConfig {
+  defaultCourierFeeLKR: number;
+  freeDeliveryThresholdLKR: number | null;
+}
 
 export function AnnouncementBar() {
   const [isOpen, setIsOpen] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [deliverySettings, setDeliverySettings] = useState<DeliveryConfig>({
+    defaultCourierFeeLKR: 500,
+    freeDeliveryThresholdLKR: null,
+  });
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!isOpen) return;
+    // Fetch authoritative store settings to avoid conflicting hardcoded shipping thresholds
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("/api/settings", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.delivery) {
+            setDeliverySettings({
+              defaultCourierFeeLKR: data.delivery.defaultCourierFeeLKR ?? 500,
+              freeDeliveryThresholdLKR: data.delivery.freeDeliveryThresholdLKR ?? null,
+            });
+          }
+        }
+      } catch {
+        // Fallback to configured defaults
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
+  const shippingAnnouncement = deliverySettings.freeDeliveryThresholdLKR
+    ? {
+        prefix: "Complimentary Delivery",
+        highlight: `Islandwide shipping on orders over LKR ${deliverySettings.freeDeliveryThresholdLKR.toLocaleString("en-LK")}`,
+        href: "/shipping",
+        linkText: "Delivery Terms",
+      }
+    : {
+        prefix: "Islandwide Delivery",
+        highlight: `Standard courier rate of LKR ${deliverySettings.defaultCourierFeeLKR} across all 9 provinces`,
+        href: "/shipping",
+        linkText: "Delivery Terms",
+      };
+
+  const announcements = [
+    {
+      prefix: "An atmosphere, uniquely yours.",
+      highlight: "Official Dr. Scent Franchise Partner in Sri Lanka",
+      href: "/about",
+      linkText: "Our Story",
+    },
+    shippingAnnouncement,
+    {
+      prefix: "Architectural Scenting",
+      highlight: "Private B2B Olfactory Consultations for Hotels, Spas & Retail",
+      href: "/business-scenting/request-quote",
+      linkText: "Request Quote",
+    },
+  ];
+
+  useEffect(() => {
+    if (!isOpen || shouldReduceMotion) return;
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
-    }, 6500);
+      setCurrentIndex((prev) => (prev + 1) % announcements.length);
+    }, 7000);
     return () => clearInterval(interval);
-  }, [isOpen]);
+  }, [isOpen, shouldReduceMotion, announcements.length]);
 
   if (!isOpen) return null;
 
-  const current = ANNOUNCEMENTS[currentIndex];
+  const current = announcements[currentIndex] || announcements[0];
 
   return (
     <aside
@@ -55,7 +97,10 @@ export function AnnouncementBar() {
           </span>
           <span className="text-[#8A8275] hidden sm:inline">•</span>
           <span className="text-[#ECE7DE] font-medium transition-opacity duration-500">
-            {current.prefix} <span className="text-[#D8D0C4] font-normal normal-case sm:uppercase"> — {current.highlight}</span>
+            {current.prefix}{" "}
+            <span className="text-[#D8D0C4] font-normal normal-case sm:uppercase">
+              — {current.highlight}
+            </span>
           </span>
           <Link
             href={current.href}
@@ -68,7 +113,7 @@ export function AnnouncementBar() {
         <button
           onClick={() => setIsOpen(false)}
           aria-label="Dismiss announcement bar"
-          className="text-[#8A8275] hover:text-[#F8F6F1] p-1 -mr-1 rounded transition-colors focus:outline-none focus:ring-1 focus:ring-[#B49A70]"
+          className="text-[#8A8275] hover:text-[#F8F6F1] p-1 -mr-1 rounded transition-colors focus:outline-none focus:ring-1 focus:ring-[#B49A70] cursor-pointer"
         >
           <X className="w-3.5 h-3.5" />
         </button>

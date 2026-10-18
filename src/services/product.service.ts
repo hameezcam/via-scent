@@ -265,8 +265,16 @@ class ProductServiceImpl implements IProductService {
     return [...CATEGORIES];
   }
 
-  async getCategoryById(id: ProductCategory): Promise<CategoryInfo | null> {
-    const category = CATEGORIES.find((c) => c.id === id);
+  async getCategoryById(id: string): Promise<CategoryInfo | null> {
+    const canonicalId =
+      id === "aroma-oil"
+        ? "fragrance-oils"
+        : id === "diffuser"
+        ? "aroma-diffusers"
+        : id === "bestsellers"
+        ? "best-sellers"
+        : id;
+    const category = CATEGORIES.find((c) => c.id === canonicalId);
     return category ? { ...category } : null;
   }
 

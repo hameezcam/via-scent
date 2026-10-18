@@ -16,9 +16,15 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function generateStaticParams() {
-  return CATEGORIES.map((cat) => ({
+  const base = CATEGORIES.map((cat) => ({
     category: cat.id,
   }));
+  return [
+    ...base,
+    { category: "aroma-oil" },
+    { category: "diffuser" },
+    { category: "bestsellers" },
+  ];
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {

@@ -25,10 +25,20 @@ export function ShopContainer({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Derive state from URL params
-  const categoryParam = searchParams.get("category") || initialCategory;
+  // Derive state from URL params, supporting canonical and prompt-specified query aliases
+  const categoryParam =
+    searchParams.get("collection") ||
+    searchParams.get("category") ||
+    initialCategory;
   const sort = (searchParams.get("sort") as SortOption) || "featured";
-  const subCategory = searchParams.get("sub") || searchParams.get("family") || "all";
+  const subCategory =
+    searchParams.get("oilType") ||
+    searchParams.get("diffuserType") ||
+    searchParams.get("sprayType") ||
+    searchParams.get("itemType") ||
+    searchParams.get("sub") ||
+    searchParams.get("family") ||
+    "all";
   const searchQuery = searchParams.get("q") || "";
 
   const [inStockOnly, setInStockOnly] = useState(false);

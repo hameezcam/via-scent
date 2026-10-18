@@ -324,23 +324,32 @@ export function Header() {
                 Client Olfactory Portal
               </h3>
               <p className="text-xs text-[#57534E] leading-relaxed">
-                Guest checkout is enabled across VIA Scent with instant SMS and email tracking for all Sri Lankan orders.
+                Guest checkout is enabled across VIA Scent. Order confirmations, dispatch notices, and tracking links are delivered directly via email and SMS.
               </p>
-              <div className="pt-2 space-y-2">
-                <Link
-                  href="/admin"
-                  onClick={() => setIsAccountModalOpen(false)}
-                  className="block w-full py-2.5 px-4 bg-[#151412] hover:bg-[#211C19] text-[#B49A70] text-xs font-semibold tracking-widest uppercase rounded transition-colors"
-                >
-                  Staff & Administrative Portal
-                </Link>
+              <div className="pt-3 space-y-2">
                 <Link
                   href="/returns"
                   onClick={() => setIsAccountModalOpen(false)}
+                  className="block w-full py-2.5 px-4 bg-[#151412] hover:bg-[#211C19] text-[#B49A70] text-xs font-semibold tracking-widest uppercase rounded transition-colors"
+                >
+                  Track Order & Warranty
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={() => setIsAccountModalOpen(false)}
                   className="block w-full py-2 px-4 border border-[#E7E2D8] hover:bg-[#FAF8F5] text-[#211C19] text-xs font-medium tracking-wider uppercase rounded transition-colors"
                 >
-                  Check Return & Warranty Status
+                  Contact Colombo Concierge
                 </Link>
+                <div className="pt-2 border-t border-[#E7E2D8]">
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsAccountModalOpen(false)}
+                    className="text-[10px] text-[#8A8275] hover:text-[#151412] tracking-wider uppercase underline underline-offset-2"
+                  >
+                    Staff Management Access
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
