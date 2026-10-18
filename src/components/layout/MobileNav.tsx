@@ -7,15 +7,17 @@ import { usePathname } from "next/navigation";
 import { X, ChevronRight, ShieldCheck, Phone, Mail, Building2, User } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 
-import { MAIN_NAV_ITEMS } from "./Header";
+import { MAIN_NAV_ITEMS, NavMenuItem } from "./Header";
 
 interface MobileNavProps {
   isOpen: boolean;
   onClose: () => void;
+  navItems?: NavMenuItem[];
 }
 
-export function MobileNav({ isOpen, onClose }: MobileNavProps) {
+export function MobileNav({ isOpen, onClose, navItems }: MobileNavProps) {
   const pathname = usePathname();
+  const items = navItems && navItems.length > 0 ? navItems : MAIN_NAV_ITEMS;
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
 
   const toggleMenu = (id: string) => {
@@ -81,7 +83,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
         {/* Navigation list */}
         <div className="flex-1 overflow-y-auto px-4 py-5 space-y-1.5">
-          {MAIN_NAV_ITEMS.map((item) => {
+          {items.map((item) => {
             const hasSub = Boolean(item.items && item.items.length > 0);
             const isExpanded = Boolean(expandedMenus[item.id]);
             const isActive = pathname === item.href;

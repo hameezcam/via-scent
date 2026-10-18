@@ -141,10 +141,15 @@
     "image": "/images/categories/candles.jpg",
     "tagline": "Hand-Poured Botanical & Soy Wax Candles",
     "createdAt": "2026-10-18T10:00:00.000Z",
-    "updatedAt": "2026-10-18T11:49:01.783Z",
+    "updatedAt": "2026-10-18T18:06:39.256Z",
     "description": "Artisanal scented candles crafted with pure soy and coconut wax, cotton wicks, and Dr. Scent fragrances for warm ambient illumination.",
     "displayOrder": 5,
-    "subCategories": [],
+    "subCategories": [
+      {
+        "id": "botanical-wax",
+        "label": "Botanical Wax"
+      }
+    ],
     "featuredInHome": true
   },
   {

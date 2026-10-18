@@ -183,6 +183,15 @@ export default function AdminCategoriesPage() {
     }
   };
 
+  const notifyStorefrontCategoryChange = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("viascent_categories_updated"));
+      try {
+        localStorage.setItem("viascent_categories_updated", Date.now().toString());
+      } catch {}
+    }
+  };
+
   // Toggle Featured status directly
   const handleToggleFeatured = async (cat: Category) => {
     try {
@@ -197,6 +206,7 @@ export default function AdminCategoriesPage() {
         setCategories((prev) =>
           prev.map((c) => (c.id === cat.id ? { ...c, featuredInHome: updatedStatus } : c))
         );
+        notifyStorefrontCategoryChange();
         setFeedback({
           type: "success",
           message: `Category "${cat.name}" is now ${updatedStatus ? "featured on the homepage" : "hidden from homepage featured section"}.`,
@@ -249,6 +259,7 @@ export default function AdminCategoriesPage() {
           setCategories((prev) =>
             prev.map((c) => (c.id === editingCategory.id ? data.data : c))
           );
+          notifyStorefrontCategoryChange();
           loadCategories();
         } else {
           setFeedback({ type: "error", message: data.error || "Failed to update category." });
@@ -264,6 +275,7 @@ export default function AdminCategoriesPage() {
         if (res.ok && data.success) {
           setFeedback({ type: "success", message: `Category "${data.data.name}" created and published to storefront.` });
           setIsModalOpen(false);
+          notifyStorefrontCategoryChange();
           loadCategories();
         } else {
           setFeedback({ type: "error", message: data.error || "Failed to create category." });
@@ -288,6 +300,7 @@ export default function AdminCategoriesPage() {
       if (res.ok && data.success) {
         setFeedback({ type: "success", message: `Category "${categoryToDelete.name}" was removed successfully.` });
         setCategoryToDelete(null);
+        notifyStorefrontCategoryChange();
         loadCategories();
       } else {
         setFeedback({ type: "error", message: data.error || "Failed to delete category." });

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import { useCart } from "@/context/CartContext";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { MobileNav } from "./MobileNav";
 import { Product } from "@/types/product";
+import { Category } from "@/types/category";
 
 export interface NavDropdownItem {
   label: string;
@@ -22,7 +23,7 @@ export interface NavMenuItem {
   items?: NavDropdownItem[];
 }
 
-export const MAIN_NAV_ITEMS: NavMenuItem[] = [
+export const DEFAULT_MAIN_NAV_ITEMS: NavMenuItem[] = [
   {
     id: "all",
     label: "ALL",
@@ -51,7 +52,6 @@ export const MAIN_NAV_ITEMS: NavMenuItem[] = [
       { label: "Diffuser", href: "/shop/aroma-diffusers?sub=diffuser" },
       { label: "Car Diffuser", href: "/shop/aroma-diffusers?sub=car-diffuser" },
       { label: "Dispenser", href: "/shop/aroma-diffusers?sub=dispenser" },
-      { label: "Reed Diffuser", href: "/shop/aroma-diffusers?sub=reed-diffuser" },
     ],
   },
   {
@@ -69,17 +69,22 @@ export const MAIN_NAV_ITEMS: NavMenuItem[] = [
   {
     id: "sprays",
     label: "SPRAYS",
-    href: "/shop?category=sprays",
+    href: "/shop/sprays",
     items: [
-      { label: "Fabric Spray", href: "/shop?category=sprays&sub=fabric-spray" },
-      { label: "Odor Eliminator", href: "/shop?category=sprays&sub=odor-eliminator" },
-      { label: "Aerosol", href: "/shop?category=sprays&sub=aerosol" },
+      { label: "Fabric Spray", href: "/shop/sprays?sub=fabric-spray" },
+      { label: "Odor Eliminator", href: "/shop/sprays?sub=odor-eliminator" },
+      { label: "Aerosol", href: "/shop/sprays?sub=aerosol" },
     ],
   },
   {
     id: "candles",
     label: "CANDLES",
     href: "/shop/candles",
+    items: [
+      { label: "Scented Candle", href: "/shop/candles?sub=scented-candle" },
+      { label: "Soy Wax Candle", href: "/shop/candles?sub=soy-wax" },
+      { label: "Luxury 3-Wick", href: "/shop/candles?sub=luxury-3-wick" },
+    ],
   },
   {
     id: "services",
@@ -93,16 +98,112 @@ export const MAIN_NAV_ITEMS: NavMenuItem[] = [
   },
 ];
 
+export const MAIN_NAV_ITEMS = DEFAULT_MAIN_NAV_ITEMS;
+
+export function buildNavItemsFromCategories(categories: Category[]): NavMenuItem[] {
+  if (!categories || categories.length === 0) {
+    return DEFAULT_MAIN_NAV_ITEMS;
+  }
+
+  const sorted = [...categories].sort(
+    (a, b) => (a.displayOrder || 0) - (b.displayOrder || 0)
+  );
+
+  const navItems: NavMenuItem[] = [
+    {
+      id: "all",
+      label: "ALL",
+      href: "/shop",
+    },
+  ];
+
+  for (const cat of sorted) {
+    const slug = cat.slug || cat.id;
+
+    // Resolve category page href
+    let catHref = `/shop/${slug}`;
+    if (slug === "bestsellers" || slug === "best-sellers") {
+      catHref = "/shop?category=bestsellers";
+    }
+
+    const subItems: NavDropdownItem[] = (cat.subCategories || []).map((sub) => {
+      const subHref = `${catHref}${catHref.includes("?") ? "&" : "?"}sub=${encodeURIComponent(sub.id)}`;
+      return {
+        label: sub.label,
+        href: subHref,
+      };
+    });
+
+    navItems.push({
+      id: cat.id || slug,
+      label: (cat.name || slug).toUpperCase(),
+      href: catHref,
+      items: subItems.length > 0 ? subItems : undefined,
+    });
+  }
+
+  // Always keep SERVICES at the end
+  navItems.push({
+    id: "services",
+    label: "SERVICES",
+    href: "/business-scenting",
+    items: [
+      { label: "B2B Sales", href: "/business-scenting" },
+      { label: "Franchise", href: "/contact?topic=franchise" },
+      { label: "Rental Services", href: "/business-scenting/request-quote" },
+    ],
+  });
+
+  return navItems;
+}
+
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { itemCount, openCart } = useCart();
+  const [navItems, setNavItems] = useState<NavMenuItem[]>(DEFAULT_MAIN_NAV_ITEMS);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+
+  // Fetch live categories from API to synchronize subcategories and categories dynamically
+  const fetchLiveCategories = useCallback(async () => {
+    try {
+      const res = await fetch("/api/categories", { cache: "no-store" });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setNavItems(buildNavItemsFromCategories(json.data));
+        }
+      }
+    } catch (err) {
+      console.error("Live category fetch failed:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLiveCategories();
+
+    const handleCategoryUpdate = () => {
+      fetchLiveCategories();
+    };
+
+    window.addEventListener("viascent_categories_updated", handleCategoryUpdate);
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "viascent_categories_updated") {
+        fetchLiveCategories();
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("viascent_categories_updated", handleCategoryUpdate);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, [fetchLiveCategories]);
 
   const [liveResults, setLiveResults] = useState<Product[]>([]);
   const [isLoadingLive, setIsLoadingLive] = useState(false);
@@ -193,7 +294,7 @@ export function Header() {
 
             {/* Center: Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8" aria-label="Main Navigation">
-              {MAIN_NAV_ITEMS.map((item) => {
+              {navItems.map((item) => {
                 const hasDropdown = Boolean(item.items && item.items.length > 0);
                 const isOpen = activeDropdown === item.id;
                 const isCurrent =
@@ -477,7 +578,7 @@ export function Header() {
       )}
 
       {/* Mobile Navigation Drawer */}
-      <MobileNav isOpen={isMobileNavOpen} onClose={() => setIsMobileNavOpen(false)} />
+      <MobileNav isOpen={isMobileNavOpen} onClose={() => setIsMobileNavOpen(false)} navItems={navItems} />
     </>
   );
 }
