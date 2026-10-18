@@ -270,11 +270,11 @@ export default function AdminPartnersPage() {
           <div className="flex items-center gap-2">
             <Building2 className="w-5 h-5 text-amber-800" />
             <h1 className="font-serif text-3xl font-medium text-stone-900">
-              Trusted Partners Management
+              Trusted Clients Management
             </h1>
           </div>
           <p className="text-xs text-stone-500 mt-1">
-            Manage corporate partners and retail franchise clients displayed in the &quot;OUR TRUSTED PARTNERS&quot; homepage slideshow.
+            Manage corporate clients and brand accounts displayed in the &quot;OUR TRUSTED CLIENTS&quot; homepage slideshow.
           </p>
         </div>
 
@@ -293,7 +293,7 @@ export default function AdminPartnersPage() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-stone-900 hover:bg-stone-800 text-amber-100 text-xs font-semibold uppercase tracking-wider rounded transition-colors shadow-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>Add New Partner</span>
+            <span>Add New Client</span>
           </button>
         </div>
       </div>
@@ -377,14 +377,14 @@ export default function AdminPartnersPage() {
         {loading ? (
           <div className="py-20 text-center text-xs text-stone-500">
             <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-amber-800" />
-            <span>Loading partners...</span>
+            <span>Loading clients...</span>
           </div>
         ) : partners.length === 0 ? (
           <div className="py-16 text-center text-stone-500">
             <Building2 className="w-10 h-10 text-stone-300 mx-auto mb-2" />
-            <p className="text-sm font-medium text-stone-700">No partners added yet.</p>
+            <p className="text-sm font-medium text-stone-700">No clients added yet.</p>
             <p className="text-xs text-stone-400 mt-1">
-              Click &quot;Add New Partner&quot; to add your first partner logo.
+              Click &quot;Add New Client&quot; to add your first client logo.
             </p>
           </div>
         ) : (
@@ -512,7 +512,7 @@ export default function AdminPartnersPage() {
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-stone-200 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-4 border-b border-stone-200">
               <h2 className="font-serif text-lg font-medium text-stone-900">
-                {editingPartner ? "Edit Trusted Partner" : "Add New Trusted Partner"}
+                {editingPartner ? "Edit Trusted Client" : "Add New Trusted Client"}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -526,7 +526,7 @@ export default function AdminPartnersPage() {
               {/* Partner Name */}
               <div>
                 <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">
-                  Partner Name *
+                  Client Name *
                 </label>
                 <input
                   type="text"
@@ -679,10 +679,10 @@ export default function AdminPartnersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-stone-200">
             <h3 className="font-serif text-lg font-medium text-stone-900">
-              Delete Partner Logo?
+              Delete Client Logo?
             </h3>
             <p className="text-xs text-stone-500 mt-2">
-              Are you sure you want to remove &quot;{partnerToDelete.name}&quot; from the trusted partners slideshow? This action will immediately update the live homepage.
+              Are you sure you want to remove &quot;{partnerToDelete.name}&quot; from the trusted clients slideshow? This action will immediately update the live homepage.
             </p>
 
             <div className="flex items-center justify-end gap-3 mt-6">

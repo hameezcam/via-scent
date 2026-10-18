@@ -151,44 +151,5 @@
       }
     ],
     "featuredInHome": true
-  },
-  {
-    "id": "commercial-scenting",
-    "name": "Commercial Scenting",
-    "slug": "commercial-scenting",
-    "image": "/images/categories/commercial-scenting.jpg",
-    "tagline": "HVAC & High-Capacity Architectural Systems",
-    "createdAt": "2026-10-18T10:00:00.000Z",
-    "updatedAt": "2026-10-18T10:00:00.000Z",
-    "description": "Discreet, multi-zone automated scent diffusers designed for luxury hotels, commercial towers, boutiques, and wellness spaces.",
-    "displayOrder": 7,
-    "subCategories": [],
-    "featuredInHome": false
-  },
-  {
-    "id": "home-fragrance",
-    "name": "Home Fragrance",
-    "slug": "home-fragrance",
-    "image": "/images/categories/home-fragrance.jpg",
-    "tagline": "Room Sprays & Acoustic Nebulizers",
-    "createdAt": "2026-10-18T10:00:00.000Z",
-    "updatedAt": "2026-10-18T10:00:00.000Z",
-    "description": "Elevate private residences, master suites, and personal studios with layered olfactive warmth and effortless elegance.",
-    "displayOrder": 8,
-    "subCategories": [],
-    "featuredInHome": false
-  },
-  {
-    "id": "gift-collections",
-    "name": "Gift Collections",
-    "slug": "gift-collections",
-    "image": "/images/categories/gift-collections.jpg",
-    "tagline": "Curated Discovery Sets & Host Gifts",
-    "createdAt": "2026-10-18T10:00:00.000Z",
-    "updatedAt": "2026-10-18T10:00:00.000Z",
-    "description": "Exquisite boxed sets featuring miniature diffuser instruments and complementary fragrance discovery flights.",
-    "displayOrder": 9,
-    "subCategories": [],
-    "featuredInHome": false
   }
 ]

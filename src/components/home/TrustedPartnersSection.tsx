@@ -91,7 +91,7 @@ export function TrustedPartnersSection({ initialPartners }: TrustedPartnersSecti
         {/* Section Heading */}
         <div className="text-center mb-8 sm:mb-10">
           <h2 className="text-xs sm:text-sm font-bold tracking-[0.24em] uppercase text-[#151412] inline-block relative pb-1">
-            OUR TRUSTED PARTNERS
+            OUR TRUSTED CLIENTS
           </h2>
         </div>
 

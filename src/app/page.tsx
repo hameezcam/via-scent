@@ -75,7 +75,7 @@ export default async function HomePage() {
       {/* 4.G Trust & Service Information */}
       <TrustSection />
 
-      {/* 4.H Our Trusted Partners Slideshow */}
+      {/* 4.H Our Trusted Clients Slideshow */}
       <TrustedPartnersSection initialPartners={partners} />
 
       {/* 4.I Recently Added Products (placed just before the footer) */}
