@@ -7,6 +7,8 @@ import { Footer } from "@/components/layout/Footer";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { BRAND_CONFIG } from "@/config/brand.config";
+import { categoryService } from "@/services/category.service";
+import type { Category } from "@/types/category";
 
 const serifFont = Playfair_Display({
   variable: "--font-serif",
@@ -49,19 +51,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let categories: Category[] = [];
+  try {
+    categories = await categoryService.getAll();
+  } catch (err) {
+    console.error("[RootLayout] Failed to load categories:", err);
+  }
+
   return (
     <html lang="en" className={`${serifFont.variable} ${sansFont.variable} h-full scroll-smooth`}>
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900 font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
         <CartProvider>
           <AnnouncementBar />
-          <Header />
+          <Header initialCategories={categories} />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <Footer initialCategories={categories} />
           <CartDrawer />
         </CartProvider>
       </body>

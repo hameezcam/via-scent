@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -19,6 +19,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
+import type { Category } from "@/types/category";
 
 function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   return (
@@ -48,10 +49,50 @@ function LinkedinIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   );
 }
 
-export function Footer() {
+interface FooterProps {
+  initialCategories?: Category[];
+}
+
+export function Footer({ initialCategories }: FooterProps = {}) {
+  const [categories, setCategories] = useState<Category[]>(initialCategories || []);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+
+  const fetchLiveCategories = useCallback(async () => {
+    try {
+      const res = await fetch("/api/categories", { cache: "no-store" });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setCategories(json.data);
+        }
+      }
+    } catch (err) {
+      console.error("[Footer] Live category fetch failed:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLiveCategories();
+
+    const handleCategoryUpdate = () => {
+      fetchLiveCategories();
+    };
+
+    window.addEventListener("viascent_categories_updated", handleCategoryUpdate);
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "viascent_categories_updated") {
+        fetchLiveCategories();
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("viascent_categories_updated", handleCategoryUpdate);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, [fetchLiveCategories]);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -256,41 +297,57 @@ export function Footer() {
               Collections
             </h3>
             <ul className="space-y-2.5 text-xs text-[#A8A196] font-light">
-              <li>
-                <Link href="/shop/fragrance-oils" className="hover:text-[#F8F6F1] transition-colors">
-                  Aroma Oils
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop/aroma-diffusers" className="hover:text-[#F8F6F1] transition-colors">
-                  Cold-Air Diffusers
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop?category=bestsellers" className="hover:text-[#F8F6F1] transition-colors">
-                  Best Sellers
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop/sprays" className="hover:text-[#F8F6F1] transition-colors">
-                  Ambient Sprays
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop/candles" className="hover:text-[#F8F6F1] transition-colors">
-                  Artisanal Candles
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop?q=car" className="hover:text-[#F8F6F1] transition-colors">
-                  Car Fragrance Systems
-                </Link>
-              </li>
-              <li>
-                <Link href="/business-scenting" className="hover:text-[#F8F6F1] transition-colors">
-                  Commercial HVAC Scenting
-                </Link>
-              </li>
+              {categories.length > 0 ? (
+                categories.map((cat) => {
+                  let href = cat.href;
+                  if (!href) {
+                    const slug = cat.slug || cat.id;
+                    if (slug === "bestsellers" || slug === "best-sellers") {
+                      href = "/shop?category=bestsellers";
+                    } else if (slug === "business-scenting" || slug === "commercial-scenting") {
+                      href = "/business-scenting";
+                    } else {
+                      href = `/shop/${slug}`;
+                    }
+                  }
+
+                  return (
+                    <li key={cat.id || cat.slug}>
+                      <Link href={href} className="hover:text-[#F8F6F1] transition-colors">
+                        {cat.name}
+                      </Link>
+                    </li>
+                  );
+                })
+              ) : (
+                <>
+                  <li>
+                    <Link href="/shop/fragrance-oils" className="hover:text-[#F8F6F1] transition-colors">
+                      Aroma Oils
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/shop/aroma-diffusers" className="hover:text-[#F8F6F1] transition-colors">
+                      Cold-Air Diffusers
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/shop?category=bestsellers" className="hover:text-[#F8F6F1] transition-colors">
+                      Best Sellers
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/shop/sprays" className="hover:text-[#F8F6F1] transition-colors">
+                      Ambient Sprays
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/shop/candles" className="hover:text-[#F8F6F1] transition-colors">
+                      Artisanal Candles
+                    </Link>
+                  </li>
+                </>
+              )}
               <li className="pt-2">
                 <Link
                   href="/shop"

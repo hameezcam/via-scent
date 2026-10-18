@@ -157,11 +157,20 @@ export function buildNavItemsFromCategories(categories: Category[]): NavMenuItem
   return navItems;
 }
 
-export function Header() {
+export interface HeaderProps {
+  initialCategories?: Category[];
+}
+
+export function Header({ initialCategories }: HeaderProps = {}) {
   const pathname = usePathname();
   const router = useRouter();
   const { itemCount, openCart } = useCart();
-  const [navItems, setNavItems] = useState<NavMenuItem[]>(DEFAULT_MAIN_NAV_ITEMS);
+  const [navItems, setNavItems] = useState<NavMenuItem[]>(() => {
+    if (initialCategories && initialCategories.length > 0) {
+      return buildNavItemsFromCategories(initialCategories);
+    }
+    return DEFAULT_MAIN_NAV_ITEMS;
+  });
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
