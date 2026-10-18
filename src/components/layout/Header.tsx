@@ -78,13 +78,7 @@ export const MAIN_NAV_ITEMS: NavMenuItem[] = [
   {
     id: "candles",
     label: "CANDLES",
-    href: "/shop?category=candles",
-    items: [
-      { label: "All Candles", href: "/shop?category=candles" },
-      { label: "Scented Candles", href: "/shop?category=candles&sub=scented-candle" },
-      { label: "Soy Wax Candles", href: "/shop?category=candles&sub=soy-wax" },
-      { label: "Luxury 3-Wick", href: "/shop?category=candles&sub=luxury-3-wick" },
-    ],
+    href: "/shop/candles",
   },
   {
     id: "services",

@@ -42,7 +42,11 @@ export function ShopContainer({
     if (newQ && newQ.trim() !== "") params.set("q", newQ.trim());
 
     const qs = params.toString();
-    const target = qs ? `${pathname}?${qs}` : pathname;
+    let basePath = pathname;
+    if ((newCat !== initialCategory || newCat === "all") && pathname !== "/shop") {
+      basePath = "/shop";
+    }
+    const target = qs ? `${basePath}?${qs}` : basePath;
     router.replace(target, { scroll: false });
   };
 
