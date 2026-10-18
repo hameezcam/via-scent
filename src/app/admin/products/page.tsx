@@ -35,6 +35,7 @@ import {
   Specification,
   ProductVariant,
 } from "@/types/product";
+import { Category } from "@/types/category";
 import { formatLKR } from "@/config/brand.config";
 
 type ModalTab = "basic" | "images" | "specs" | "content" | "variants";
@@ -176,6 +177,7 @@ export default function AdminProductsPage() {
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -244,13 +246,22 @@ export default function AdminProductsPage() {
     let ignore = false;
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/admin/products");
-        const parsed = await parseApiResponse<Product[]>(res);
+        const [prodRes, catRes] = await Promise.all([
+          fetch("/api/admin/products"),
+          fetch("/api/categories"),
+        ]);
+        const parsed = await parseApiResponse<Product[]>(prodRes);
         if (parsed.ok && parsed.data && !ignore) {
           setProducts(parsed.data);
         }
+        if (catRes.ok) {
+          const catJson = await catRes.json();
+          if (catJson.success && Array.isArray(catJson.data) && !ignore) {
+            setAvailableCategories(catJson.data);
+          }
+        }
       } catch (e) {
-        console.error("Failed to load products", e);
+        console.error("Failed to load products or categories", e);
       } finally {
         if (!ignore) {
           setLoading(false);
@@ -791,17 +802,27 @@ export default function AdminProductsPage() {
             className="px-3 py-1.5 bg-stone-50 border border-stone-300 rounded text-stone-800 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
           >
             <option value="ALL">All Categories</option>
-            <option value="aroma-diffusers">Diffusers</option>
-            <option value="fragrance-oils">Aroma Oils</option>
-            <option value="sprays">Sprays</option>
-            <option value="reed-diffusers">Reed Diffusers</option>
-            <option value="candles">Candles</option>
-            <optgroup label="Other Categories">
-              <option value="best-sellers">Best Sellers</option>
-              <option value="commercial-scenting">Commercial Scent Systems</option>
-              <option value="home-fragrance">Home Fragrance</option>
-              <option value="gift-collections">Gift Collections</option>
-            </optgroup>
+            {availableCategories.length > 0 ? (
+              availableCategories.map((c) => (
+                <option key={c.id} value={c.slug}>
+                  {c.name}
+                </option>
+              ))
+            ) : (
+              <>
+                <option value="aroma-diffusers">Diffusers</option>
+                <option value="fragrance-oils">Aroma Oils</option>
+                <option value="sprays">Sprays</option>
+                <option value="reed-diffusers">Reed Diffusers</option>
+                <option value="candles">Candles</option>
+                <optgroup label="Other Categories">
+                  <option value="best-sellers">Best Sellers</option>
+                  <option value="commercial-scenting">Commercial Scent Systems</option>
+                  <option value="home-fragrance">Home Fragrance</option>
+                  <option value="gift-collections">Gift Collections</option>
+                </optgroup>
+              </>
+            )}
           </select>
         </div>
       </div>
@@ -1160,17 +1181,27 @@ export default function AdminProductsPage() {
                         }}
                         className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
                       >
-                        <option value="aroma-diffusers">Diffusers</option>
-                        <option value="fragrance-oils">Aroma Oils</option>
-                        <option value="sprays">Sprays</option>
-                        <option value="reed-diffusers">Reed Diffusers</option>
-                        <option value="candles">Candles</option>
-                        <optgroup label="Other Categories">
-                          <option value="best-sellers">Best Sellers</option>
-                          <option value="commercial-scenting">Commercial Scent Systems</option>
-                          <option value="home-fragrance">Home Fragrance</option>
-                          <option value="gift-collections">Gift Collections</option>
-                        </optgroup>
+                        {availableCategories.length > 0 ? (
+                          availableCategories.map((c) => (
+                            <option key={c.id} value={c.slug || c.id}>
+                              {c.name}
+                            </option>
+                          ))
+                        ) : (
+                          <>
+                            <option value="aroma-diffusers">Diffusers</option>
+                            <option value="fragrance-oils">Aroma Oils</option>
+                            <option value="sprays">Sprays</option>
+                            <option value="reed-diffusers">Reed Diffusers</option>
+                            <option value="candles">Candles</option>
+                            <optgroup label="Other Categories">
+                              <option value="best-sellers">Best Sellers</option>
+                              <option value="commercial-scenting">Commercial Scent Systems</option>
+                              <option value="home-fragrance">Home Fragrance</option>
+                              <option value="gift-collections">Gift Collections</option>
+                            </optgroup>
+                          </>
+                        )}
                       </select>
                     </div>
 
@@ -1178,99 +1209,80 @@ export default function AdminProductsPage() {
                       <label className="block font-semibold text-stone-700 uppercase tracking-wider mb-1">
                         Product Type / Sub-Category
                       </label>
-                      <select
-                        value={subCategory}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setSubCategory(val);
-                          if (category === "fragrance-oils" && ["floral", "fresh", "fruity", "oriental", "woody", "amber", "gourmand"].includes(val)) {
-                            setScentFamily(val as ScentFamily);
-                          }
-                        }}
-                        className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
-                      >
-                        <option value="">-- Select Product Type --</option>
-                        {category === "aroma-diffusers" && (
-                          <>
-                            <option value="diffuser">Diffuser</option>
-                            <option value="car-diffuser">Car Diffuser</option>
-                            <option value="dispenser">Dispenser</option>
-                            <option value="reed-diffuser">Reed Diffuser</option>
-                          </>
-                        )}
-                        {category === "fragrance-oils" && (
-                          <>
-                            <option value="car-scent">Car Scent</option>
-                            <option value="choice">Dr. Scent&apos;s Choice</option>
-                            <option value="fb">F&amp;B</option>
-                            <option value="floral">Floral</option>
-                            <option value="fresh">Fresh</option>
-                            <option value="fruity">Fruity</option>
-                            <option value="oriental">Oriental</option>
-                            <option value="premium">Premium Collection</option>
-                          </>
-                        )}
-                        {category === "sprays" && (
-                          <>
-                            <option value="fabric-spray">Fabric Spray</option>
-                            <option value="odor-eliminator">Odor Eliminator</option>
-                            <option value="aerosol">Aerosol</option>
-                          </>
-                        )}
-                        {category === "reed-diffusers" && (
-                          <>
-                            <option value="reed-diffuser">Classic Reed Diffuser</option>
-                            <option value="luxury-reed">Luxury Vessel</option>
-                            <option value="refill">Refill Oil &amp; Sticks</option>
-                          </>
-                        )}
-                        {category === "candles" && (
-                          <>
-                            <option value="scented-candle">Scented Candle</option>
-                            <option value="soy-wax">Soy Wax Candle</option>
-                            <option value="luxury-3-wick">Luxury 3-Wick Candle</option>
-                            <option value="travel-candle">Travel Candle</option>
-                          </>
-                        )}
-                        {category === "best-sellers" && (
-                          <>
-                            <option value="diffusers">Diffusers</option>
-                            <option value="aroma-oils">Aroma Oils</option>
-                            <option value="sprays">Sprays</option>
-                            <option value="reed-diffusers">Reed Diffusers</option>
-                            <option value="candles">Candles</option>
-                          </>
-                        )}
-                        {category === "sprays" && (
-                          <>
-                            <option value="fabric-spray">Fabric Spray</option>
-                            <option value="odor-eliminator">Odor Eliminator</option>
-                            <option value="aerosol">Aerosol</option>
-                          </>
-                        )}
-                        {category === "commercial-scenting" && (
-                          <>
-                            <option value="dispenser">Dispenser</option>
-                            <option value="hvac">HVAC System</option>
-                            <option value="tower">Tower Column</option>
-                          </>
-                        )}
-                        {category === "home-fragrance" && (
-                          <>
-                            <option value="fabric-spray">Fabric Spray</option>
-                            <option value="odor-eliminator">Odor Eliminator</option>
-                            <option value="aerosol">Aerosol</option>
-                            <option value="reed-diffuser">Reed Diffuser</option>
-                            <option value="candles">Candles</option>
-                          </>
-                        )}
-                        {category === "gift-collections" && (
-                          <>
-                            <option value="discovery-set">Discovery Set</option>
-                            <option value="gift-set">Gift Set</option>
-                          </>
-                        )}
-                      </select>
+                      {(() => {
+                        const matchedCat = availableCategories.find(
+                          (c) => c.slug === category || c.id === category
+                        );
+                        const dynamicSubs = matchedCat?.subCategories || [];
+
+                        return (
+                          <div className="space-y-1">
+                            <select
+                              value={subCategory}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setSubCategory(val);
+                                if (
+                                  category === "fragrance-oils" &&
+                                  ["floral", "fresh", "fruity", "oriental", "woody", "amber", "gourmand"].includes(val)
+                                ) {
+                                  setScentFamily(val as ScentFamily);
+                                }
+                              }}
+                              className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
+                            >
+                              <option value="">-- Select Product Type --</option>
+                              {dynamicSubs.length > 0 ? (
+                                dynamicSubs.map((sub) => (
+                                  <option key={sub.id} value={sub.id}>
+                                    {sub.label}
+                                  </option>
+                                ))
+                              ) : (
+                                <>
+                                  {category === "aroma-diffusers" && (
+                                    <>
+                                      <option value="diffuser">Diffuser</option>
+                                      <option value="car-diffuser">Car Diffuser</option>
+                                      <option value="dispenser">Dispenser</option>
+                                      <option value="reed-diffuser">Reed Diffuser</option>
+                                    </>
+                                  )}
+                                  {category === "fragrance-oils" && (
+                                    <>
+                                      <option value="car-scent">Car Scent</option>
+                                      <option value="choice">Dr. Scent&apos;s Choice</option>
+                                      <option value="fb">F&amp;B</option>
+                                      <option value="floral">Floral</option>
+                                      <option value="fresh">Fresh</option>
+                                      <option value="fruity">Fruity</option>
+                                      <option value="oriental">Oriental</option>
+                                      <option value="premium">Premium Collection</option>
+                                    </>
+                                  )}
+                                  {category === "candles" && (
+                                    <>
+                                      <option value="scented-candle">Scented Candle</option>
+                                      <option value="soy-wax">Soy Wax Candle</option>
+                                      <option value="luxury-3-wick">Luxury 3-Wick Candle</option>
+                                    </>
+                                  )}
+                                  {category === "sprays" && (
+                                    <>
+                                      <option value="fabric-spray">Fabric Spray</option>
+                                      <option value="odor-eliminator">Odor Eliminator</option>
+                                      <option value="aerosol">Aerosol</option>
+                                    </>
+                                  )}
+                                </>
+                              )}
+                              {subCategory && !dynamicSubs.some((s) => s.id === subCategory) && (
+                                <option value={subCategory}>{subCategory}</option>
+                              )}
+                            </select>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
 

@@ -110,7 +110,7 @@ export const COLLECTIONS_HIERARCHY: CollectionConfig[] = [
 export function resolveCollectionId(
   category: string,
   sort?: string
-): "all" | "aroma-oil" | "diffuser" | "bestsellers" | "sprays" | "candles" {
+): "all" | "aroma-oil" | "diffuser" | "bestsellers" | "sprays" | "candles" | string {
   if (sort === "bestselling" || category === "bestsellers" || category === "best-sellers") {
     return "bestsellers";
   }
@@ -126,7 +126,10 @@ export function resolveCollectionId(
   if (category === "candles") {
     return "candles";
   }
-  return "all";
+  if (!category || category === "all") {
+    return "all";
+  }
+  return category;
 }
 
 interface FilterContentProps {
@@ -215,6 +218,18 @@ function FilterContent({
               </button>
             );
           })}
+
+          {/* Dynamic / Custom Category if active */}
+          {!["all", "aroma-oil", "diffuser", "bestsellers", "sprays", "candles"].includes(activeColId) && (
+            <button
+              type="button"
+              onClick={() => handleSelectCollection(activeColId, filters.category)}
+              className="w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 text-[#151412] font-medium"
+            >
+              <span className="capitalize">{filters.category.replace(/-/g, " ")}</span>
+              <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
+            </button>
+          )}
         </div>
       </div>
 

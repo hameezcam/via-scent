@@ -1,5 +1,6 @@
 import { productService } from "@/services/product.service";
 import { partnerService } from "@/services/partner.service";
+import { categoryService } from "@/services/category.service";
 import { HeroSection } from "@/components/home/HeroSection";
 import { TrustedPartnersSection } from "@/components/home/TrustedPartnersSection";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
@@ -19,9 +20,10 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [allProducts, partners] = await Promise.all([
+  const [allProducts, partners, featuredCategories] = await Promise.all([
     productService.getAll(),
     partnerService.getAll(true),
+    categoryService.getFeaturedInHome(),
   ]);
   const newProducts = allProducts.filter((p) => p.isNew);
   const featured = allProducts.filter((p) => p.featured);
@@ -44,7 +46,7 @@ export default async function HomePage() {
       <HeroSection />
 
       {/* 4.B Featured Categories */}
-      <FeaturedCategories />
+      <FeaturedCategories initialCategories={featuredCategories} />
 
       {/* 4.C Bestsellers */}
       <BestsellersSection products={productsToDisplay} />

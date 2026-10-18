@@ -7,6 +7,8 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import { LUXURY_EASE } from "@/config/motion.config";
 
+import { Category } from "@/types/category";
+
 interface SubCategoryPill {
   label: string;
   href: string;
@@ -21,6 +23,10 @@ interface CollectionCard {
   href: string;
   subItems: SubCategoryPill[];
   colSpan: string;
+}
+
+interface FeaturedCategoriesProps {
+  initialCategories?: Category[];
 }
 
 const FEATURED_COLLECTIONS: CollectionCard[] = [
@@ -109,7 +115,42 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
   },
 ];
 
-export function FeaturedCategories() {
+function getColSpan(idx: number, total: number): string {
+  if (total === 1) return "col-span-12 h-[420px] sm:h-[460px] lg:h-[490px]";
+  if (total === 2) return "md:col-span-6 h-[420px] sm:h-[460px] lg:h-[490px]";
+  if (total === 5) {
+    if (idx === 0) return "md:col-span-7 h-[420px] sm:h-[460px] lg:h-[490px]";
+    if (idx === 1) return "md:col-span-5 h-[420px] sm:h-[460px] lg:h-[490px]";
+    return "md:col-span-6 lg:col-span-4 h-[420px] sm:h-[460px] lg:h-[490px]";
+  }
+  const remaining = total - idx;
+  if (idx % 3 === 0 && remaining === 1) return "col-span-12 h-[420px] sm:h-[460px] lg:h-[490px]";
+  if (idx % 3 === 0 && remaining === 2) return "md:col-span-6 h-[420px] sm:h-[460px] lg:h-[490px]";
+  if (idx % 3 === 1 && remaining === 1) return "md:col-span-6 h-[420px] sm:h-[460px] lg:h-[490px]";
+  return "md:col-span-6 lg:col-span-4 h-[420px] sm:h-[460px] lg:h-[490px]";
+}
+
+export function FeaturedCategories({ initialCategories }: FeaturedCategoriesProps) {
+  const dynamicCollections: CollectionCard[] =
+    initialCategories && initialCategories.length > 0
+      ? initialCategories.map((cat, idx) => ({
+          id: cat.id,
+          name: cat.name,
+          tagline: cat.tagline || "Olfactory Architecture",
+          description: cat.description || "",
+          image: cat.image || "/images/categories/candles.jpg",
+          href: cat.href || `/shop/${cat.slug}`,
+          colSpan: getColSpan(idx, initialCategories.length),
+          subItems:
+            cat.subCategories && cat.subCategories.length > 0
+              ? cat.subCategories.map((sub) => ({
+                  label: sub.label,
+                  href: `${cat.href || `/shop/${cat.slug}`}?sub=${sub.id}`,
+                }))
+              : [],
+        }))
+      : FEATURED_COLLECTIONS;
+
   return (
     <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E7E2D8] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -127,9 +168,9 @@ export function FeaturedCategories() {
           </p>
         </div>
 
-        {/* Editorial Balanced Asymmetric Grid: 2 rows of 4 curated collections */}
+        {/* Editorial Balanced Asymmetric Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {FEATURED_COLLECTIONS.map((col, idx) => {
+          {dynamicCollections.map((col, idx) => {
             return (
               <motion.div
                 key={col.id}

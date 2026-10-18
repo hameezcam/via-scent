@@ -14,6 +14,7 @@ import {
   Store,
   ExternalLink,
   Building2,
+  FolderTree,
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -27,6 +28,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
     { label: "Products Catalogue", href: "/admin/products", icon: Store },
+    { label: "Categories", href: "/admin/categories", icon: FolderTree },
     { label: "Trusted Partners", href: "/admin/partners", icon: Building2 },
     { label: "Delivery Settings (LKR 500)", href: "/admin/settings/delivery", icon: Truck },
     { label: "Store Policies & Payments", href: "/admin/settings", icon: Sliders },

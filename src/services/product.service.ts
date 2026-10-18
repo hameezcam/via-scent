@@ -262,20 +262,30 @@ class ProductServiceImpl implements IProductService {
   }
 
   async getCategories(): Promise<CategoryInfo[]> {
-    return [...CATEGORIES];
+    const { categoryService } = await import("./category.service");
+    const categories = await categoryService.getAll();
+    return categories.map((c) => ({
+      id: c.id as ProductCategory,
+      name: c.name,
+      tagline: c.tagline,
+      description: c.description,
+      image: c.image,
+      featuredInHome: c.featuredInHome,
+    }));
   }
 
   async getCategoryById(id: string): Promise<CategoryInfo | null> {
-    const canonicalId =
-      id === "aroma-oil"
-        ? "fragrance-oils"
-        : id === "diffuser"
-        ? "aroma-diffusers"
-        : id === "bestsellers"
-        ? "best-sellers"
-        : id;
-    const category = CATEGORIES.find((c) => c.id === canonicalId);
-    return category ? { ...category } : null;
+    const { categoryService } = await import("./category.service");
+    const category = await categoryService.getById(id);
+    if (!category) return null;
+    return {
+      id: category.id as ProductCategory,
+      name: category.name,
+      tagline: category.tagline,
+      description: category.description,
+      image: category.image,
+      featuredInHome: category.featuredInHome,
+    };
   }
 
   async createProduct(productInput: Omit<Product, "id">, _adminUser: string = "admin@viascent.lk"): Promise<Product> {

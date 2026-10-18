@@ -1,0 +1,216 @@
+[
+  {
+    "id": "aroma-diffusers",
+    "slug": "aroma-diffusers",
+    "name": "Diffuser",
+    "tagline": "Cold-Air Micro-Nebulization Technology",
+    "description": "Waterless, heatless cold-air diffusers, car nebulizers, automated dispensers, and architectural reed diffusers.",
+    "image": "/images/categories/aroma-diffusers.jpg",
+    "featuredInHome": true,
+    "displayOrder": 1,
+    "subCategories": [
+      {
+        "id": "diffuser",
+        "label": "Diffuser"
+      },
+      {
+        "id": "car-diffuser",
+        "label": "Car Diffuser"
+      },
+      {
+        "id": "dispenser",
+        "label": "Dispenser"
+      },
+      {
+        "id": "reed-diffuser",
+        "label": "Reed Diffuser"
+      }
+    ],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "fragrance-oils",
+    "slug": "fragrance-oils",
+    "name": "Aroma Oil",
+    "tagline": "Pure Essential & Artisanal Perfume Blends",
+    "description": "Formulated for cold-air diffusion with verified IFRA standards, evoking timeless botanical, fresh, and oriental profiles.",
+    "image": "/images/categories/fragrance-oils.jpg",
+    "featuredInHome": true,
+    "displayOrder": 2,
+    "subCategories": [
+      {
+        "id": "car-scent",
+        "label": "Car Scent"
+      },
+      {
+        "id": "choice",
+        "label": "Dr. Scent's Choice"
+      },
+      {
+        "id": "fb",
+        "label": "F&B"
+      },
+      {
+        "id": "floral",
+        "label": "Floral"
+      },
+      {
+        "id": "fresh",
+        "label": "Fresh"
+      },
+      {
+        "id": "fruity",
+        "label": "Fruity"
+      },
+      {
+        "id": "oriental",
+        "label": "Oriental"
+      },
+      {
+        "id": "premium",
+        "label": "Premium Collection"
+      }
+    ],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "best-sellers",
+    "slug": "best-sellers",
+    "name": "Best Sellers",
+    "tagline": "Iconic Signature Creations",
+    "description": "Our most celebrated cold-air diffusers, signature aroma oils, ambient sprays, reed diffusers, and luxury candles.",
+    "image": "/images/categories/bestsellers.jpg",
+    "featuredInHome": true,
+    "displayOrder": 3,
+    "subCategories": [
+      {
+        "id": "diffusers",
+        "label": "Diffusers"
+      },
+      {
+        "id": "aroma-oils",
+        "label": "Aroma Oils"
+      },
+      {
+        "id": "sprays",
+        "label": "Sprays"
+      },
+      {
+        "id": "reed-diffusers",
+        "label": "Reed Diffusers"
+      },
+      {
+        "id": "candles",
+        "label": "Candles"
+      }
+    ],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "sprays",
+    "slug": "sprays",
+    "name": "Sprays",
+    "tagline": "Fine-Mist Ambient & Textile Scenting",
+    "description": "Instantaneous, residue-free fabric sprays, organic odor eliminators, and aerosol ambient mists with Dr. Scent fragrances.",
+    "image": "/images/categories/sprays.jpg",
+    "featuredInHome": true,
+    "displayOrder": 4,
+    "subCategories": [
+      {
+        "id": "fabric-spray",
+        "label": "Fabric Spray"
+      },
+      {
+        "id": "odor-eliminator",
+        "label": "Odor Eliminator"
+      },
+      {
+        "id": "aerosol",
+        "label": "Aerosol"
+      }
+    ],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "candles",
+    "slug": "candles",
+    "name": "Candles",
+    "tagline": "Hand-Poured Botanical & Soy Wax Candles",
+    "description": "Artisanal scented candles crafted with pure soy and coconut wax, cotton wicks, and Dr. Scent fragrances for warm ambient illumination.",
+    "image": "/images/categories/candles.jpg",
+    "featuredInHome": true,
+    "displayOrder": 5,
+    "subCategories": [
+      {
+        "id": "scented-candle",
+        "label": "Scented Candle"
+      },
+      {
+        "id": "soy-wax",
+        "label": "Soy Wax Candle"
+      },
+      {
+        "id": "luxury-3-wick",
+        "label": "Luxury 3-Wick"
+      }
+    ],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "reed-diffusers",
+    "slug": "reed-diffusers",
+    "name": "Reed Diffusers",
+    "tagline": "Continuous Passive Atmosphere Scenting",
+    "description": "Hand-blown tinted glass vessels with high-porosity rattan reeds delivering continuous, subtle scenting without heat or power.",
+    "image": "/images/categories/aroma-diffusers.jpg",
+    "featuredInHome": true,
+    "displayOrder": 6,
+    "subCategories": [],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T11:14:21.119Z"
+  },
+  {
+    "id": "commercial-scenting",
+    "slug": "commercial-scenting",
+    "name": "Commercial Scenting",
+    "tagline": "HVAC & High-Capacity Architectural Systems",
+    "description": "Discreet, multi-zone automated scent diffusers designed for luxury hotels, commercial towers, boutiques, and wellness spaces.",
+    "image": "/images/categories/commercial-scenting.jpg",
+    "featuredInHome": false,
+    "displayOrder": 7,
+    "subCategories": [],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "home-fragrance",
+    "slug": "home-fragrance",
+    "name": "Home Fragrance",
+    "tagline": "Room Sprays & Acoustic Nebulizers",
+    "description": "Elevate private residences, master suites, and personal studios with layered olfactive warmth and effortless elegance.",
+    "image": "/images/categories/home-fragrance.jpg",
+    "featuredInHome": false,
+    "displayOrder": 8,
+    "subCategories": [],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "gift-collections",
+    "slug": "gift-collections",
+    "name": "Gift Collections",
+    "tagline": "Curated Discovery Sets & Host Gifts",
+    "description": "Exquisite boxed sets featuring miniature diffuser instruments and complementary fragrance discovery flights.",
+    "image": "/images/categories/gift-collections.jpg",
+    "featuredInHome": false,
+    "displayOrder": 9,
+    "subCategories": [],
+    "createdAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T10:00:00.000Z"
+  }
+]
