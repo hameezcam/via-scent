@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Product } from "@/types/product";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
+import { matchesProduct, scoreProductRelevance } from "@/lib/search";
 
 interface SearchContainerProps {
   initialProducts: Product[];
@@ -14,31 +15,57 @@ interface SearchContainerProps {
 export function SearchContainer({ initialProducts }: SearchContainerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
+  const urlQuery = searchParams.get("q") || "";
 
-  const [query, setQuery] = useState(initialQuery);
+  const [query, setQuery] = useState(urlQuery);
+
+  // Sync with URL query when changed externally
+  useEffect(() => {
+    setQuery(urlQuery);
+  }, [urlQuery]);
+
+  const updateSearchUrl = useCallback(
+    (q: string) => {
+      const trimmed = q.trim();
+      const currentParam = searchParams.get("q") || "";
+      if (trimmed !== currentParam.trim()) {
+        if (trimmed) {
+          router.replace(`/search?q=${encodeURIComponent(trimmed)}`, { scroll: false });
+        } else {
+          router.replace("/search", { scroll: false });
+        }
+      }
+    },
+    [router, searchParams]
+  );
+
+  // Debounce syncing to URL (300ms) while keeping input and grid instantaneous
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      updateSearchUrl(query);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query, updateSearchUrl]);
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return initialProducts;
-    const q = query.toLowerCase().trim();
-    return initialProducts.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.tagline.toLowerCase().includes(q) ||
-        p.sku.toLowerCase().includes(q) ||
-        (p.scentNotes &&
-          [...p.scentNotes.top, ...p.scentNotes.heart, ...p.scentNotes.base].some((note) =>
-            note.toLowerCase().includes(q)
-          ))
-    );
+    const trimmed = query.trim();
+    if (!trimmed) return initialProducts;
+
+    const matched = initialProducts.filter((p) => matchesProduct(p, trimmed));
+
+    // Sort by relevance score
+    matched.sort((a, b) => {
+      const scoreA = scoreProductRelevance(a, trimmed);
+      const scoreB = scoreProductRelevance(b, trimmed);
+      return scoreB - scoreA;
+    });
+
+    return matched;
   }, [initialProducts, query]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-    }
+    updateSearchUrl(query);
   };
 
   const breadcrumbs = [
@@ -70,11 +97,24 @@ export function SearchContainer({ initialProducts }: SearchContainerProps) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by product name, scent notes (e.g., Oud, Tea, Amber)..."
-                className="w-full pl-11 pr-28 py-3 text-xs bg-white border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-amber-800 text-stone-900 shadow-xs"
+                className="w-full pl-11 pr-24 py-3 text-xs bg-white border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-amber-800 text-stone-900 shadow-xs"
               />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    updateSearchUrl("");
+                  }}
+                  className="absolute right-20 top-3 text-stone-400 hover:text-stone-700 cursor-pointer p-1"
+                  aria-label="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
               <button
                 type="submit"
-                className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-stone-900 text-amber-100 text-xs uppercase tracking-wider font-semibold rounded hover:bg-stone-800 transition-colors"
+                className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-stone-900 text-amber-100 text-xs uppercase tracking-wider font-semibold rounded hover:bg-stone-800 transition-colors cursor-pointer"
               >
                 Search
               </button>
@@ -87,6 +127,11 @@ export function SearchContainer({ initialProducts }: SearchContainerProps) {
             <span>
               Found <strong>{filtered.length}</strong> matching creations
             </span>
+            {query && (
+              <span className="text-stone-400">
+                Instant search active for &ldquo;{query}&rdquo;
+              </span>
+            )}
           </div>
 
           <ProductGrid
@@ -94,7 +139,7 @@ export function SearchContainer({ initialProducts }: SearchContainerProps) {
             columns={4}
             emptyMessage={
               query
-                ? `No fragrance products found matching "${query}".`
+                ? `No fragrance products found matching "${query}". Try searching for diffuse, candle, car, or fragrance notes like amber or oud.`
                 : "Enter a search term above to explore the catalogue."
             }
           />

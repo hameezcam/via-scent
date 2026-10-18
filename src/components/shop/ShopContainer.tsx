@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Product, ProductCategory, ScentFamily, SortOption } from "@/types/product";
 import { Category } from "@/types/category";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ProductFilters } from "@/components/product/ProductFilters";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
-import { Search, Filter, Sparkles } from "lucide-react";
+import { Search, Filter, Sparkles, X } from "lucide-react";
+import { matchesProduct, scoreProductRelevance } from "@/lib/search";
 
 interface ShopContainerProps {
   initialProducts: Product[];
@@ -42,26 +43,45 @@ export function ShopContainer({
     searchParams.get("sub") ||
     searchParams.get("family") ||
     "all";
-  const searchQuery = searchParams.get("q") || "";
-
+  const urlSearchQuery = searchParams.get("q") || "";
+  const [searchValue, setSearchValue] = useState(urlSearchQuery);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
-  const updateUrl = (newCat: string, newSort: string, newSub: string, newQ: string) => {
-    const params = new URLSearchParams();
-    if (newCat && newCat !== "all") params.set("category", newCat);
-    if (newSort && newSort !== "featured") params.set("sort", newSort);
-    if (newSub && newSub !== "all") params.set("sub", newSub);
-    if (newQ && newQ.trim() !== "") params.set("q", newQ.trim());
+  // Sync internal searchValue state when URL q param changes externally
+  useEffect(() => {
+    setSearchValue(urlSearchQuery);
+  }, [urlSearchQuery]);
 
-    const qs = params.toString();
-    let basePath = pathname;
-    if ((newCat !== initialCategory || newCat === "all") && pathname !== "/shop") {
-      basePath = "/shop";
-    }
-    const target = qs ? `${basePath}?${qs}` : basePath;
-    router.replace(target, { scroll: false });
-  };
+  const updateUrl = useCallback(
+    (newCat: string, newSort: string, newSub: string, newQ: string) => {
+      const params = new URLSearchParams();
+      if (newCat && newCat !== "all") params.set("category", newCat);
+      if (newSort && newSort !== "featured") params.set("sort", newSort);
+      if (newSub && newSub !== "all") params.set("sub", newSub);
+      if (newQ && newQ.trim() !== "") params.set("q", newQ.trim());
+
+      const qs = params.toString();
+      let basePath = pathname;
+      if ((newCat !== initialCategory || newCat === "all") && pathname !== "/shop") {
+        basePath = "/shop";
+      }
+      const target = qs ? `${basePath}?${qs}` : basePath;
+      router.replace(target, { scroll: false });
+    },
+    [pathname, initialCategory, router]
+  );
+
+  // Debounce syncing typing to the URL so that keystrokes remain instantaneous with 0ms delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const currentUrlQ = searchParams.get("q") || "";
+      if (searchValue.trim() !== currentUrlQ.trim()) {
+        updateUrl(categoryParam, sort, subCategory, searchValue.trim());
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchValue, categoryParam, sort, subCategory, searchParams, updateUrl]);
 
   const handleFilterChange = (updates: {
     category?: string;
@@ -79,7 +99,10 @@ export function ShopContainer({
         ? updates.scentFamily
         : subCategory;
     const nextSort = updates.sort !== undefined ? updates.sort : sort;
-    const nextQ = updates.query !== undefined ? updates.query : searchQuery;
+
+    if (updates.query !== undefined) {
+      setSearchValue(updates.query);
+    }
 
     if (updates.inStockOnly !== undefined) {
       setInStockOnly(updates.inStockOnly);
@@ -88,15 +111,16 @@ export function ShopContainer({
     // If changing category, reset subCategory unless explicitly passed
     const finalSub = updates.category !== undefined && updates.subCategory === undefined ? "all" : nextSub;
 
-    updateUrl(nextCat, nextSort, finalSub, nextQ);
+    updateUrl(nextCat, nextSort, finalSub, updates.query !== undefined ? updates.query : searchValue);
   };
 
   const handleReset = () => {
     setInStockOnly(false);
+    setSearchValue("");
     updateUrl("all", "featured", "all", "");
   };
 
-  const filteredProducts = useMemo(() => {
+  const filteredData = useMemo(() => {
     let list = [...initialProducts];
 
     // Determine active collection category
@@ -355,43 +379,78 @@ export function ShopContainer({
       list = list.filter((p) => p.inStock);
     }
 
-    if (searchQuery.trim() !== "") {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.tagline.toLowerCase().includes(q) ||
-          p.sku.toLowerCase().includes(q) ||
-          (p.scentNotes &&
-            [...p.scentNotes.top, ...p.scentNotes.heart, ...p.scentNotes.base].some((note) =>
-              note.toLowerCase().includes(q)
-            ))
-      );
+    let isCrossCategory = false;
+    let crossCategoryCount = 0;
+    const trimmedSearch = searchValue.trim();
+
+    if (trimmedSearch !== "") {
+      const categoryMatches = list.filter((p) => matchesProduct(p, trimmedSearch));
+
+      // If no matches within the current category/subCategory selection, check if matching creations exist across the entire catalogue
+      if (categoryMatches.length === 0 && (categoryParam !== "all" || subCategory !== "all")) {
+        const globalMatches = initialProducts.filter((p) => {
+          if (inStockOnly && !p.inStock) return false;
+          return matchesProduct(p, trimmedSearch);
+        });
+
+        if (globalMatches.length > 0) {
+          list = globalMatches;
+          isCrossCategory = true;
+          crossCategoryCount = globalMatches.length;
+        } else {
+          list = [];
+        }
+      } else {
+        list = categoryMatches;
+      }
     }
 
-    switch (sort) {
-      case "price-asc":
-        return list.sort((a, b) => a.basePriceLKR - b.basePriceLKR);
-      case "price-desc":
-        return list.sort((a, b) => b.basePriceLKR - a.basePriceLKR);
-      case "name-asc":
-        return list.sort((a, b) => a.name.localeCompare(b.name));
-      case "name-desc":
-        return list.sort((a, b) => b.name.localeCompare(a.name));
-      case "newest":
-        return list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
-      case "featured":
-      default:
-        return list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    // Sort: if user searches and has not selected a specific sort order, prioritize relevance score
+    if (trimmedSearch !== "" && sort === "featured") {
+      list.sort((a, b) => {
+        const scoreA = scoreProductRelevance(a, trimmedSearch);
+        const scoreB = scoreProductRelevance(b, trimmedSearch);
+        return scoreB - scoreA;
+      });
+    } else {
+      switch (sort) {
+        case "price-asc":
+          list.sort((a, b) => a.basePriceLKR - b.basePriceLKR);
+          break;
+        case "price-desc":
+          list.sort((a, b) => b.basePriceLKR - a.basePriceLKR);
+          break;
+        case "name-asc":
+          list.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case "name-desc":
+          list.sort((a, b) => b.name.localeCompare(a.name));
+          break;
+        case "newest":
+          list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+          break;
+        case "featured":
+        default:
+          list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+          break;
+      }
     }
-  }, [initialProducts, categoryParam, subCategory, inStockOnly, searchQuery, sort]);
+
+    return {
+      products: list,
+      isCrossCategory,
+      crossCategoryCount,
+    };
+  }, [initialProducts, categoryParam, subCategory, inStockOnly, searchValue, sort]);
+
+  const filteredProducts = filteredData.products;
+  const isCrossCategoryResult = filteredData.isCrossCategory;
 
   const isFiltered =
     categoryParam !== (initialCategory === "all" ? "all" : initialCategory) ||
     subCategory !== "all" ||
     inStockOnly ||
-    searchQuery.trim() !== "" ||
+    searchValue.trim() !== "" ||
     sort !== "featured";
 
   const sortOptions: { label: string; value: SortOption }[] = [
@@ -435,12 +494,25 @@ export function ShopContainer({
               <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-[var(--warm-stone)]" />
               <input
                 type="text"
-                value={searchQuery}
-                onChange={(e) => handleFilterChange({ query: e.target.value })}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Search by note, room or title..."
                 aria-label="Filter products by name or note"
-                className="w-full pl-10 pr-4 py-2.5 text-xs bg-white border border-[var(--warm-stone)]/50 rounded-sm focus:outline-none focus:border-[var(--champagne)] text-[var(--near-black)] placeholder-[var(--warm-stone)]/80 transition-colors"
+                className="w-full pl-10 pr-9 py-2.5 text-xs bg-white border border-[var(--warm-stone)]/50 rounded-sm focus:outline-none focus:border-[var(--champagne)] text-[var(--near-black)] placeholder-[var(--warm-stone)]/80 transition-colors"
               />
+              {searchValue && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchValue("");
+                    updateUrl(categoryParam, sort, subCategory, "");
+                  }}
+                  className="absolute right-3 top-3 text-[var(--warm-stone)] hover:text-[var(--near-black)] transition-colors cursor-pointer"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -455,7 +527,7 @@ export function ShopContainer({
               scentFamily: subCategory,
               inStockOnly,
               sort,
-              query: searchQuery,
+              query: searchValue,
             }}
             onFilterChange={handleFilterChange}
             onReset={handleReset}
@@ -467,6 +539,29 @@ export function ShopContainer({
 
           {/* Right Product Grid Area */}
           <div className="flex-1 min-w-0">
+            {/* Cross-category Fallback Notification */}
+            {isCrossCategoryResult && (
+              <div className="mb-6 p-4 bg-amber-50/90 border border-amber-200/80 rounded-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-900 shadow-xs animate-in fade-in duration-200">
+                <div>
+                  <span className="font-semibold uppercase tracking-wider text-[10px] bg-amber-200/60 text-amber-900 px-2 py-0.5 rounded-xs mr-2">
+                    Storewide Search
+                  </span>
+                  <span>
+                    No creations found under this category filter. Showing{" "}
+                    <strong>{filteredProducts.length}</strong> creations matching &ldquo;
+                    {searchValue}&rdquo; across all fragrance collections.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => updateUrl("all", sort, "all", searchValue)}
+                  className="text-amber-950 font-medium underline underline-offset-2 hover:text-black whitespace-nowrap cursor-pointer"
+                >
+                  View in All Categories
+                </button>
+              </div>
+            )}
+
             {/* Top Toolbar */}
             <div className="bg-white/80 backdrop-blur-sm p-4 rounded-sm border border-[var(--warm-stone)]/40 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center justify-between sm:justify-start gap-4">
@@ -513,8 +608,8 @@ export function ShopContainer({
               products={filteredProducts}
               columns={3}
               emptyMessage={
-                searchQuery
-                  ? `No creations found matching "${searchQuery}".`
+                searchValue.trim()
+                  ? `No creations found matching "${searchValue}". Try searching for diffuse, candle, car, or fragrance notes like amber or oud.`
                   : "No instruments or oils match the selected criteria."
               }
             />

@@ -8,6 +8,7 @@ import { Search, ShoppingBag, User, Menu, ChevronDown, Sparkles, X, ArrowRight, 
 import { useCart } from "@/context/CartContext";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { MobileNav } from "./MobileNav";
+import { Product } from "@/types/product";
 
 export interface NavDropdownItem {
   label: string;
@@ -103,6 +104,9 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
 
+  const [liveResults, setLiveResults] = useState<Product[]>([]);
+  const [isLoadingLive, setIsLoadingLive] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 30);
@@ -111,12 +115,42 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Fetch live search results when user types 2 or more characters
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    if (!isSearchOpen || trimmed.length < 2) {
+      setLiveResults([]);
+      setIsLoadingLive(false);
+      return;
+    }
+
+    setIsLoadingLive(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            setLiveResults(json.data.slice(0, 5));
+          }
+        }
+      } catch (err) {
+        console.error("Live search failed:", err);
+      } finally {
+        setIsLoadingLive(false);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, isSearchOpen]);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
       setSearchQuery("");
+      setLiveResults([]);
     }
   };
 
@@ -268,32 +302,118 @@ export function Header() {
 
         {/* Search Flyout Overlay */}
         {isSearchOpen && (
-          <div className="border-t border-[#E7E2D8] bg-[#FAF8F5] py-4 px-4 sm:px-6 shadow-md animate-in slide-in-from-top-1 duration-200">
-            <form onSubmit={handleSearchSubmit} className="max-w-2xl mx-auto flex items-center gap-3">
-              <Search className="w-5 h-5 text-[#8A8275]" />
-              <input
-                type="search"
-                placeholder="Search diffusers, fragrance oils, olfactory notes (e.g., Oud, Amber, Vanilla)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
-                className="flex-1 bg-transparent border-b border-[#D8D0C4] py-2 text-sm text-[#151412] placeholder-[#8A8275] focus:outline-none focus:border-[#B49A70]"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 bg-[#151412] text-[#EFEAE1] hover:bg-[#211C19] text-xs font-semibold tracking-wider uppercase rounded transition-colors"
-              >
-                Search
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsSearchOpen(false)}
-                className="p-1 text-[#8A8275] hover:text-[#151412]"
-                aria-label="Close search"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </form>
+          <div className="border-t border-[#E7E2D8] bg-[#FAF8F5] py-4 px-4 sm:px-6 shadow-xl animate-in slide-in-from-top-1 duration-200">
+            <div className="max-w-2xl mx-auto">
+              <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
+                <Search className="w-5 h-5 text-[#8A8275]" />
+                <input
+                  type="search"
+                  placeholder="Search diffusers, fragrance oils, olfactory notes (e.g., Oud, Amber, Vanilla)..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                  className="flex-1 bg-transparent border-b border-[#D8D0C4] py-2 text-sm text-[#151412] placeholder-[#8A8275] focus:outline-none focus:border-[#B49A70]"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#151412] text-[#EFEAE1] hover:bg-[#211C19] text-xs font-semibold tracking-wider uppercase rounded transition-colors cursor-pointer"
+                >
+                  Search
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsSearchOpen(false);
+                    setSearchQuery("");
+                    setLiveResults([]);
+                  }}
+                  className="p-1 text-[#8A8275] hover:text-[#151412] cursor-pointer"
+                  aria-label="Close search"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </form>
+
+              {/* Live search results popup */}
+              {searchQuery.trim().length >= 2 && (
+                <div className="mt-3 bg-white rounded-md border border-[#E7E2D8] shadow-xl overflow-hidden animate-in fade-in duration-150">
+                  {isLoadingLive ? (
+                    <div className="py-4 text-center text-xs text-[#8A8275]">
+                      Searching franchise collection...
+                    </div>
+                  ) : liveResults.length > 0 ? (
+                    <div>
+                      <div className="px-4 py-2 bg-[#FAF8F5] border-b border-[#E7E2D8] text-[10px] font-semibold uppercase tracking-wider text-[#8A8275] flex justify-between items-center">
+                        <span>Matching Creations</span>
+                        <Link
+                          href={`/shop?q=${encodeURIComponent(searchQuery.trim())}`}
+                          onClick={() => {
+                            setIsSearchOpen(false);
+                            setSearchQuery("");
+                            setLiveResults([]);
+                          }}
+                          className="text-[#B49A70] hover:underline"
+                        >
+                          View all in catalogue →
+                        </Link>
+                      </div>
+                      <div className="divide-y divide-[#E7E2D8]/60 max-h-80 overflow-y-auto">
+                        {liveResults.map((product) => (
+                          <Link
+                            key={product.id}
+                            href={`/product/${product.slug}`}
+                            onClick={() => {
+                              setIsSearchOpen(false);
+                              setSearchQuery("");
+                              setLiveResults([]);
+                            }}
+                            className="flex items-center gap-3 p-3 hover:bg-[#FAF8F5] transition-colors group"
+                          >
+                            <div className="w-12 h-12 relative rounded bg-stone-100 overflow-hidden shrink-0 border border-stone-200">
+                              <Image
+                                src={product.images[0] || "/images/products/placeholder.jpg"}
+                                alt={product.name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs font-medium text-[#151412] group-hover:text-[#B49A70] truncate transition-colors">
+                                {product.name}
+                              </div>
+                              <div className="text-[10px] text-[#8A8275] truncate">
+                                {product.categoryName || product.category}
+                              </div>
+                            </div>
+                            <div className="text-xs font-serif font-medium text-[#151412] shrink-0">
+                              LKR {product.basePriceLKR.toLocaleString()}
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="p-2.5 bg-[#FAF8F5] border-t border-[#E7E2D8] text-center">
+                        <Link
+                          href={`/shop?q=${encodeURIComponent(searchQuery.trim())}`}
+                          onClick={() => {
+                            setIsSearchOpen(false);
+                            setSearchQuery("");
+                            setLiveResults([]);
+                          }}
+                          className="text-xs font-medium text-[#151412] hover:text-[#B49A70] transition-colors inline-flex items-center gap-1.5"
+                        >
+                          <span>Explore all creations matching &ldquo;{searchQuery}&rdquo;</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="py-6 text-center text-xs text-[#8A8275]">
+                      No matching creations found for &ldquo;{searchQuery}&rdquo;. Press Search or Enter to view full catalogue.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </header>
