@@ -8,7 +8,6 @@ import { BrandExperienceSection } from "@/components/home/BrandExperienceSection
 import { B2BFeatureSection } from "@/components/home/B2BFeatureSection";
 import { CuratedCollectionsSection } from "@/components/home/CuratedCollectionsSection";
 import { TrustSection } from "@/components/home/TrustSection";
-import { NewsletterSection } from "@/components/home/NewsletterSection";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -62,10 +61,7 @@ export default async function HomePage() {
       {/* 4.G Trust & Service Information */}
       <TrustSection />
 
-      {/* 4.H Newsletter */}
-      <NewsletterSection />
-
-      {/* 4.I Our Trusted Partners Slideshow (placed just before the footer) */}
+      {/* 4.H Our Trusted Partners Slideshow (placed just before the footer) */}
       <TrustedPartnersSection initialPartners={partners} />
     </div>
   );
