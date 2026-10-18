@@ -40,10 +40,15 @@ export default async function HomePage() {
     if (productsToDisplay.length >= 8) break;
   }
 
+  const featuredHeroProduct =
+    allProducts.find((p) => p.slug === "dr-scent-smart-tower-pro") ||
+    allProducts.find((p) => p.featured) ||
+    allProducts[0];
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* 4.A Hero */}
-      <HeroSection />
+      <HeroSection featuredProduct={featuredHeroProduct} />
 
       {/* 4.B Featured Categories */}
       <FeaturedCategories initialCategories={featuredCategories} />

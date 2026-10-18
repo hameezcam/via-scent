@@ -195,7 +195,6 @@ class ProductServiceImpl implements IProductService {
         if (rows && rows.length > 0) {
           return parseProductRow(rows[0]);
         }
-        return null;
       } catch (err) {
         console.error("[ProductService] PostgreSQL getBySlug error:", err);
       }

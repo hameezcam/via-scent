@@ -173,7 +173,7 @@ export const PRODUCTS: Product[] = [
     categoryName: "Aroma Diffusers",
     basePriceLKR: 68500,
     images: [
-      "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1000&q=85",
+      "/images/categories/aroma-diffusers.jpg",
       "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
       "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1000&q=85",
     ],

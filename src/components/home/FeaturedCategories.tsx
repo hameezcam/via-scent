@@ -152,7 +152,7 @@ export function FeaturedCategories({ initialCategories }: FeaturedCategoriesProp
       : FEATURED_COLLECTIONS;
 
   return (
-    <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E7E2D8] relative">
+    <section id="featured-categories" className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E7E2D8] relative scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Editorial Section Header */}
         <div className="max-w-2xl mb-14 text-left">

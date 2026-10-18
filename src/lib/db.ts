@@ -239,7 +239,7 @@ export async function ensureDbInitialized(): Promise<void> {
       const rows = await sql`SELECT COUNT(*)::int as count FROM products;`;
       const count = Number(rows[0]?.count ?? 0);
 
-      if (count === 0) {
+      if (count < PRODUCTS.length) {
         for (const p of PRODUCTS) {
           const fullProduct: Product = {
             ...p,
