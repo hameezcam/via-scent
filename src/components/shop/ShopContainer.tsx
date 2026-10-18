@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Product, ProductCategory, ScentFamily, SortOption } from "@/types/product";
+import { Category } from "@/types/category";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ProductFilters } from "@/components/product/ProductFilters";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
@@ -13,6 +14,7 @@ interface ShopContainerProps {
   initialCategory?: ProductCategory | "all";
   categoryName?: string;
   categoryDescription?: string;
+  categories?: Category[];
 }
 
 export function ShopContainer({
@@ -20,6 +22,7 @@ export function ShopContainer({
   initialCategory = "all",
   categoryName,
   categoryDescription,
+  categories,
 }: ShopContainerProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -459,6 +462,7 @@ export function ShopContainer({
             totalProducts={filteredProducts.length}
             isMobileOpen={isMobileFiltersOpen}
             onMobileOpenChange={setIsMobileFiltersOpen}
+            categories={categories}
           />
 
           {/* Right Product Grid Area */}

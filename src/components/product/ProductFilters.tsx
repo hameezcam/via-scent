@@ -3,6 +3,7 @@
 import React from "react";
 import { RotateCcw, Check, X } from "lucide-react";
 import { SortOption } from "@/types/product";
+import { Category } from "@/types/category";
 
 export interface FilterState {
   category: string;
@@ -20,6 +21,7 @@ export interface ProductFiltersProps {
   totalProducts: number;
   isMobileOpen?: boolean;
   onMobileOpenChange?: (open: boolean) => void;
+  categories?: Category[];
 }
 
 export interface SubOption {
@@ -136,19 +138,58 @@ interface FilterContentProps {
   filters: FilterState;
   onFilterChange: (filters: Partial<FilterState>) => void;
   onReset: () => void;
+  categories?: Category[];
 }
 
 function FilterContent({
   filters,
   onFilterChange,
   onReset,
+  categories = [],
 }: FilterContentProps) {
   const activeColId = resolveCollectionId(filters.category, filters.sort);
   const currentSub = filters.subCategory || filters.scentFamily || "all";
 
-  // Active collection configuration
+  // Active collection configuration fallback
   const activeConfig =
     COLLECTIONS_HIERARCHY.find((c) => c.id === activeColId) || COLLECTIONS_HIERARCHY[0];
+
+  // Dynamically match category from database / admin categories
+  const matchedCategory = categories.find((c) => {
+    const slugOrId = c.slug?.toLowerCase();
+    const catId = c.id?.toLowerCase();
+    const active = activeColId.toLowerCase();
+    const param = (filters.category || "").toLowerCase();
+    return (
+      slugOrId === active ||
+      catId === active ||
+      slugOrId === param ||
+      catId === param ||
+      (active === "aroma-oil" && (catId === "fragrance-oils" || slugOrId === "fragrance-oils")) ||
+      (active === "diffuser" && (catId === "aroma-diffusers" || slugOrId === "aroma-diffusers")) ||
+      (active === "bestsellers" && (catId === "best-sellers" || slugOrId === "best-sellers"))
+    );
+  });
+
+  // Derive dynamic subOptions: if matched category has subCategories, use them directly
+  const dynamicSubOptions: SubOption[] =
+    matchedCategory && Array.isArray(matchedCategory.subCategories)
+      ? matchedCategory.subCategories.map((sc) => ({ label: sc.label, value: sc.id }))
+      : activeConfig.subOptions;
+
+  const sectionTitle =
+    matchedCategory && matchedCategory.name
+      ? `${matchedCategory.name.toUpperCase()} TYPE`
+      : activeColId === "all"
+      ? "AROMA OIL TYPE"
+      : activeConfig.sectionTitle;
+
+  const allLabel =
+    matchedCategory && matchedCategory.name
+      ? `All ${matchedCategory.name}`
+      : activeColId === "all"
+      ? "All Types"
+      : activeConfig.allLabel;
 
   const handleSelectCollection = (colId: string, categoryParam: string) => {
     if (colId === "all") {
@@ -237,52 +278,52 @@ function FilterContent({
       <div className="w-full h-px bg-[#151412] my-5" />
 
       {/* DYNAMIC SECONDARY SECTION: Scent Lines / Diffuser Types / Sprays / Best Sellers */}
-      <div>
-        <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3.5">
-          {activeColId === "all" ? "AROMA OIL TYPE" : activeConfig.sectionTitle}
-        </h3>
-        <div className="space-y-1.5">
-          {/* All Option */}
-          <button
-            type="button"
-            onClick={() => handleSelectSub("all")}
-            className={`w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
-              currentSub === "all"
-                ? "text-[#151412] font-medium"
-                : "text-[#211C19]/80 hover:text-[#151412]"
-            }`}
-          >
-            <span>
-              {activeColId === "all" ? "All Types" : activeConfig.allLabel}
-            </span>
-            {currentSub === "all" && (
-              <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
-            )}
-          </button>
+      {dynamicSubOptions.length > 0 && (
+        <div>
+          <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3.5">
+            {sectionTitle}
+          </h3>
+          <div className="space-y-1.5">
+            {/* All Option */}
+            <button
+              type="button"
+              onClick={() => handleSelectSub("all")}
+              className={`w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
+                currentSub === "all"
+                  ? "text-[#151412] font-medium"
+                  : "text-[#211C19]/80 hover:text-[#151412]"
+              }`}
+            >
+              <span>{allLabel}</span>
+              {currentSub === "all" && (
+                <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
+              )}
+            </button>
 
-          {/* Sub Options for Selected Collection */}
-          {activeConfig.subOptions.map((sub) => {
-            const isSelected = currentSub === sub.value;
-            return (
-              <button
-                key={sub.value}
-                type="button"
-                onClick={() => handleSelectSub(sub.value)}
-                className={`w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
-                  isSelected
-                    ? "text-[#151412] font-medium"
-                    : "text-[#211C19]/80 hover:text-[#151412]"
-                }`}
-              >
-                <span>{sub.label}</span>
-                {isSelected && (
-                  <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
-                )}
-              </button>
-            );
-          })}
+            {/* Sub Options for Selected Collection */}
+            {dynamicSubOptions.map((sub) => {
+              const isSelected = currentSub === sub.value;
+              return (
+                <button
+                  key={sub.value}
+                  type="button"
+                  onClick={() => handleSelectSub(sub.value)}
+                  className={`w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
+                    isSelected
+                      ? "text-[#151412] font-medium"
+                      : "text-[#211C19]/80 hover:text-[#151412]"
+                  }`}
+                >
+                  <span>{sub.label}</span>
+                  {isSelected && (
+                    <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Divider */}
       <div className="w-full h-px bg-[#151412] my-5" />
@@ -328,7 +369,25 @@ export function ProductFilters({
   totalProducts,
   isMobileOpen = false,
   onMobileOpenChange,
+  categories: initialCategories,
 }: ProductFiltersProps) {
+  const [categories, setCategories] = React.useState<Category[]>(initialCategories || []);
+
+  React.useEffect(() => {
+    if (initialCategories && initialCategories.length > 0) {
+      setCategories(initialCategories);
+      return;
+    }
+    fetch("/api/categories")
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          setCategories(json.data);
+        }
+      })
+      .catch(() => {});
+  }, [initialCategories]);
+
   const activeColId = resolveCollectionId(filters.category, filters.sort);
   const currentSub = filters.subCategory || filters.scentFamily || "all";
 
@@ -364,6 +423,7 @@ export function ProductFilters({
             filters={filters}
             onFilterChange={onFilterChange}
             onReset={onReset}
+            categories={categories}
           />
         </div>
       </aside>
@@ -392,6 +452,7 @@ export function ProductFilters({
               filters={filters}
               onFilterChange={onFilterChange}
               onReset={onReset}
+              categories={categories}
             />
             <div className="mt-8 pt-4 border-t border-[#151412]">
               <button

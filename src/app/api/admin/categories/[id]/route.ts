@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { categoryService } from "@/services/category.service";
 import { Category } from "@/types/category";
 
+import { revalidatePath } from "next/cache";
+
 export const dynamic = "force-dynamic";
 
 export async function GET(
@@ -36,6 +38,15 @@ export async function PUT(
     const body: Partial<Category> = await req.json();
     const updated = await categoryService.update(id, body, "admin@viascent.lk");
 
+    try {
+      revalidatePath("/");
+      revalidatePath("/shop");
+      revalidatePath(`/shop/${updated.slug}`);
+      revalidatePath(`/shop/${id}`);
+    } catch {
+      // ignore in environments without active cache
+    }
+
     return NextResponse.json({
       success: true,
       data: updated,
@@ -58,6 +69,14 @@ export async function DELETE(
   try {
     const { id } = await params;
     await categoryService.delete(id, "admin@viascent.lk");
+
+    try {
+      revalidatePath("/");
+      revalidatePath("/shop");
+      revalidatePath(`/shop/${id}`);
+    } catch {
+      // ignore
+    }
     return NextResponse.json({
       success: true,
       message: `Category "${id}" has been deleted successfully.`,

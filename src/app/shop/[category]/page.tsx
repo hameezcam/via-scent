@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { productService } from "@/services/product.service";
+import { categoryService } from "@/services/category.service";
 import { ProductCategory } from "@/types/product";
 import { ShopContainer } from "@/components/shop/ShopContainer";
 import { CATEGORIES } from "@/data/products";
@@ -51,7 +52,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const allProducts = await productService.getAll();
+  const [allProducts, allCategories] = await Promise.all([
+    productService.getAll(),
+    categoryService.getAll(),
+  ]);
 
   return (
     <Suspense fallback={<div className="max-w-7xl mx-auto px-4 py-20 text-center text-stone-500">Loading collection...</div>}>
@@ -60,6 +64,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         initialCategory={categoryInfo.id}
         categoryName={categoryInfo.name}
         categoryDescription={categoryInfo.description}
+        categories={allCategories}
       />
     </Suspense>
   );

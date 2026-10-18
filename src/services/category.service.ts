@@ -141,6 +141,28 @@ export class CategoryService {
           updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
       `;
+
+      // If categories table is empty, seed from local JSON
+      const countResult = await sql`SELECT COUNT(*)::int as count FROM categories;`;
+      const count = Number(countResult?.[0]?.count ?? 0);
+      if (count === 0) {
+        const local = this.readLocalJson();
+        for (const cat of local) {
+          await sql`
+            INSERT INTO categories (
+              id, slug, name, tagline, description, image,
+              featured_in_home, display_order, data, created_at, updated_at
+            ) VALUES (
+              ${cat.id}, ${cat.slug}, ${cat.name}, ${cat.tagline || ""},
+              ${cat.description || ""}, ${cat.image}, ${Boolean(cat.featuredInHome)},
+              ${cat.displayOrder || 0}, ${JSON.stringify(cat)},
+              ${cat.createdAt || new Date().toISOString()},
+              ${cat.updatedAt || new Date().toISOString()}
+            )
+            ON CONFLICT (id) DO NOTHING;
+          `;
+        }
+      }
     } catch (err) {
       console.error("[CategoryService] PostgreSQL ensureCategoryTable error:", err);
     }
@@ -321,17 +343,32 @@ export class CategoryService {
         await this.ensureCategoryTable();
         const sql = getDb()!;
         await sql`
-          UPDATE categories SET
-            slug = ${updated.slug},
-            name = ${updated.name},
-            tagline = ${updated.tagline},
-            description = ${updated.description},
-            image = ${updated.image},
-            featured_in_home = ${updated.featuredInHome},
-            display_order = ${updated.displayOrder},
-            data = ${JSON.stringify(updated)},
-            updated_at = ${updated.updatedAt}
-          WHERE id = ${existing.id};
+          INSERT INTO categories (
+            id, slug, name, tagline, description, image,
+            featured_in_home, display_order, data, created_at, updated_at
+          ) VALUES (
+            ${updated.id},
+            ${updated.slug},
+            ${updated.name},
+            ${updated.tagline},
+            ${updated.description},
+            ${updated.image},
+            ${updated.featuredInHome},
+            ${updated.displayOrder},
+            ${JSON.stringify(updated)},
+            ${updated.createdAt || updated.updatedAt},
+            ${updated.updatedAt}
+          )
+          ON CONFLICT (id) DO UPDATE SET
+            slug = EXCLUDED.slug,
+            name = EXCLUDED.name,
+            tagline = EXCLUDED.tagline,
+            description = EXCLUDED.description,
+            image = EXCLUDED.image,
+            featured_in_home = EXCLUDED.featured_in_home,
+            display_order = EXCLUDED.display_order,
+            data = EXCLUDED.data,
+            updated_at = EXCLUDED.updated_at;
         `;
       } catch (err) {
         console.error("[CategoryService] PostgreSQL update error:", err);
@@ -342,8 +379,10 @@ export class CategoryService {
     const idx = current.findIndex((c) => c.id === existing.id || c.slug === existing.slug);
     if (idx !== -1) {
       current[idx] = updated;
-      this.writeLocalJson(current);
+    } else {
+      current.push(updated);
     }
+    this.writeLocalJson(current);
 
     return updated;
   }

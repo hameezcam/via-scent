@@ -142,9 +142,13 @@ export default function AdminCategoriesPage() {
     setNewSubCategoryInput("");
   };
 
-  // Remove subcategory item
-  const handleRemoveSubCategory = (id: string) => {
-    setSubCategories(subCategories.filter((sc) => sc.id !== id));
+  // Remove subcategory item by index or id
+  const handleRemoveSubCategory = (target: number | string) => {
+    if (typeof target === "number") {
+      setSubCategories((prev) => prev.filter((_, idx) => idx !== target));
+    } else {
+      setSubCategories((prev) => prev.filter((sc) => sc.id !== target));
+    }
   };
 
   // Handle image file upload
@@ -242,6 +246,9 @@ export default function AdminCategoriesPage() {
         if (res.ok && data.success) {
           setFeedback({ type: "success", message: `Category "${data.data.name}" updated successfully.` });
           setIsModalOpen(false);
+          setCategories((prev) =>
+            prev.map((c) => (c.id === editingCategory.id ? data.data : c))
+          );
           loadCategories();
         } else {
           setFeedback({ type: "error", message: data.error || "Failed to update category." });
@@ -868,16 +875,16 @@ export default function AdminCategoriesPage() {
                 {/* Subcategory Pills */}
                 {subCategories.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 pt-2">
-                    {subCategories.map((sub) => (
+                    {subCategories.map((sub, idx) => (
                       <span
-                        key={sub.id}
+                        key={sub.id || idx}
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs"
                       >
                         <Tag className="w-3 h-3 text-amber-600" />
                         <span>{sub.label}</span>
                         <button
                           type="button"
-                          onClick={() => handleRemoveSubCategory(sub.id)}
+                          onClick={() => handleRemoveSubCategory(idx)}
                           className="hover:text-red-700 text-amber-700 transition"
                         >
                           <X className="w-3 h-3" />

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { productService } from "@/services/product.service";
+import { categoryService } from "@/services/category.service";
 import { ShopContainer } from "@/components/shop/ShopContainer";
 
 export const dynamic = "force-dynamic";
@@ -12,11 +13,14 @@ export const metadata = {
 };
 
 export default async function ShopPage() {
-  const products = await productService.getAll();
+  const [products, categories] = await Promise.all([
+    productService.getAll(),
+    categoryService.getAll(),
+  ]);
 
   return (
     <Suspense fallback={<div className="max-w-7xl mx-auto px-4 py-20 text-center text-stone-500">Loading fragrance catalogue...</div>}>
-      <ShopContainer initialProducts={products} />
+      <ShopContainer initialProducts={products} categories={categories} />
     </Suspense>
   );
 }
