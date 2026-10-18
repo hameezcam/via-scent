@@ -63,6 +63,7 @@ export interface Product {
   sku: string;
   category: ProductCategory;
   categoryName: string;
+  subCategory?: string;
   basePriceLKR: number;
   originalPriceLKR?: number;
   images: string[];

@@ -192,6 +192,7 @@ export default function AdminProductsPage() {
   const [slug, setSlug] = useState("");
   const [sku, setSku] = useState("");
   const [category, setCategory] = useState<ProductCategory>("aroma-diffusers");
+  const [subCategory, setSubCategory] = useState<string>("");
   const [basePriceLKR, setBasePriceLKR] = useState<number>(30000);
   const [originalPriceLKR, setOriginalPriceLKR] = useState<number | undefined>(undefined);
   const [inventoryCount, setInventoryCount] = useState<number>(15);
@@ -274,6 +275,7 @@ export default function AdminProductsPage() {
     setSlug(`dr-scent-new-${randomNum}`);
     setSku(`DSC-NEW-${randomNum}`);
     setCategory("aroma-diffusers");
+    setSubCategory("");
     setBasePriceLKR(28500);
     setOriginalPriceLKR(undefined);
     setInventoryCount(20);
@@ -345,6 +347,7 @@ export default function AdminProductsPage() {
     setSlug(p.slug);
     setSku(p.sku);
     setCategory(p.category);
+    setSubCategory(p.subCategory || (p.category === "fragrance-oils" ? p.scentFamily || "" : ""));
     setBasePriceLKR(p.basePriceLKR);
     setOriginalPriceLKR(p.originalPriceLKR);
     setInventoryCount(p.inventoryCount ?? 15);
@@ -643,6 +646,7 @@ export default function AdminProductsPage() {
       sku,
       category,
       categoryName: categoryNamesMap[category] || "Fragrance Creations",
+      subCategory: subCategory.trim() || undefined,
       basePriceLKR: Number(basePriceLKR),
       originalPriceLKR: originalPriceLKR ? Number(originalPriceLKR) : undefined,
       images: images.length > 0 ? images : [
@@ -853,7 +857,14 @@ export default function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="py-3 px-4 font-mono font-medium text-stone-800">{p.sku}</td>
-                    <td className="py-3 px-4 capitalize">{p.categoryName || p.category}</td>
+                    <td className="py-3 px-4 capitalize">
+                      <div>{p.categoryName || p.category}</div>
+                      {p.subCategory && (
+                        <span className="inline-block px-1.5 py-0.5 text-[9px] font-medium bg-amber-50 text-amber-900 border border-amber-200/60 rounded mt-0.5">
+                          {p.subCategory}
+                        </span>
+                      )}
+                    </td>
                     <td className="py-3 px-4 font-bold text-stone-900">
                       <div>{formatLKR(p.basePriceLKR)}</div>
                       {p.originalPriceLKR && p.originalPriceLKR > p.basePriceLKR && (
@@ -1116,25 +1127,92 @@ export default function AdminProductsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block font-semibold text-stone-700 uppercase tracking-wider mb-1">
                         Catalogue Category *
                       </label>
                       <select
                         value={category}
-                        onChange={(e) => setCategory(e.target.value as ProductCategory)}
+                        onChange={(e) => {
+                          const newCat = e.target.value as ProductCategory;
+                          setCategory(newCat);
+                          setSubCategory("");
+                        }}
                         className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
                       >
+                        <option value="fragrance-oils">Aroma Oils (Fragrance Oils)</option>
                         <option value="aroma-diffusers">Aroma Diffusers</option>
-                        <option value="fragrance-oils">Fragrance Oils</option>
+                        <option value="sprays">Room &amp; Fabric Sprays</option>
                         <option value="commercial-scenting">Commercial Scent Systems</option>
                         <option value="home-fragrance">Home Fragrance</option>
-                        <option value="sprays">Room &amp; Fabric Sprays</option>
                         <option value="gift-collections">Gift Collections</option>
                       </select>
                     </div>
 
+                    <div>
+                      <label className="block font-semibold text-stone-700 uppercase tracking-wider mb-1">
+                        Product Type / Sub-Category
+                      </label>
+                      <select
+                        value={subCategory}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setSubCategory(val);
+                          if (category === "fragrance-oils" && ["floral", "fresh", "fruity", "oriental", "woody", "amber", "gourmand"].includes(val)) {
+                            setScentFamily(val as ScentFamily);
+                          }
+                        }}
+                        className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
+                      >
+                        <option value="">-- Select Product Type --</option>
+                        {category === "fragrance-oils" && (
+                          <>
+                            <option value="car-scent">Car Scent</option>
+                            <option value="choice">Dr. Scent&apos;s Choice</option>
+                            <option value="fb">F&amp;B</option>
+                            <option value="floral">Floral</option>
+                            <option value="fresh">Fresh</option>
+                            <option value="fruity">Fruity</option>
+                            <option value="oriental">Oriental</option>
+                            <option value="premium">Premium Collection</option>
+                          </>
+                        )}
+                        {category === "aroma-diffusers" && (
+                          <>
+                            <option value="diffuser">Diffuser (Home / Ambient)</option>
+                            <option value="car-diffuser">Car Diffuser</option>
+                            <option value="dispenser">Dispenser</option>
+                            <option value="reed-diffuser">Reed Diffuser</option>
+                          </>
+                        )}
+                        {(category === "sprays" || category === "home-fragrance") && (
+                          <>
+                            <option value="fabric-spray">Fabric Spray</option>
+                            <option value="odor-eliminator">Odor Eliminator</option>
+                            <option value="aerosol">Aerosol</option>
+                            <option value="reed-diffuser">Reed Diffuser</option>
+                            <option value="candles">Candles</option>
+                          </>
+                        )}
+                        {category === "commercial-scenting" && (
+                          <>
+                            <option value="dispenser">Dispenser</option>
+                            <option value="hvac">HVAC System</option>
+                            <option value="tower">Tower Column</option>
+                          </>
+                        )}
+                        {category === "gift-collections" && (
+                          <>
+                            <option value="discovery-set">Discovery Set</option>
+                            <option value="gift-set">Gift Set</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block font-semibold text-stone-700 uppercase tracking-wider mb-1">
                         Selling Price (LKR) *

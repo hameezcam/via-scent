@@ -46,6 +46,15 @@ export const CATEGORIES: CategoryInfo[] = [
     image: "/images/categories/gift-collections.jpg",
     featuredInHome: false,
   },
+  {
+    id: "sprays",
+    name: "Room & Fabric Sprays",
+    tagline: "Fine-Mist Ambient & Textile Scenting",
+    description:
+      "Instantaneous, residue-free sprays designed to refresh fine fabrics, linens, and living spaces with Dr. Scent fragrances.",
+    image: "/images/categories/home-fragrance.jpg",
+    featuredInHome: true,
+  },
 ];
 
 export const PRODUCTS: Product[] = [

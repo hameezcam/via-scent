@@ -41,7 +41,7 @@ export const COLLECTIONS_HIERARCHY: CollectionConfig[] = [
     id: "aroma-oil",
     label: "Aroma Oil",
     categoryParam: "fragrance-oils",
-    sectionTitle: "OLFACTORY FAMILY",
+    sectionTitle: "AROMA OIL TYPE",
     allLabel: "All Aroma Oils",
     subOptions: [
       { label: "Car Scent", value: "car-scent" },
@@ -206,7 +206,7 @@ function FilterContent({
       {/* DYNAMIC SECONDARY SECTION: Scent Lines / Diffuser Types / Sprays / Best Sellers */}
       <div>
         <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3.5">
-          {activeColId === "all" ? "OLFACTORY FAMILY" : activeConfig.sectionTitle}
+          {activeColId === "all" ? "AROMA OIL TYPE" : activeConfig.sectionTitle}
         </h3>
         <div className="space-y-1.5">
           {/* All Option */}
@@ -220,7 +220,7 @@ function FilterContent({
             }`}
           >
             <span>
-              {activeColId === "all" ? "All Families" : activeConfig.allLabel}
+              {activeColId === "all" ? "All Types" : activeConfig.allLabel}
             </span>
             {currentSub === "all" && (
               <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />

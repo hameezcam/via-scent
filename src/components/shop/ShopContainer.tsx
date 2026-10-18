@@ -122,7 +122,11 @@ export function ShopContainer({
     if (subCategory && subCategory !== "all") {
       const s = subCategory.toLowerCase();
 
-      if (isAromaOil || (!isDiffuser && !isBestsellers && !isSprays)) {
+      // If any products have an exact subCategory assignment, filter directly
+      const exactMatches = list.filter((p) => p.subCategory && p.subCategory.toLowerCase() === s);
+      if (exactMatches.length > 0) {
+        list = exactMatches;
+      } else if (isAromaOil || (!isDiffuser && !isBestsellers && !isSprays)) {
         if (s === "car-scent") {
           list = list.filter(
             (p) =>
