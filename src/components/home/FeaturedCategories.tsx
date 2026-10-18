@@ -68,7 +68,7 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
       "Our most celebrated cold-air diffusers, signature aroma oils, ambient sprays, reed diffusers, and luxury candles.",
     image: "/images/categories/bestsellers.jpg",
     href: "/shop?category=bestsellers",
-    colSpan: "md:col-span-5 h-[420px] sm:h-[460px] lg:h-[490px]",
+    colSpan: "md:col-span-6 lg:col-span-4 h-[420px] sm:h-[460px] lg:h-[490px]",
     subItems: [
       { label: "Diffusers", href: "/shop?category=bestsellers&sub=diffusers" },
       { label: "Aroma Oils", href: "/shop?category=bestsellers&sub=aroma-oils" },
@@ -85,11 +85,26 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
       "Instantaneous, residue-free sprays designed to refresh fine fabrics, linens, and living spaces with Dr. Scent fragrances.",
     image: "/images/categories/sprays.jpg",
     href: "/shop?category=sprays",
-    colSpan: "md:col-span-7 h-[420px] sm:h-[460px] lg:h-[490px]",
+    colSpan: "md:col-span-6 lg:col-span-4 h-[420px] sm:h-[460px] lg:h-[490px]",
     subItems: [
       { label: "Fabric Spray", href: "/shop?category=sprays&sub=fabric-spray" },
       { label: "Odor Eliminator", href: "/shop?category=sprays&sub=odor-eliminator" },
       { label: "Aerosol", href: "/shop?category=sprays&sub=aerosol" },
+    ],
+  },
+  {
+    id: "candles",
+    name: "Candles",
+    tagline: "Hand-Poured Botanical & Soy Wax",
+    description:
+      "Artisanal scented candles crafted with pure soy and coconut wax, cotton wicks, and Dr. Scent fragrances for warm ambient illumination.",
+    image: "/images/categories/candles.jpg",
+    href: "/shop/candles",
+    colSpan: "md:col-span-12 lg:col-span-4 h-[420px] sm:h-[460px] lg:h-[490px]",
+    subItems: [
+      { label: "Scented Candle", href: "/shop/candles?sub=scented-candle" },
+      { label: "Soy Wax Candle", href: "/shop/candles?sub=soy-wax" },
+      { label: "Luxury 3-Wick", href: "/shop/candles?sub=luxury-3-wick" },
     ],
   },
 ];

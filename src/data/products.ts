@@ -52,8 +52,8 @@ export const CATEGORIES: CategoryInfo[] = [
     tagline: "Hand-Poured Botanical & Soy Wax Candles",
     description:
       "Artisanal scented candles crafted with pure soy and coconut wax, cotton wicks, and Dr. Scent fragrances for warm ambient illumination.",
-    image: "/images/categories/home-fragrance.jpg",
-    featuredInHome: false,
+    image: "/images/categories/candles.jpg",
+    featuredInHome: true,
   },
   {
     id: "commercial-scenting",
