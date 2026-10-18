@@ -5,16 +5,99 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
-import { CATEGORIES } from "@/data/products";
 import { LUXURY_EASE } from "@/config/motion.config";
 
-export function FeaturedCategories() {
-  const featuredCategories = CATEGORIES.filter((c) => c.featuredInHome);
+interface SubCategoryPill {
+  label: string;
+  href: string;
+}
 
+interface CollectionCard {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  image: string;
+  href: string;
+  subItems: SubCategoryPill[];
+  colSpan: string;
+}
+
+const FEATURED_COLLECTIONS: CollectionCard[] = [
+  {
+    id: "aroma-oil",
+    name: "Aroma Oil",
+    tagline: "Pure Essential & Artisanal Perfume Blends",
+    description:
+      "IFRA-certified cold-air diffusion oils. Spanning Car Scent, Dr. Scent's Choice, F&B, Floral, Fresh, Fruity, Oriental, and Premium lines.",
+    image: "/images/categories/fragrance-oils.jpg",
+    href: "/shop/fragrance-oils",
+    colSpan: "md:col-span-7 h-[420px] sm:h-[460px] lg:h-[490px]",
+    subItems: [
+      { label: "Car Scent", href: "/shop/fragrance-oils?sub=car-scent" },
+      { label: "Dr. Scent's Choice", href: "/shop/fragrance-oils?sub=choice" },
+      { label: "F&B", href: "/shop/fragrance-oils?sub=fb" },
+      { label: "Floral", href: "/shop/fragrance-oils?sub=floral" },
+      { label: "Fresh", href: "/shop/fragrance-oils?sub=fresh" },
+      { label: "Fruity", href: "/shop/fragrance-oils?sub=fruity" },
+      { label: "Oriental", href: "/shop/fragrance-oils?sub=oriental" },
+      { label: "Premium Collection", href: "/shop/fragrance-oils?sub=premium" },
+    ],
+  },
+  {
+    id: "diffusers",
+    name: "Diffuser",
+    tagline: "Cold-Air Micro-Nebulization Technology",
+    description:
+      "Waterless, heatless cold-air diffusers engineered to atomize pure fragrance oil into an invisible, residue-free ambient mist.",
+    image: "/images/categories/aroma-diffusers.jpg",
+    href: "/shop/aroma-diffusers",
+    colSpan: "md:col-span-5 h-[420px] sm:h-[460px] lg:h-[490px]",
+    subItems: [
+      { label: "Diffuser", href: "/shop/aroma-diffusers?sub=diffuser" },
+      { label: "Car Diffuser", href: "/shop/aroma-diffusers?sub=car-diffuser" },
+      { label: "Dispenser", href: "/shop/aroma-diffusers?sub=dispenser" },
+      { label: "Reed Diffuser", href: "/shop/aroma-diffusers?sub=reed-diffuser" },
+    ],
+  },
+  {
+    id: "best-sellers",
+    name: "Best Sellers",
+    tagline: "Iconic Signature Creations",
+    description:
+      "Our most celebrated cold-air diffusers, signature aroma oils, ambient sprays, reed diffusers, and luxury candles.",
+    image: "/images/categories/bestsellers.jpg",
+    href: "/shop?category=bestsellers",
+    colSpan: "md:col-span-5 h-[420px] sm:h-[460px] lg:h-[490px]",
+    subItems: [
+      { label: "Diffusers", href: "/shop?category=bestsellers&sub=diffusers" },
+      { label: "Aroma Oils", href: "/shop?category=bestsellers&sub=aroma-oils" },
+      { label: "Sprays", href: "/shop?category=bestsellers&sub=sprays" },
+      { label: "Reed Diffusers", href: "/shop?category=bestsellers&sub=reed-diffusers" },
+      { label: "Candles", href: "/shop?category=bestsellers&sub=candles" },
+    ],
+  },
+  {
+    id: "sprays",
+    name: "Sprays",
+    tagline: "Fine-Mist Ambient & Textile Scenting",
+    description:
+      "Instantaneous, residue-free sprays designed to refresh fine fabrics, linens, and living spaces with Dr. Scent fragrances.",
+    image: "/images/categories/sprays.jpg",
+    href: "/shop?category=sprays",
+    colSpan: "md:col-span-7 h-[420px] sm:h-[460px] lg:h-[490px]",
+    subItems: [
+      { label: "Fabric Spray", href: "/shop?category=sprays&sub=fabric-spray" },
+      { label: "Odor Eliminator", href: "/shop?category=sprays&sub=odor-eliminator" },
+      { label: "Aerosol", href: "/shop?category=sprays&sub=aerosol" },
+    ],
+  },
+];
+
+export function FeaturedCategories() {
   return (
     <section className="py-20 sm:py-28 bg-[#FAF8F5] border-b border-[#E7E2D8] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Editorial Section Header */}
         <div className="max-w-2xl mb-14 text-left">
           <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.24em] uppercase text-[#B49A70] mb-3">
@@ -29,74 +112,71 @@ export function FeaturedCategories() {
           </p>
         </div>
 
-        {/* Editorial Balanced Asymmetric Grid */}
+        {/* Editorial Balanced Asymmetric Grid: 2 rows of 4 curated collections */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {featuredCategories.map((cat, idx) => {
-            // Dynamic balanced editorial layout:
-            // Row 1: 7 cols + 5 cols (same height)
-            // Row 2: 5 cols + 7 cols (same height)
-            // Row 3 (if present): 12 cols full-width
-            const colSpan =
-              idx === 0
-                ? "md:col-span-7 h-[360px] sm:h-[420px] lg:h-[460px]"
-                : idx === 1
-                ? "md:col-span-5 h-[360px] sm:h-[420px] lg:h-[460px]"
-                : idx === 2
-                ? "md:col-span-5 h-[360px] sm:h-[420px] lg:h-[460px]"
-                : idx === 3
-                ? "md:col-span-7 h-[360px] sm:h-[420px] lg:h-[460px]"
-                : "md:col-span-12 h-[260px] sm:h-[300px] lg:h-[320px]";
-
-            const destinationHref =
-              cat.id === "home-fragrance"
-                ? "/home-fragrance"
-                : cat.id === "commercial-scenting"
-                ? "/business-scenting"
-                : `/shop/${cat.id}`;
-
+          {FEATURED_COLLECTIONS.map((col, idx) => {
             return (
               <motion.div
-                key={cat.id}
+                key={col.id}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.7, delay: idx * 0.08, ease: LUXURY_EASE }}
-                className={colSpan}
+                className={col.colSpan}
               >
-                <Link
-                  href={destinationHref}
-                  className="group relative block w-full h-full rounded-2xl overflow-hidden border border-[#E7E2D8] hover:border-[#B49A70]/80 shadow-xs hover:shadow-2xl transition-all duration-500 bg-[#151412]"
-                >
+                <div className="group relative w-full h-full rounded-2xl overflow-hidden border border-[#E7E2D8] hover:border-[#B49A70]/80 shadow-xs hover:shadow-2xl transition-all duration-500 bg-[#151412] flex flex-col justify-end">
                   {/* Category Atmospheric Image */}
                   <Image
-                    src={cat.image}
-                    alt={cat.name}
+                    src={col.image}
+                    alt={col.name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 60vw"
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out brightness-[0.80] group-hover:brightness-[0.90]"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out brightness-[0.78] group-hover:brightness-[0.88]"
                   />
 
                   {/* Gradient Scrim for Contrast & Readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#151412]/95 via-[#151412]/40 to-transparent group-hover:from-[#151412]/90 transition-colors duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#151412]/95 via-[#151412]/50 to-transparent group-hover:from-[#151412]/90 transition-colors duration-500 pointer-events-none" />
 
-                  {/* Content Container */}
-                  <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end text-[#F8F6F1] z-10">
+                  {/* Overlay Content */}
+                  <div className="relative p-6 sm:p-8 flex flex-col justify-end text-[#F8F6F1] z-10">
                     <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[#B49A70] block mb-1.5 drop-shadow-xs">
-                      {cat.tagline}
+                      {col.tagline}
                     </span>
+
                     <div className="flex items-center justify-between gap-4">
-                      <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-medium tracking-tight text-white">
-                        {cat.name}
-                      </h3>
-                      <span className="w-10 h-10 shrink-0 rounded-full bg-white/15 backdrop-blur-sm group-hover:bg-[#B49A70] text-[#FFFFFF] group-hover:text-[#151412] flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:scale-105 shadow-sm">
+                      <Link href={col.href} className="group-hover:text-[#F8F6F1]">
+                        <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-medium tracking-tight text-white transition-colors hover:text-[#B49A70]">
+                          {col.name}
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href={col.href}
+                        className="w-10 h-10 shrink-0 rounded-full bg-white/15 backdrop-blur-sm group-hover:bg-[#B49A70] text-[#FFFFFF] group-hover:text-[#151412] flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:scale-105 shadow-sm"
+                        aria-label={`Explore ${col.name}`}
+                      >
                         <ArrowRight className="w-4 h-4" />
-                      </span>
+                      </Link>
                     </div>
-                    <p className="text-xs sm:text-sm text-[#D8D0C4] line-clamp-2 max-w-lg mt-2.5 leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity">
-                      {cat.description}
+
+                    <p className="text-xs sm:text-sm text-[#D8D0C4] line-clamp-2 max-w-lg mt-2 leading-relaxed opacity-90">
+                      {col.description}
                     </p>
+
+                    {/* Sub-Collection Quick Filter Pills */}
+                    <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-white/15">
+                      {col.subItems.map((sub) => (
+                        <Link
+                          key={sub.label}
+                          href={sub.href}
+                          className="text-[10px] tracking-wide uppercase px-2.5 py-1 rounded-full bg-black/40 hover:bg-[#B49A70] text-[#EFEAE1] hover:text-[#151412] border border-white/15 hover:border-[#B49A70] backdrop-blur-xs transition-all duration-200"
+                        >
+                          {sub.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             );
           })}
@@ -112,7 +192,6 @@ export function FeaturedCategories() {
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
-
       </div>
     </section>
   );

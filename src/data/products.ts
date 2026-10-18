@@ -3,19 +3,19 @@ import { Product, CategoryInfo } from "../types/product";
 export const CATEGORIES: CategoryInfo[] = [
   {
     id: "aroma-diffusers",
-    name: "Aroma Diffusers",
+    name: "Diffusers",
     tagline: "Cold-Air Micro-Nebulization Technology",
     description:
-      "Waterless, heatless cold-air diffusers engineered to atomize pure fragrance oil into an invisible, residue-free ambient mist.",
+      "Waterless, heatless cold-air diffusers, car nebulizers, automated dispensers, and architectural reed diffusers.",
     image: "/images/categories/aroma-diffusers.jpg",
     featuredInHome: true,
   },
   {
     id: "fragrance-oils",
-    name: "Fragrance Oils",
+    name: "Aroma Oil",
     tagline: "Pure Essential & Artisanal Perfume Blends",
     description:
-      "Formulated for cold-air diffusion with verified IFRA standards, evoking timeless botanical and architectural profiles.",
+      "Formulated for cold-air diffusion with verified IFRA standards, evoking timeless botanical, fresh, and oriental profiles.",
     image: "/images/categories/fragrance-oils.jpg",
     featuredInHome: true,
   },
@@ -26,7 +26,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description:
       "Discreet, multi-zone automated scent diffusers designed for luxury hotels, commercial towers, boutiques, and wellness spaces.",
     image: "/images/categories/commercial-scenting.jpg",
-    featuredInHome: true,
+    featuredInHome: false,
   },
   {
     id: "home-fragrance",
@@ -35,7 +35,7 @@ export const CATEGORIES: CategoryInfo[] = [
     description:
       "Elevate private residences, master suites, and personal studios with layered olfactive warmth and effortless elegance.",
     image: "/images/categories/home-fragrance.jpg",
-    featuredInHome: true,
+    featuredInHome: false,
   },
   {
     id: "gift-collections",
@@ -48,11 +48,11 @@ export const CATEGORIES: CategoryInfo[] = [
   },
   {
     id: "sprays",
-    name: "Room & Fabric Sprays",
+    name: "Sprays",
     tagline: "Fine-Mist Ambient & Textile Scenting",
     description:
-      "Instantaneous, residue-free sprays designed to refresh fine fabrics, linens, and living spaces with Dr. Scent fragrances.",
-    image: "/images/categories/home-fragrance.jpg",
+      "Instantaneous, residue-free fabric sprays, organic odor eliminators, and aerosol ambient mists with Dr. Scent fragrances.",
+    image: "/images/categories/sprays.jpg",
     featuredInHome: true,
   },
 ];
