@@ -138,7 +138,7 @@ export function Footer({ initialCategories }: FooterProps = {}) {
                 The Scent Privilege Club
               </span>
               <h3 className="font-serif text-2xl sm:text-3xl text-[#F8F6F1] font-normal tracking-tight">
-                Subscribe to The Olfactory Journal
+                Subscribe to our newsletter
               </h3>
               <p className="text-xs sm:text-sm text-[#A8A196] font-light leading-relaxed">
                 Receive private invitations to seasonal fragrance releases, bespoke architectural scent consultations, and exclusive franchise editions in Sri Lanka.
@@ -167,11 +167,11 @@ export function Footer({ initialCategories }: FooterProps = {}) {
                   {status === "loading" ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Joining...</span>
+                      <span>Subscribing...</span>
                     </>
                   ) : (
                     <>
-                      <span>Join Club</span>
+                      <span>Subscribe</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}
