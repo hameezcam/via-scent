@@ -1,12 +1,13 @@
 [
   {
     "id": "aroma-diffusers",
+    "href": "/shop/aroma-diffusers",
     "name": "Diffuser",
     "slug": "aroma-diffusers",
     "image": "/images/categories/aroma-diffusers.jpg",
     "tagline": "Cold-Air Micro-Nebulization Technology",
     "createdAt": "2026-10-18T10:00:00.000Z",
-    "updatedAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T11:49:24.914Z",
     "description": "Waterless, heatless cold-air diffusers, car nebulizers, automated dispensers, and architectural reed diffusers.",
     "displayOrder": 1,
     "subCategories": [
@@ -21,32 +22,25 @@
       {
         "id": "dispenser",
         "label": "Dispenser"
-      },
-      {
-        "id": "reed-diffuser",
-        "label": "Reed Diffuser"
       }
     ],
     "featuredInHome": true
   },
   {
     "id": "fragrance-oils",
+    "href": "/shop/fragrance-oils",
     "name": "Aroma Oil",
     "slug": "fragrance-oils",
     "image": "/images/categories/fragrance-oils.jpg",
     "tagline": "Pure Essential & Artisanal Perfume Blends",
     "createdAt": "2026-10-18T10:00:00.000Z",
-    "updatedAt": "2026-10-18T10:00:00.000Z",
+    "updatedAt": "2026-10-18T11:50:15.544Z",
     "description": "Formulated for cold-air diffusion with verified IFRA standards, evoking timeless botanical, fresh, and oriental profiles.",
     "displayOrder": 2,
     "subCategories": [
       {
         "id": "car-scent",
         "label": "Car Scent"
-      },
-      {
-        "id": "choice",
-        "label": "Dr. Scent's Choice"
       },
       {
         "id": "fb",
@@ -71,6 +65,10 @@
       {
         "id": "premium",
         "label": "Premium Collection"
+      },
+      {
+        "id": "via-scent-s-choice",
+        "label": "VIA Scent's Choice"
       }
     ],
     "featuredInHome": true
@@ -143,35 +141,9 @@
     "image": "/images/categories/candles.jpg",
     "tagline": "Hand-Poured Botanical & Soy Wax Candles",
     "createdAt": "2026-10-18T10:00:00.000Z",
-    "updatedAt": "2026-10-18T11:42:08.066Z",
+    "updatedAt": "2026-10-18T11:49:01.783Z",
     "description": "Artisanal scented candles crafted with pure soy and coconut wax, cotton wicks, and Dr. Scent fragrances for warm ambient illumination.",
     "displayOrder": 5,
-    "subCategories": [
-      {
-        "id": "scented-candle",
-        "label": "Scented Candle"
-      },
-      {
-        "id": "luxury-3-wick",
-        "label": "Luxury 3-Wick"
-      },
-      {
-        "id": "botanical-blend",
-        "label": "Botanical Blend"
-      }
-    ],
-    "featuredInHome": true
-  },
-  {
-    "id": "reed-diffusers",
-    "name": "Reed Diffusers",
-    "slug": "reed-diffusers",
-    "image": "/images/categories/aroma-diffusers.jpg",
-    "tagline": "Continuous Passive Atmosphere Scenting",
-    "createdAt": "2026-10-18T10:00:00.000Z",
-    "updatedAt": "2026-10-18T11:14:21.119Z",
-    "description": "Hand-blown tinted glass vessels with high-porosity rattan reeds delivering continuous, subtle scenting without heat or power.",
-    "displayOrder": 6,
     "subCategories": [],
     "featuredInHome": true
   },

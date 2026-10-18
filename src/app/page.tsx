@@ -9,6 +9,7 @@ import { BrandExperienceSection } from "@/components/home/BrandExperienceSection
 import { B2BFeatureSection } from "@/components/home/B2BFeatureSection";
 import { CuratedCollectionsSection } from "@/components/home/CuratedCollectionsSection";
 import { TrustSection } from "@/components/home/TrustSection";
+import { RecentlyAddedSection } from "@/components/home/RecentlyAddedSection";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -45,6 +46,12 @@ export default async function HomePage() {
     allProducts.find((p) => p.featured) ||
     allProducts[0];
 
+  // Extract up to 4 recently added products (prioritizing isNew)
+  const recentlyAddedToDisplay = [
+    ...newProducts,
+    ...allProducts.filter((p) => !newProducts.some((np) => np.id === p.id)),
+  ].slice(0, 4);
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* 4.A Hero */}
@@ -68,8 +75,11 @@ export default async function HomePage() {
       {/* 4.G Trust & Service Information */}
       <TrustSection />
 
-      {/* 4.H Our Trusted Partners Slideshow (placed just before the footer) */}
+      {/* 4.H Our Trusted Partners Slideshow */}
       <TrustedPartnersSection initialPartners={partners} />
+
+      {/* 4.I Recently Added Products (placed just before the footer) */}
+      <RecentlyAddedSection products={recentlyAddedToDisplay} />
     </div>
   );
 }
