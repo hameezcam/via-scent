@@ -2,11 +2,12 @@
 
 import React from "react";
 import { RotateCcw, Check, X } from "lucide-react";
-import { ProductCategory, ScentFamily, SortOption } from "@/types/product";
+import { SortOption } from "@/types/product";
 
 export interface FilterState {
-  category: ProductCategory | "all";
-  scentFamily: ScentFamily | "all";
+  category: string;
+  subCategory?: string;
+  scentFamily?: string;
   inStockOnly: boolean;
   sort: SortOption;
   query: string;
@@ -21,45 +22,178 @@ export interface ProductFiltersProps {
   onMobileOpenChange?: (open: boolean) => void;
 }
 
+export interface SubOption {
+  label: string;
+  value: string;
+}
+
+export interface CollectionConfig {
+  id: "aroma-oil" | "diffuser" | "bestsellers" | "sprays";
+  label: string;
+  categoryParam: string;
+  sectionTitle: string;
+  allLabel: string;
+  subOptions: SubOption[];
+}
+
+export const COLLECTIONS_HIERARCHY: CollectionConfig[] = [
+  {
+    id: "aroma-oil",
+    label: "Aroma Oil",
+    categoryParam: "fragrance-oils",
+    sectionTitle: "OLFACTORY FAMILY",
+    allLabel: "All Aroma Oils",
+    subOptions: [
+      { label: "Car Scent", value: "car-scent" },
+      { label: "Dr Scent's Choice", value: "choice" },
+      { label: "F&B", value: "fb" },
+      { label: "Floral", value: "floral" },
+      { label: "Fresh", value: "fresh" },
+      { label: "Fruity", value: "fruity" },
+      { label: "Oriental", value: "oriental" },
+      { label: "Premium Collection", value: "premium" },
+    ],
+  },
+  {
+    id: "diffuser",
+    label: "Diffuser",
+    categoryParam: "aroma-diffusers",
+    sectionTitle: "DIFFUSER TYPE",
+    allLabel: "All Diffusers",
+    subOptions: [
+      { label: "Diffuser", value: "diffuser" },
+      { label: "Car Diffuser", value: "car-diffuser" },
+      { label: "Dispenser", value: "dispenser" },
+      { label: "Reed Diffuser", value: "reed-diffuser" },
+    ],
+  },
+  {
+    id: "bestsellers",
+    label: "Best Sellers",
+    categoryParam: "bestsellers",
+    sectionTitle: "BEST SELLERS",
+    allLabel: "All Best Sellers",
+    subOptions: [
+      { label: "Diffusers", value: "diffusers" },
+      { label: "Aroma Oils", value: "aroma-oils" },
+      { label: "Sprays", value: "sprays" },
+      { label: "Reed Diffusers", value: "reed-diffusers" },
+      { label: "Candles", value: "candles" },
+    ],
+  },
+  {
+    id: "sprays",
+    label: "Sprays",
+    categoryParam: "sprays",
+    sectionTitle: "SPRAY TYPE",
+    allLabel: "All Sprays",
+    subOptions: [
+      { label: "Fabric Spray", value: "fabric-spray" },
+      { label: "Odor Eliminator", value: "odor-eliminator" },
+      { label: "Aerosol", value: "aerosol" },
+    ],
+  },
+];
+
+export function resolveCollectionId(category: string, sort?: string): "all" | "aroma-oil" | "diffuser" | "bestsellers" | "sprays" {
+  if (sort === "bestselling" || category === "bestsellers" || category === "best-sellers") {
+    return "bestsellers";
+  }
+  if (category === "aroma-oil" || category === "fragrance-oils") {
+    return "aroma-oil";
+  }
+  if (category === "diffuser" || category === "aroma-diffusers") {
+    return "diffuser";
+  }
+  if (category === "sprays" || category === "home-fragrance") {
+    return "sprays";
+  }
+  return "all";
+}
+
 interface FilterContentProps {
-  categories: { label: string; value: ProductCategory | "all" }[];
-  scentFamilies: { label: string; value: ScentFamily | "all" }[];
   filters: FilterState;
   onFilterChange: (filters: Partial<FilterState>) => void;
   onReset: () => void;
-  isFiltered: boolean;
 }
 
 function FilterContent({
-  categories,
-  scentFamilies,
   filters,
   onFilterChange,
   onReset,
 }: FilterContentProps) {
+  const activeColId = resolveCollectionId(filters.category, filters.sort);
+  const currentSub = filters.subCategory || filters.scentFamily || "all";
+
+  // Active collection configuration
+  const activeConfig =
+    COLLECTIONS_HIERARCHY.find((c) => c.id === activeColId) || COLLECTIONS_HIERARCHY[0];
+
+  const handleSelectCollection = (colId: string, categoryParam: string) => {
+    if (colId === "all") {
+      onFilterChange({
+        category: "all",
+        subCategory: "all",
+        scentFamily: "all",
+      });
+    } else {
+      onFilterChange({
+        category: categoryParam,
+        subCategory: "all",
+        scentFamily: "all",
+      });
+    }
+  };
+
+  const handleSelectSub = (subVal: string) => {
+    onFilterChange({
+      subCategory: subVal,
+      scentFamily: subVal,
+    });
+  };
+
   return (
     <div>
-      {/* Category filter */}
+      {/* COLLECTION */}
       <div>
-        <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3">
+        <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3.5">
           COLLECTION
         </h3>
         <div className="space-y-1.5">
-          {categories.map((c) => {
-            const isSelected = filters.category === c.value;
+          {/* All Collections */}
+          <button
+            type="button"
+            onClick={() => handleSelectCollection("all", "all")}
+            className={`w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
+              activeColId === "all"
+                ? "text-[#151412] font-medium"
+                : "text-[#211C19]/80 hover:text-[#151412]"
+            }`}
+          >
+            <span>All Collections</span>
+            {activeColId === "all" && (
+              <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
+            )}
+          </button>
+
+          {/* 4 Main Collections */}
+          {COLLECTIONS_HIERARCHY.map((col) => {
+            const isSelected = activeColId === col.id;
             return (
               <button
-                key={c.value}
+                key={col.id}
                 type="button"
-                onClick={() => onFilterChange({ category: c.value })}
-                className={`w-full text-left py-1 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
+                onClick={() => handleSelectCollection(col.id, col.categoryParam)}
+                className={`w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
                   isSelected
                     ? "text-[#151412] font-medium"
                     : "text-[#211C19]/80 hover:text-[#151412]"
                 }`}
               >
-                <span>{c.label}</span>
-                {isSelected && <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />}
+                <span>{col.label}</span>
+                {isSelected && (
+                  <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
+                )}
               </button>
             );
           })}
@@ -69,27 +203,48 @@ function FilterContent({
       {/* Divider */}
       <div className="w-full h-px bg-[#151412] my-5" />
 
-      {/* Scent Family filter */}
+      {/* DYNAMIC SECONDARY SECTION: Scent Lines / Diffuser Types / Sprays / Best Sellers */}
       <div>
-        <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3">
-          OLFACTORY FAMILY
+        <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3.5">
+          {activeColId === "all" ? "OLFACTORY FAMILY" : activeConfig.sectionTitle}
         </h3>
         <div className="space-y-1.5">
-          {scentFamilies.map((s) => {
-            const isSelected = filters.scentFamily === s.value;
+          {/* All Option */}
+          <button
+            type="button"
+            onClick={() => handleSelectSub("all")}
+            className={`w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
+              currentSub === "all"
+                ? "text-[#151412] font-medium"
+                : "text-[#211C19]/80 hover:text-[#151412]"
+            }`}
+          >
+            <span>
+              {activeColId === "all" ? "All Families" : activeConfig.allLabel}
+            </span>
+            {currentSub === "all" && (
+              <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
+            )}
+          </button>
+
+          {/* Sub Options for Selected Collection */}
+          {activeConfig.subOptions.map((sub) => {
+            const isSelected = currentSub === sub.value;
             return (
               <button
-                key={s.value}
+                key={sub.value}
                 type="button"
-                onClick={() => onFilterChange({ scentFamily: s.value })}
-                className={`w-full text-left py-1 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
+                onClick={() => handleSelectSub(sub.value)}
+                className={`w-full text-left py-1.5 px-0.5 text-[13px] flex items-center justify-between cursor-pointer transition-colors duration-150 ${
                   isSelected
                     ? "text-[#151412] font-medium"
                     : "text-[#211C19]/80 hover:text-[#151412]"
                 }`}
               >
-                <span>{s.label}</span>
-                {isSelected && <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />}
+                <span>{sub.label}</span>
+                {isSelected && (
+                  <Check className="w-4 h-4 text-[#151412] stroke-[1.75]" />
+                )}
               </button>
             );
           })}
@@ -99,9 +254,9 @@ function FilterContent({
       {/* Divider */}
       <div className="w-full h-px bg-[#151412] my-5" />
 
-      {/* Availability */}
+      {/* AVAILABILITY */}
       <div>
-        <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3">
+        <h3 className="text-[11px] font-serif tracking-[0.25em] text-[#151412] font-semibold uppercase mb-3.5">
           AVAILABILITY
         </h3>
         <label className="flex items-center gap-3 cursor-pointer text-[13px] text-[#151412] font-normal hover:text-black transition-colors select-none">
@@ -141,35 +296,15 @@ export function ProductFilters({
   isMobileOpen = false,
   onMobileOpenChange,
 }: ProductFiltersProps) {
-  const categories: { label: string; value: ProductCategory | "all" }[] = [
-    { label: "All Collections", value: "all" },
-    { label: "Aroma Diffusers", value: "aroma-diffusers" },
-    { label: "Fragrance Oils", value: "fragrance-oils" },
-    { label: "Commercial Scenting", value: "commercial-scenting" },
-    { label: "Home Fragrance", value: "home-fragrance" },
-    { label: "Room & Fabric Sprays", value: "sprays" },
-    { label: "Gift Collections", value: "gift-collections" },
-  ];
-
-  const scentFamilies: { label: string; value: ScentFamily | "all" }[] = [
-    { label: "All Families", value: "all" },
-    { label: "Dr. Scent's Choice", value: "choice" },
-    { label: "Car Scent", value: "car-scent" },
-    { label: "Floral & Botanical", value: "floral" },
-    { label: "Fresh & Green", value: "fresh" },
-    { label: "Fruity & Citrus", value: "fruity" },
-    { label: "Oriental & Spice", value: "oriental" },
-    { label: "Woody & Amber", value: "woody" },
-    { label: "F&B (Hospitality)", value: "fb" },
-    { label: "Premium Collection", value: "premium" },
-  ];
+  const activeColId = resolveCollectionId(filters.category, filters.sort);
+  const currentSub = filters.subCategory || filters.scentFamily || "all";
 
   const isFiltered =
-    filters.category !== "all" ||
-    filters.scentFamily !== "all" ||
+    activeColId !== "all" ||
+    currentSub !== "all" ||
     filters.inStockOnly ||
-    filters.query !== "" ||
-    filters.sort !== "featured";
+    (filters.query && filters.query !== "") ||
+    (filters.sort && filters.sort !== "featured");
 
   return (
     <>
@@ -183,18 +318,19 @@ export function ProductFilters({
             <button
               type="button"
               onClick={onReset}
-              className="text-xs text-[#211C19]/80 hover:text-[#151412] hover:underline cursor-pointer font-sans transition-colors"
+              className={`text-xs transition-colors cursor-pointer font-sans ${
+                isFiltered
+                  ? "text-[#151412] underline font-medium"
+                  : "text-[#211C19]/60 hover:text-[#151412]"
+              }`}
             >
               Clear
             </button>
           </div>
           <FilterContent
-            categories={categories}
-            scentFamilies={scentFamilies}
             filters={filters}
             onFilterChange={onFilterChange}
             onReset={onReset}
-            isFiltered={isFiltered}
           />
         </div>
       </aside>
@@ -220,12 +356,9 @@ export function ProductFilters({
               </button>
             </div>
             <FilterContent
-              categories={categories}
-              scentFamilies={scentFamilies}
               filters={filters}
               onFilterChange={onFilterChange}
               onReset={onReset}
-              isFiltered={isFiltered}
             />
             <div className="mt-8 pt-4 border-t border-[#151412]">
               <button
