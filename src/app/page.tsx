@@ -4,8 +4,6 @@ import { categoryService } from "@/services/category.service";
 import { HeroSection } from "@/components/home/HeroSection";
 import { TrustedPartnersSection } from "@/components/home/TrustedPartnersSection";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
-import { BestsellersSection } from "@/components/home/BestsellersSection";
-import { BrandExperienceSection } from "@/components/home/BrandExperienceSection";
 import { B2BFeatureSection } from "@/components/home/B2BFeatureSection";
 import { CuratedCollectionsSection } from "@/components/home/CuratedCollectionsSection";
 import { TrustSection } from "@/components/home/TrustSection";
@@ -27,19 +25,6 @@ export default async function HomePage() {
     categoryService.getFeaturedInHome(),
   ]);
   const newProducts = allProducts.filter((p) => p.isNew);
-  const featured = allProducts.filter((p) => p.featured);
-  const bestsellers = allProducts.filter((p) => p.isBestseller);
-
-  // Combine uniquely preserving order: new arrivals first, then featured, then bestsellers, then remaining
-  const seen = new Set<string>();
-  const productsToDisplay = [];
-  for (const p of [...newProducts, ...featured, ...bestsellers, ...allProducts]) {
-    if (!seen.has(p.id)) {
-      seen.add(p.id);
-      productsToDisplay.push(p);
-    }
-    if (productsToDisplay.length >= 8) break;
-  }
 
   const featuredHeroProduct =
     allProducts.find((p) => p.slug === "dr-scent-smart-tower-pro") ||
@@ -59,12 +44,6 @@ export default async function HomePage() {
 
       {/* 4.B Featured Categories */}
       <FeaturedCategories initialCategories={featuredCategories} />
-
-      {/* 4.C Bestsellers */}
-      <BestsellersSection products={productsToDisplay} />
-
-      {/* 4.D Brand Experience */}
-      <BrandExperienceSection />
 
       {/* 4.E Business Scenting Feature */}
       <B2BFeatureSection />
