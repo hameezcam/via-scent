@@ -615,13 +615,16 @@ export default function AdminProductsPage() {
     setFeedback(null);
 
     const categoryNamesMap: Record<ProductCategory, string> = {
-      "aroma-diffusers": "Aroma Diffusers",
-      "fragrance-oils": "Fragrance Oils",
+      "aroma-diffusers": "Diffuser",
+      "fragrance-oils": "Aroma Oil",
+      "best-sellers": "Best Sellers",
+      "sprays": "Sprays",
       "commercial-scenting": "Commercial Scenting",
       "home-fragrance": "Home Fragrance",
       "gift-collections": "Gift Collections",
-      "sprays": "Room & Fabric Sprays",
     };
+
+    const isBestsellerValue = category === "best-sellers" ? true : isBestseller;
 
     const hasScentNotes = topNotes || heartNotes || baseNotes;
     const scentNotesPayload = hasScentNotes
@@ -653,7 +656,7 @@ export default function AdminProductsPage() {
         "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
       ],
       featured,
-      isBestseller,
+      isBestseller: isBestsellerValue,
       isNew,
       inStock: stockStatus === "In Stock" || stockStatus === "Low Stock",
       stockStatus,
@@ -734,7 +737,10 @@ export default function AdminProductsPage() {
     const matchesSearch =
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.sku.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCat = categoryFilter === "ALL" || p.category === categoryFilter;
+    const matchesCat =
+      categoryFilter === "ALL" ||
+      p.category === categoryFilter ||
+      (categoryFilter === "best-sellers" && (p.isBestseller || p.category === "best-sellers"));
     return matchesSearch && matchesCat;
   });
 
@@ -781,11 +787,15 @@ export default function AdminProductsPage() {
             className="px-3 py-1.5 bg-stone-50 border border-stone-300 rounded text-stone-800 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
           >
             <option value="ALL">All Categories</option>
-            <option value="aroma-diffusers">Aroma Diffusers</option>
-            <option value="fragrance-oils">Fragrance Oils</option>
-            <option value="commercial-scenting">Commercial Scent Systems</option>
-            <option value="home-fragrance">Home Fragrance</option>
-            <option value="gift-collections">Gift Collections</option>
+            <option value="fragrance-oils">Aroma Oil</option>
+            <option value="aroma-diffusers">Diffuser</option>
+            <option value="best-sellers">Best Sellers</option>
+            <option value="sprays">Sprays</option>
+            <optgroup label="Other Categories">
+              <option value="commercial-scenting">Commercial Scent Systems</option>
+              <option value="home-fragrance">Home Fragrance</option>
+              <option value="gift-collections">Gift Collections</option>
+            </optgroup>
           </select>
         </div>
       </div>
@@ -1138,15 +1148,21 @@ export default function AdminProductsPage() {
                           const newCat = e.target.value as ProductCategory;
                           setCategory(newCat);
                           setSubCategory("");
+                          if (newCat === "best-sellers") {
+                            setIsBestseller(true);
+                          }
                         }}
                         className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs focus:outline-none focus:ring-1 focus:ring-amber-800"
                       >
-                        <option value="fragrance-oils">Aroma Oils (Fragrance Oils)</option>
-                        <option value="aroma-diffusers">Aroma Diffusers</option>
-                        <option value="sprays">Room &amp; Fabric Sprays</option>
-                        <option value="commercial-scenting">Commercial Scent Systems</option>
-                        <option value="home-fragrance">Home Fragrance</option>
-                        <option value="gift-collections">Gift Collections</option>
+                        <option value="fragrance-oils">Aroma Oil</option>
+                        <option value="aroma-diffusers">Diffuser</option>
+                        <option value="best-sellers">Best Sellers</option>
+                        <option value="sprays">Sprays</option>
+                        <optgroup label="Other Categories">
+                          <option value="commercial-scenting">Commercial Scent Systems</option>
+                          <option value="home-fragrance">Home Fragrance</option>
+                          <option value="gift-collections">Gift Collections</option>
+                        </optgroup>
                       </select>
                     </div>
 
@@ -1180,19 +1196,26 @@ export default function AdminProductsPage() {
                         )}
                         {category === "aroma-diffusers" && (
                           <>
-                            <option value="diffuser">Diffuser (Home / Ambient)</option>
+                            <option value="diffuser">Diffuser</option>
                             <option value="car-diffuser">Car Diffuser</option>
                             <option value="dispenser">Dispenser</option>
                             <option value="reed-diffuser">Reed Diffuser</option>
                           </>
                         )}
-                        {(category === "sprays" || category === "home-fragrance") && (
+                        {category === "best-sellers" && (
+                          <>
+                            <option value="diffusers">Diffusers</option>
+                            <option value="aroma-oils">Aroma Oils</option>
+                            <option value="sprays">Sprays</option>
+                            <option value="reed-diffusers">Reed Diffusers</option>
+                            <option value="candles">Candles</option>
+                          </>
+                        )}
+                        {category === "sprays" && (
                           <>
                             <option value="fabric-spray">Fabric Spray</option>
                             <option value="odor-eliminator">Odor Eliminator</option>
                             <option value="aerosol">Aerosol</option>
-                            <option value="reed-diffuser">Reed Diffuser</option>
-                            <option value="candles">Candles</option>
                           </>
                         )}
                         {category === "commercial-scenting" && (
@@ -1200,6 +1223,15 @@ export default function AdminProductsPage() {
                             <option value="dispenser">Dispenser</option>
                             <option value="hvac">HVAC System</option>
                             <option value="tower">Tower Column</option>
+                          </>
+                        )}
+                        {category === "home-fragrance" && (
+                          <>
+                            <option value="fabric-spray">Fabric Spray</option>
+                            <option value="odor-eliminator">Odor Eliminator</option>
+                            <option value="aerosol">Aerosol</option>
+                            <option value="reed-diffuser">Reed Diffuser</option>
+                            <option value="candles">Candles</option>
                           </>
                         )}
                         {category === "gift-collections" && (

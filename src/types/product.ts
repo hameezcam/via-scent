@@ -8,7 +8,8 @@ export type ProductCategory =
   | "commercial-scenting"
   | "home-fragrance"
   | "gift-collections"
-  | "sprays";
+  | "sprays"
+  | "best-sellers";
 
 export type ScentFamily =
   | "woody"

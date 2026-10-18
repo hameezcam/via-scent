@@ -3,7 +3,7 @@ import { Product, CategoryInfo } from "../types/product";
 export const CATEGORIES: CategoryInfo[] = [
   {
     id: "aroma-diffusers",
-    name: "Diffusers",
+    name: "Diffuser",
     tagline: "Cold-Air Micro-Nebulization Technology",
     description:
       "Waterless, heatless cold-air diffusers, car nebulizers, automated dispensers, and architectural reed diffusers.",
@@ -17,6 +17,24 @@ export const CATEGORIES: CategoryInfo[] = [
     description:
       "Formulated for cold-air diffusion with verified IFRA standards, evoking timeless botanical, fresh, and oriental profiles.",
     image: "/images/categories/fragrance-oils.jpg",
+    featuredInHome: true,
+  },
+  {
+    id: "best-sellers",
+    name: "Best Sellers",
+    tagline: "Iconic Signature Creations",
+    description:
+      "Our most celebrated cold-air diffusers, signature aroma oils, ambient sprays, reed diffusers, and luxury candles.",
+    image: "/images/categories/bestsellers.jpg",
+    featuredInHome: true,
+  },
+  {
+    id: "sprays",
+    name: "Sprays",
+    tagline: "Fine-Mist Ambient & Textile Scenting",
+    description:
+      "Instantaneous, residue-free fabric sprays, organic odor eliminators, and aerosol ambient mists with Dr. Scent fragrances.",
+    image: "/images/categories/sprays.jpg",
     featuredInHome: true,
   },
   {
@@ -45,15 +63,6 @@ export const CATEGORIES: CategoryInfo[] = [
       "Exquisite boxed sets featuring miniature diffuser instruments and complementary fragrance discovery flights.",
     image: "/images/categories/gift-collections.jpg",
     featuredInHome: false,
-  },
-  {
-    id: "sprays",
-    name: "Sprays",
-    tagline: "Fine-Mist Ambient & Textile Scenting",
-    description:
-      "Instantaneous, residue-free fabric sprays, organic odor eliminators, and aerosol ambient mists with Dr. Scent fragrances.",
-    image: "/images/categories/sprays.jpg",
-    featuredInHome: true,
   },
 ];
 
