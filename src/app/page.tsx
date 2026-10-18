@@ -44,9 +44,6 @@ export default async function HomePage() {
       {/* 4.A Hero */}
       <HeroSection />
 
-      {/* 4.A.2 Our Trusted Partners Slideshow */}
-      <TrustedPartnersSection initialPartners={partners} />
-
       {/* 4.B Featured Categories */}
       <FeaturedCategories />
 
@@ -67,6 +64,9 @@ export default async function HomePage() {
 
       {/* 4.H Newsletter */}
       <NewsletterSection />
+
+      {/* 4.I Our Trusted Partners Slideshow (placed just before the footer) */}
+      <TrustedPartnersSection initialPartners={partners} />
     </div>
   );
 }

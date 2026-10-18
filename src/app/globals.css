@@ -107,6 +107,23 @@
   clip-path: inset(0 0 0 0);
 }
 
+/* Infinite Marquee Animation for Partner Logos */
+@keyframes partner-marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-partner-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: partner-marquee 35s linear infinite;
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
@@ -116,3 +133,4 @@
     scroll-behavior: auto !important;
   }
 }
+
