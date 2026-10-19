@@ -363,11 +363,11 @@ export default function AdminPartnersPage() {
         </div>
       </div>
 
-      {/* Partners List Table */}
+      {/* Clients List Table */}
       <div className="bg-white rounded-xl border border-stone-200 shadow-xs overflow-hidden">
         <div className="p-4 border-b border-stone-200 bg-stone-50/50 flex items-center justify-between">
           <h2 className="text-xs font-semibold tracking-wider uppercase text-stone-700">
-            Partner Logos &amp; Display Sequence
+            Client Logos &amp; Display Sequence
           </h2>
           <span className="text-[11px] text-stone-500">
             Use arrows to reorder slideshow sequence
@@ -392,10 +392,10 @@ export default function AdminPartnersPage() {
             {partners.map((partner, index) => (
               <div
                 key={partner.id}
-                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-stone-50 transition-colors"
+                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-stone-50 transition-colors overflow-hidden"
               >
-                {/* Left: Reorder Arrows & Logo */}
-                <div className="flex items-center gap-4">
+                {/* Left: Reorder Arrows & Logo & Details */}
+                <div className="flex items-center gap-4 min-w-0 flex-1">
                   {/* Reorder Buttons */}
                   <div className="flex flex-col gap-1 shrink-0">
                     <button
@@ -419,7 +419,7 @@ export default function AdminPartnersPage() {
                   </div>
 
                   {/* Order Badge */}
-                  <span className="w-6 text-center text-xs font-mono font-bold text-stone-400">
+                  <span className="w-6 text-center text-xs font-mono font-bold text-stone-400 shrink-0">
                     #{index + 1}
                   </span>
 
@@ -435,19 +435,24 @@ export default function AdminPartnersPage() {
                     />
                   </div>
 
-                  {/* Partner Details */}
-                  <div>
-                    <h3 className="text-sm font-semibold text-stone-900">{partner.name}</h3>
+                  {/* Client Details */}
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-semibold text-stone-900 truncate">
+                      {partner.name}
+                    </h3>
                     {partner.websiteUrl ? (
                       <a
                         href={partner.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] text-amber-900 hover:text-amber-700 mt-0.5"
+                        className="inline-flex items-center gap-1 text-[11px] text-amber-900 hover:text-amber-700 mt-0.5 max-w-full"
+                        title={partner.websiteUrl}
                       >
-                        <Globe className="w-3 h-3" />
-                        <span>{partner.websiteUrl.replace(/^https?:\/\//, "")}</span>
-                        <ExternalLink className="w-2.5 h-2.5" />
+                        <Globe className="w-3 h-3 shrink-0" />
+                        <span className="truncate block max-w-[200px] sm:max-w-xs md:max-w-sm lg:max-w-md">
+                          {partner.websiteUrl.replace(/^https?:\/\//, "")}
+                        </span>
+                        <ExternalLink className="w-2.5 h-2.5 shrink-0" />
                       </a>
                     ) : (
                       <span className="text-[11px] text-stone-400 block mt-0.5">
@@ -458,7 +463,7 @@ export default function AdminPartnersPage() {
                 </div>
 
                 {/* Right: Status & Actions */}
-                <div className="flex items-center gap-3 self-end sm:self-center">
+                <div className="flex items-center gap-2 sm:gap-3 self-end sm:self-center shrink-0">
                   {/* Status Toggle Badge */}
                   <button
                     onClick={() => handleToggleActive(partner)}
@@ -486,7 +491,7 @@ export default function AdminPartnersPage() {
                   <button
                     onClick={() => handleOpenEditModal(partner)}
                     className="p-1.5 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-200 transition-colors"
-                    title="Edit Partner"
+                    title="Edit Client"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
@@ -495,7 +500,7 @@ export default function AdminPartnersPage() {
                   <button
                     onClick={() => setPartnerToDelete(partner)}
                     className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                    title="Delete Partner"
+                    title="Delete Client"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
