@@ -41,20 +41,20 @@ export default async function HomePage() {
       {/* 4.A Hero */}
       <HeroSection featuredProduct={featuredHeroProduct} />
 
-      {/* 4.B Featured Categories */}
+      {/* 4.B Featured Categories ("Find your atmosphere.") */}
       <FeaturedCategories initialCategories={featuredCategories} />
 
-      {/* 4.E Business Scenting Feature */}
+      {/* 4.C Recently Added Products */}
+      <RecentlyAddedSection products={recentlyAddedToDisplay} />
+
+      {/* 4.D Business Scenting Feature */}
       <B2BFeatureSection />
 
-      {/* 4.G Trust & Service Information */}
+      {/* 4.E Trust & Service Information */}
       <TrustSection />
 
-      {/* 4.H Our Trusted Clients Slideshow */}
+      {/* 4.F Our Trusted Clients Slideshow */}
       <TrustedPartnersSection initialPartners={partners} />
-
-      {/* 4.I Recently Added Products (placed just before the footer) */}
-      <RecentlyAddedSection products={recentlyAddedToDisplay} />
     </div>
   );
 }
