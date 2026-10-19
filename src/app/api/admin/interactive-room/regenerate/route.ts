@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { productIds, presetThemeId, customInstructions } = body;
+    const { productIds, presetThemeId, customInstructions, geminiApiKey } = body;
 
     if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
       return NextResponse.json(
@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     const recreatedConfig = await interactiveRoomService.recreateWithProducts(
       productIds,
       presetThemeId,
-      customInstructions
+      customInstructions,
+      geminiApiKey
     );
 
     return NextResponse.json({

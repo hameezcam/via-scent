@@ -48,8 +48,18 @@ export default function AdminInteractiveRoomPage() {
   const [selectedAiProductIds, setSelectedAiProductIds] = useState<string[]>([]);
   const [selectedPresetId, setSelectedPresetId] = useState<string>("penthouse-living-room");
   const [customAiPrompt, setCustomAiPrompt] = useState<string>("");
+  const [geminiApiKey, setGeminiApiKey] = useState<string>("");
+  const [showApiKeyInput, setShowApiKeyInput] = useState<boolean>(false);
 
   const canvasRef = useRef<HTMLDivElement>(null);
+
+  // Load saved API key from localStorage if available
+  useEffect(() => {
+    try {
+      const savedKey = localStorage.getItem("viascent_gemini_api_key");
+      if (savedKey) setGeminiApiKey(savedKey);
+    } catch {}
+  }, []);
 
   // Fetch initial data
   useEffect(() => {
@@ -224,6 +234,13 @@ export default function AdminInteractiveRoomPage() {
       return;
     }
 
+    // Persist API key to localStorage if entered
+    if (geminiApiKey) {
+      try {
+        localStorage.setItem("viascent_gemini_api_key", geminiApiKey);
+      } catch {}
+    }
+
     setRecreating(true);
     setFeedback(null);
     try {
@@ -234,6 +251,7 @@ export default function AdminInteractiveRoomPage() {
           productIds: selectedAiProductIds,
           presetThemeId: selectedPresetId,
           customInstructions: customAiPrompt,
+          geminiApiKey: geminiApiKey || undefined,
         }),
       });
 
@@ -249,7 +267,7 @@ export default function AdminInteractiveRoomPage() {
       }
       setFeedback({
         type: "success",
-        text: "Living room scene successfully recreated with selected products and updated live!",
+        text: "Living room scene successfully regenerated with your selected product photos and published live!",
       });
     } catch (err: any) {
       setFeedback({ type: "error", text: err.message || "Failed to recreate scene with Gemini" });
@@ -619,30 +637,81 @@ export default function AdminInteractiveRoomPage() {
               Recreate Living Room with Selected Products
             </h2>
             <p className="text-xs sm:text-sm text-stone-300 mt-1 max-w-2xl leading-relaxed">
-              Choose the specific Dr. Scent instruments you want in the living room. Gemini AI will synthesize
-              the architectural scene, seamlessly integrating your chosen diffusers, candles, and sprays, then
-              immediately publish it live to the storefront.
+              Select products from your catalog. Gemini AI and our architectural scene engine take the exact product photos,
+              render them naturally into the living room interior with realistic scale and ambient lighting, and update the live page.
             </p>
           </div>
 
-          <button
-            onClick={handleGeminiRecreate}
-            disabled={recreating || selectedAiProductIds.length === 0}
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs sm:text-sm shadow-lg shadow-amber-900/30 transition-all disabled:opacity-50 cursor-pointer shrink-0"
-          >
-            {recreating ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin text-stone-950" />
-                <span>Recreating Scene with Gemini...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 text-stone-950" />
-                <span>Recreate Scene with Gemini AI</span>
-              </>
-            )}
-          </button>
+          <div className="flex flex-col items-end gap-2">
+            <button
+              onClick={handleGeminiRecreate}
+              disabled={recreating || selectedAiProductIds.length === 0}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs sm:text-sm shadow-lg shadow-amber-900/30 transition-all disabled:opacity-50 cursor-pointer shrink-0"
+            >
+              {recreating ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-stone-950" />
+                  <span>Recreating Image with Product Photos...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 text-stone-950" />
+                  <span>Regenerate Image with Product Photos</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowApiKeyInput(!showApiKeyInput)}
+              className="text-[11px] text-amber-400 hover:text-amber-300 underline"
+            >
+              {showApiKeyInput ? "Hide API Key Settings" : "Configure Google Gemini API Key"}
+            </button>
+          </div>
         </div>
+
+        {/* Optional Gemini API Key Drawer */}
+        {showApiKeyInput && (
+          <div className="mt-4 p-4 rounded-xl bg-stone-950/80 border border-amber-500/30 text-xs space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-amber-200">Google Gemini / Imagen 3 API Key</span>
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noreferrer"
+                className="text-amber-400 hover:underline flex items-center gap-1 text-[11px]"
+              >
+                <span>Get Free Key from Google AI Studio</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                value={geminiApiKey}
+                onChange={(e) => setGeminiApiKey(e.target.value)}
+                placeholder="AIzaSy... (leave blank to use built-in high-precision visual compositor)"
+                className="flex-1 bg-stone-900 border border-stone-700 rounded-lg px-3 py-1.5 text-stone-200 text-xs focus:ring-1 focus:ring-amber-500"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    localStorage.setItem("viascent_gemini_api_key", geminiApiKey);
+                    setFeedback({ type: "success", text: "Gemini API key saved to browser storage." });
+                  } catch {}
+                }}
+                className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-lg text-xs"
+              >
+                Save Key
+              </button>
+            </div>
+            <p className="text-[10px] text-stone-400">
+              When an API key is provided, the request calls Google Imagen 3 directly. Without a key, the system uses the Sharp architectural compositor to integrate the product photos directly into the 8K room scene.
+            </p>
+          </div>
+        )}
 
         {/* Step A: Select Products for the scene */}
         <div className="mt-6 space-y-4">
@@ -702,6 +771,32 @@ export default function AdminInteractiveRoomPage() {
               );
             })}
           </div>
+
+          {/* Active Product Photos for Scene Placement */}
+          {selectedAiProductIds.length > 0 && (
+            <div className="p-3.5 rounded-xl bg-stone-950/70 border border-amber-500/20">
+              <h4 className="text-[11px] font-semibold uppercase tracking-wider text-amber-300 mb-2.5 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5" />
+                <span>Product Photos Queued for Room Integration ({selectedAiProductIds.length})</span>
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {products
+                  .filter((p) => selectedAiProductIds.includes(p.id))
+                  .map((p, idx) => (
+                    <div key={p.id} className="p-2 rounded-lg bg-stone-900 border border-stone-800 flex items-center gap-2.5">
+                      <div className="w-12 h-12 bg-stone-950 rounded border border-stone-700 relative overflow-hidden shrink-0">
+                        <Image src={p.image} alt={p.name} fill className="object-contain p-1" unoptimized />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[10px] font-mono font-bold text-amber-400 block">Spot #{idx + 1}</span>
+                        <p className="text-[11px] text-stone-200 truncate font-medium">{p.name}</p>
+                        <p className="text-[10px] text-stone-400">{formatLKR(p.basePriceLKR)}</p>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Step B: Choose Room Style Preset */}

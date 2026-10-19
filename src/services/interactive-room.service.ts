@@ -160,47 +160,27 @@ class InteractiveRoomService {
   public async recreateWithProducts(
     productIds: string[],
     presetThemeId?: string,
-    customInstructions?: string
+    customInstructions?: string,
+    geminiApiKey?: string
   ): Promise<InteractiveRoomConfig> {
     const allProducts = await productService.getAll();
     const selected = allProducts.filter((p) => productIds.includes(p.id) || productIds.includes(p.slug));
 
-    // Find requested preset or default to first
-    const preset = SCENE_PRESETS.find((p) => p.id === presetThemeId) || SCENE_PRESETS[0];
-
-    // Build new hotspots mapped to the selected products
-    const newHotspots: InteractiveRoomHotspot[] = selected.slice(0, 5).map((prod, idx) => {
-      const rec = preset.recommendedHotspots[idx] || {
-        x: 30 + idx * 15,
-        y: 65,
-        placement: "top",
-        label: prod.name,
-      };
-
-      return {
-        id: `hotspot-ai-${prod.slug}-${Date.now()}-${idx}`,
-        productId: prod.id,
-        productSlug: prod.slug,
-        productName: prod.name,
-        productPriceLKR: prod.basePriceLKR,
-        productImage: prod.images?.[0] || "/images/categories/aroma-diffusers.jpg",
-        categoryName: prod.categoryName || "Diffuser",
-        x: rec.x ?? 50,
-        y: rec.y ?? 60,
-        placement: (rec.placement as any) ?? "top",
-        label: rec.label || prod.name.split("–")[0].trim(),
-        enabled: true,
-      };
+    // Dynamic generation using Gemini AI or Sharp visual compositor
+    const { generateRoomWithProducts } = await import("./gemini-room-generator.service");
+    const genResult = await generateRoomWithProducts({
+      products: selected,
+      presetId: presetThemeId,
+      customPrompt: customInstructions,
+      geminiApiKey,
     });
 
-    const promptSummary = `Gemini AI architectural scene recreation: ${preset.name} featuring ${selected.map((p) => p.name).join(", ")}. ${customInstructions || ""}`.trim();
-
     return this.updateConfig({
-      imageUrl: preset.imageUrl,
-      sceneTheme: preset.name,
-      generatedPrompt: promptSummary,
+      imageUrl: genResult.imageUrl,
+      sceneTheme: presetThemeId || "Modern Luxury Penthouse",
+      generatedPrompt: genResult.promptUsed,
       lastGeneratedAt: new Date().toISOString(),
-      hotspots: newHotspots,
+      hotspots: genResult.hotspots,
     });
   }
 
