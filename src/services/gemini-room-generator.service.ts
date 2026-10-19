@@ -192,16 +192,16 @@ Photorealistic, 8k resolution, cinematic soft shadows, pristine architectural fi
           // Layer shadow just below product
           compositeLayers.push({
             input: shadowSvg,
-            left: Math.max(0, leftPx + 4),
-            top: Math.min(baseHeight - shadowHeight, topPx + slot.heightPx - shadowHeight / 2),
+            left: Math.round(Math.max(0, leftPx + 4)),
+            top: Math.round(Math.min(baseHeight - shadowHeight, topPx + slot.heightPx - shadowHeight / 2)),
             blend: "multiply",
           });
 
           // Layer the product photo
           compositeLayers.push({
             input: resizedProduct,
-            left: Math.max(0, leftPx),
-            top: Math.max(0, topPx),
+            left: Math.round(Math.max(0, leftPx)),
+            top: Math.round(Math.max(0, topPx)),
             blend: "over",
           });
         } catch (compErr) {
