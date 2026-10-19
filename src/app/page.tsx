@@ -1,6 +1,7 @@
 import { productService } from "@/services/product.service";
 import { partnerService } from "@/services/partner.service";
 import { categoryService } from "@/services/category.service";
+import { interactiveRoomService } from "@/services/interactive-room.service";
 import { HeroSection } from "@/components/home/HeroSection";
 import { TrustedPartnersSection } from "@/components/home/TrustedPartnersSection";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
@@ -19,10 +20,11 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [allProducts, partners, featuredCategories] = await Promise.all([
+  const [allProducts, partners, featuredCategories, roomConfig] = await Promise.all([
     productService.getAll(),
     partnerService.getAll(true),
     categoryService.getFeaturedInHome(),
+    interactiveRoomService.getConfig(),
   ]);
   const newProducts = allProducts.filter((p) => p.isNew);
 
@@ -49,7 +51,7 @@ export default async function HomePage() {
       <RecentlyAddedSection products={recentlyAddedToDisplay} />
 
       {/* 4.D Interactive Room Collection with Product Hotspots */}
-      <InteractiveRoomSection products={allProducts} />
+      <InteractiveRoomSection initialConfig={roomConfig} />
 
       {/* 4.E Business Scenting Feature */}
       <B2BFeatureSection />

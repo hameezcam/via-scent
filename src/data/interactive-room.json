@@ -1,0 +1,68 @@
+{
+  "title": "NEW COLLECTION",
+  "subtitle": "The latest arrivals at Dr. Scent fragrances include a variety of scents, sprays and diffuser machines for your home, office, car or commercial space.",
+  "badgeText": "INTERACTIVE SHOWCASE",
+  "imageUrl": "/images/home/luxury-living-room.jpg",
+  "helperText": "Click any hotspot on the room to inspect and shop Dr. Scent instruments",
+  "sceneTheme": "Modern Luxury Penthouse",
+  "lastGeneratedAt": "2026-10-19T18:14:00.000Z",
+  "generatedPrompt": "Ultra-luxurious, modern minimalist penthouse living room with Dr. Scent cold-air aroma diffusers, artisanal soy candle, and botanical reed diffusers.",
+  "hotspots": [
+    {
+      "id": "hotspot-tower",
+      "productId": "dr-scent-smart-tower-pro",
+      "productSlug": "dr-scent-smart-tower-pro",
+      "productName": "Standalone Scent Diffuser Machine – Sleek Design & German Nano Technology",
+      "productPriceLKR": 68500,
+      "productImage": "/images/categories/aroma-diffusers.jpg",
+      "categoryName": "Aroma Diffusers",
+      "x": 20.3,
+      "y": 64.0,
+      "placement": "top-right",
+      "label": "Standing Diffuser Tower",
+      "enabled": true
+    },
+    {
+      "id": "hotspot-candle",
+      "productId": "dr-scent-hand-poured-artisanal-candle",
+      "productSlug": "dr-scent-hand-poured-artisanal-candle",
+      "productName": "Dr. Scent Hand-Poured Artisanal Soy Candle & Reed Set",
+      "productPriceLKR": 9500,
+      "productImage": "/images/categories/candles.jpg",
+      "categoryName": "Candles",
+      "x": 41.2,
+      "y": 76.5,
+      "placement": "top",
+      "label": "Artisanal Candle",
+      "enabled": true
+    },
+    {
+      "id": "hotspot-reed",
+      "productId": "dr-scent-continuous-aerosol-spray",
+      "productSlug": "dr-scent-continuous-aerosol-spray",
+      "productName": "Dr. Scent Continuous Ambient Aerosol Mist",
+      "productPriceLKR": 7900,
+      "productImage": "/images/categories/sprays.jpg",
+      "categoryName": "Sprays",
+      "x": 44.2,
+      "y": 72.0,
+      "placement": "top-left",
+      "label": "Reed Diffuser & Mist",
+      "enabled": true
+    },
+    {
+      "id": "hotspot-portable",
+      "productId": "dr-scent-luxe-portable-diffuser",
+      "productSlug": "dr-scent-luxe-portable-diffuser",
+      "productName": "Dr. Scent Portable Ambient Diffuser & Pure Oil",
+      "productPriceLKR": 28500,
+      "productImage": "/images/categories/fragrance-oils.jpg",
+      "categoryName": "Aroma Diffusers",
+      "x": 86.8,
+      "y": 77.0,
+      "placement": "left",
+      "label": "Ultrasonic Aroma Diffuser",
+      "enabled": true
+    }
+  ]
+}
