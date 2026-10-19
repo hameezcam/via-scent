@@ -7,6 +7,7 @@ import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { B2BFeatureSection } from "@/components/home/B2BFeatureSection";
 import { TrustSection } from "@/components/home/TrustSection";
 import { RecentlyAddedSection } from "@/components/home/RecentlyAddedSection";
+import { InteractiveRoomSection } from "@/components/home/InteractiveRoomSection";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -47,13 +48,16 @@ export default async function HomePage() {
       {/* 4.C Recently Added Products */}
       <RecentlyAddedSection products={recentlyAddedToDisplay} />
 
-      {/* 4.D Business Scenting Feature */}
+      {/* 4.D Interactive Room Collection with Product Hotspots */}
+      <InteractiveRoomSection products={allProducts} />
+
+      {/* 4.E Business Scenting Feature */}
       <B2BFeatureSection />
 
-      {/* 4.E Trust & Service Information */}
+      {/* 4.F Trust & Service Information */}
       <TrustSection />
 
-      {/* 4.F Our Trusted Clients Slideshow */}
+      {/* 4.G Our Trusted Clients Slideshow */}
       <TrustedPartnersSection initialPartners={partners} />
     </div>
   );
