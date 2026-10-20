@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "jiti ./test/run-all.ts"
+    "test": "npx tsx ./test/run-all.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
