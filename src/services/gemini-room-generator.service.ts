@@ -80,43 +80,100 @@ ${productDescriptions}
 ${customPrompt ? `Additional styling notes: ${customPrompt}` : ""}
 Photorealistic, 8k resolution, cinematic soft shadows, pristine architectural finish, no watermarks, no text overlay, no UI buttons.`;
 
-  // 1. Attempt Gemini Imagen 3 Generation if an API key is available
+  // 1. Attempt Gemini Nano Banana Image Generation if an API key is available
   if (apiKey) {
     try {
-      const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-      const response = await fetch(imagenUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          instances: [{ prompt: comprehensivePrompt }],
-          parameters: {
-            sampleCount: 1,
-            aspectRatio: "16:9",
-            outputOptions: { mimeType: "image/jpeg" },
-          },
-        }),
+      // Build multimodal parts including product photos as reference
+      const promptParts: any[] = [];
+
+      for (const product of products.slice(0, 4)) {
+        const rawImgUrl = product.images?.[0];
+        if (rawImgUrl) {
+          try {
+            let buffer: Buffer | null = null;
+            let mimeType = "image/jpeg";
+            if (rawImgUrl.startsWith("http://") || rawImgUrl.startsWith("https://")) {
+              const res = await fetch(rawImgUrl, { signal: AbortSignal.timeout(4000) });
+              if (res.ok) {
+                buffer = Buffer.from(await res.arrayBuffer());
+                mimeType = res.headers.get("content-type") || "image/jpeg";
+              }
+            } else {
+              const localPath = path.join(process.cwd(), "public", rawImgUrl.replace(/^\//, ""));
+              if (fs.existsSync(localPath)) {
+                buffer = fs.readFileSync(localPath);
+                mimeType = rawImgUrl.endsWith(".png") ? "image/png" : "image/jpeg";
+              }
+            }
+            if (buffer) {
+              promptParts.push({
+                inlineData: {
+                  mimeType,
+                  data: buffer.toString("base64"),
+                },
+              });
+            }
+          } catch {
+            // Ignore individual image fetch error
+          }
+        }
+      }
+
+      promptParts.push({
+        text: `Using Nano Banana Image Synthesis: Create an ultra-luxurious, photorealistic architectural living room scene.
+Integrate the provided Dr. Scent product photos naturally into the room on the floor, coffee table, and side table.
+Atmosphere: ${preset.name}.
+${comprehensivePrompt}`,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        const base64Bytes = data?.predictions?.[0]?.bytesBase64Encoded;
-        if (base64Bytes) {
-          const fileName = `gemini-ai-room-${Date.now()}.jpg`;
-          const filePath = path.join(process.cwd(), "public", "images", "home", fileName);
-          fs.writeFileSync(filePath, Buffer.from(base64Bytes, "base64"));
+      // Try Nano Banana models in priority order
+      const nanoBananaModels = ["nano-banana-pro-preview", "gemini-2.5-flash-image", "gemini-nano-banana-2.1"];
 
-          const hotspots = buildHotspotsForProducts(products, preset);
-          return {
-            imageUrl: `/images/home/${fileName}`,
-            method: "gemini_api",
-            hotspots,
-            promptUsed: comprehensivePrompt,
-            message: "Scene successfully regenerated via Google Gemini Imagen 3 API!",
-          };
+      for (const model of nanoBananaModels) {
+        try {
+          const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: promptParts }],
+              generationConfig: {
+                responseModalities: ["IMAGE", "TEXT"],
+              },
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const candidates = data?.candidates || [];
+            for (const cand of candidates) {
+              const parts = cand?.content?.parts || [];
+              for (const part of parts) {
+                if (part?.inlineData?.data) {
+                  const base64Bytes = part.inlineData.data;
+                  const ext = part.inlineData.mimeType?.includes("png") ? "png" : "jpg";
+                  const fileName = `nano-banana-room-${Date.now()}.${ext}`;
+                  const filePath = path.join(process.cwd(), "public", "images", "home", fileName);
+                  fs.writeFileSync(filePath, Buffer.from(base64Bytes, "base64"));
+
+                  const hotspots = buildHotspotsForProducts(products, preset);
+                  return {
+                    imageUrl: `/images/home/${fileName}`,
+                    method: "gemini_api",
+                    hotspots,
+                    promptUsed: comprehensivePrompt,
+                    message: `Scene successfully created using Gemini Nano Banana (${model}) with product photos!`,
+                  };
+                }
+              }
+            }
+          }
+        } catch (modelErr) {
+          console.warn(`[GeminiRoomGenerator] Nano Banana model ${model} error:`, modelErr);
         }
       }
     } catch (apiErr) {
-      console.warn("[GeminiRoomGenerator] Gemini API call failed or timed out, falling back to sharp compositor:", apiErr);
+      console.warn("[GeminiRoomGenerator] Nano Banana generation failed or limit reached, falling back to visual compositor:", apiErr);
     }
   }
 

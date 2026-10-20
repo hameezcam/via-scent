@@ -631,14 +631,14 @@ export default function AdminInteractiveRoomPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-medium border border-amber-500/30">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Gemini AI Scene Recreator</span>
+              <span>Gemini AI Scene Recreator (Nano Banana)</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-serif font-bold text-white mt-2">
-              Recreate Living Room with Selected Products
+              Recreate Living Room with Nano Banana AI
             </h2>
             <p className="text-xs sm:text-sm text-stone-300 mt-1 max-w-2xl leading-relaxed">
-              Select products from your catalog. Gemini AI and our architectural scene engine take the exact product photos,
-              render them naturally into the living room interior with realistic scale and ambient lighting, and update the live page.
+              Select products from your catalog. Gemini AI (Nano Banana) takes the exact product photos as input references,
+              synthesizes a new architectural living room image with your products integrated into the scene, and updates the live page.
             </p>
           </div>
 
@@ -651,12 +651,12 @@ export default function AdminInteractiveRoomPage() {
               {recreating ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin text-stone-950" />
-                  <span>Recreating Image with Product Photos...</span>
+                  <span>Creating Image with Nano Banana...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 text-stone-950" />
-                  <span>Regenerate Image with Product Photos</span>
+                  <span>Regenerate with Nano Banana</span>
                 </>
               )}
             </button>
