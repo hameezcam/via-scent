@@ -29,7 +29,9 @@ export default function ContactPage() {
 
   const breadcrumbs = [{ label: "Contact & Concierge" }];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [honeypot, setHoneypot] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
@@ -45,11 +47,20 @@ export default function ContactPage() {
     }
 
     setStatus("submitting");
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "contact", ...formData, website: honeypot }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setStatus("error");
+        setFeedback(data.error || "Something went wrong. Please try again or email info@vialk.com.");
+        return;
+      }
       setStatus("success");
-      setFeedback(
-        "Thank you! Your message has been validated locally in Phase 1 Preview Mode. Production email routing will be configured in Phase 2."
-      );
+      setFeedback("Thank you! Your message has been sent. Our team will get back to you shortly.");
       setFormData({
         name: "",
         email: "",
@@ -57,7 +68,10 @@ export default function ContactPage() {
         subject: "Retail Inquiry",
         message: "",
       });
-    }, 700);
+    } catch {
+      setStatus("error");
+      setFeedback("Network error. Please check your connection or email info@vialk.com.");
+    }
   };
 
   return (
@@ -153,6 +167,19 @@ export default function ContactPage() {
               <h2 className="font-serif text-xl font-medium text-stone-900 pb-3 border-b border-stone-100">
                 Send an Inquiry Message
               </h2>
+
+              {/* Spam trap: hidden from people, filled in by bots */}
+              <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+                <label htmlFor="contact-website">Website</label>
+                <input
+                  id="contact-website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
+              </div>
 
               {status === "error" && (
                 <div className="p-3 bg-red-50 rounded border border-red-200 text-xs text-red-800 flex items-center gap-2">

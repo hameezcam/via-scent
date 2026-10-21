@@ -46,7 +46,7 @@ export default function PrivacyPage() {
               1. Information We Collect
             </h2>
             <p>
-              When submitting commercial scenting quote requests or contacting our concierge desk, we may collect your name, business name, corporate email address, contact telephone number, and building parameters. In Phase 1 demonstration mode, this information is validated client-side and not committed to a persistent database.
+              When submitting commercial scenting quote requests or contacting our concierge desk, we may collect your name, business name, corporate email address, contact telephone number, and building parameters. This information is sent by email to our team (via our email delivery provider) solely so we can respond to your enquiry, return, warranty claim, or newsletter request.
             </p>
           </section>
 

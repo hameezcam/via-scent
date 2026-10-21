@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { clientIp, isRateLimited, sendFormEmail, singleLine } from "@/lib/email";
 
 const DATA_FILE = path.join(process.cwd(), "src/data/newsletter-subscribers.json");
 
@@ -37,6 +38,10 @@ function saveSubscribers(list: SubscriberRecord[]): void {
 
 export async function POST(req: NextRequest) {
   try {
+    if (isRateLimited(clientIp(req.headers))) {
+      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+    }
+
     const body = await req.json();
     const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
 
@@ -69,6 +74,23 @@ export async function POST(req: NextRequest) {
 
     subscribers.push(newSubscriber);
     saveSubscribers(subscribers);
+
+    // The subscriber file can't be written on Vercel, so email is the record.
+    const emailed = await sendFormEmail({
+      subject: `New newsletter subscriber: ${singleLine(email)}`,
+      heading: "New newsletter subscriber",
+      fields: [
+        { label: "Email", value: email },
+        { label: "Source", value: newSubscriber.source },
+        { label: "Subscribed at", value: newSubscriber.subscribedAt },
+      ],
+    });
+    if (!emailed) {
+      return NextResponse.json(
+        { error: "Unable to process subscription. Please try again shortly." },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

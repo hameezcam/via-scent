@@ -86,8 +86,12 @@ export function QuoteRequestForm() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [honeypot, setHoneypot] = useState("");
+  const [submitError, setSubmitError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError("");
 
     if (!validate()) {
       return;
@@ -95,7 +99,18 @@ export function QuoteRequestForm() {
 
     setFormState({ status: "submitting", errors: {} });
 
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "quote", ...formData, website: honeypot }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setFormState({ status: "error", errors: {} });
+        setSubmitError(data.error || "Something went wrong. Please try again or email info@vialk.com.");
+        return;
+      }
       setFormState({
         status: "success",
         errors: {},
@@ -103,7 +118,10 @@ export function QuoteRequestForm() {
         message:
           "Commercial consultation brief received. A dedicated VIA Scent architectural specialist will review your space requirements within 24 hours.",
       });
-    }, 700);
+    } catch {
+      setFormState({ status: "error", errors: {} });
+      setSubmitError("Network error. Please check your connection or email info@vialk.com.");
+    }
   };
 
   if (formState.status === "success") {
@@ -180,8 +198,29 @@ export function QuoteRequestForm() {
         </p>
       </div>
 
+      {/* Spam trap: hidden from people, filled in by bots */}
+      <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+        <label htmlFor="quote-website">Website</label>
+        <input
+          id="quote-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+        />
+      </div>
+
+      {/* Sending failure banner */}
+      {submitError && (
+        <div className="p-4 bg-red-50 rounded-sm border border-red-200 text-xs text-red-800 flex items-start gap-3">
+          <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+          <span>{submitError}</span>
+        </div>
+      )}
+
       {/* General Validation Banner */}
-      {formState.status === "error" && (
+      {formState.status === "error" && !submitError && (
         <div className="p-4 bg-red-50 rounded-sm border border-red-200 text-xs text-red-800 flex items-start gap-3">
           <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
           <div>
