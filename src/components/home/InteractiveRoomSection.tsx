@@ -76,11 +76,14 @@ export function InteractiveRoomSection({ initialConfig }: InteractiveRoomSection
         
         {/* Editorial Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
-          <div className="inline-block border border-stone-800 bg-white/95 px-6 sm:px-10 py-4 sm:py-5 shadow-xs">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold tracking-wider text-stone-900 uppercase">
-              {config.title || "NEW COLLECTION"}
+          <div>
+            <span className="text-[10px] font-semibold tracking-[0.24em] uppercase text-[#B49A70] block mb-3">
+              {config.title || "New collection"}
+            </span>
+            <h2 className="font-serif text-[2rem] sm:text-5xl font-normal text-[#151412] tracking-tight leading-[1.12]">
+              Shop the room
             </h2>
-            <p className="text-xs sm:text-[13px] text-stone-600 font-light mt-2 leading-relaxed">
+            <p className="text-sm sm:text-base text-[#57534E] mt-3 leading-relaxed">
               {config.subtitle ||
                 "Discover the fragrances that transform your space. Explore our collection of home fragrances, diffusers and room sprays."}
             </p>
