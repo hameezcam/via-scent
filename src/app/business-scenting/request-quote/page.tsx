@@ -3,6 +3,18 @@ import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { QuoteRequestForm } from "@/components/b2b/QuoteRequestForm";
 import { Building2, ShieldCheck, Phone, Mail, Clock } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
+import type { IndustryType } from "@/types/enquiry";
+
+const INDUSTRY_VALUES: IndustryType[] = [
+  "hospitality",
+  "corporate",
+  "retail",
+  "wellness-spa",
+  "dining-nightlife",
+  "healthcare",
+  "real-estate",
+  "other",
+];
 
 export const metadata = {
   title: "Request a Commercial Scenting Quote | Dr. Scent Franchisee Sri Lanka",
@@ -10,7 +22,13 @@ export const metadata = {
     "Request a bespoke commercial fragrance quotation for your hotel, office, retail store, or wellness space in Sri Lanka. Tailored HVAC ducting and monthly maintenance.",
 };
 
-export default function RequestQuotePage() {
+export default async function RequestQuotePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ industry?: string | string[] }>;
+}) {
+  const { industry } = await searchParams;
+  const initialIndustry = INDUSTRY_VALUES.find((v) => v === industry) ?? "";
   const breadcrumbs = [
     { label: "Business Scenting", href: "/business-scenting" },
     { label: "Request a Quote" },
@@ -37,7 +55,7 @@ export default function RequestQuotePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Main Form */}
           <div className="lg:col-span-8">
-            <QuoteRequestForm />
+            <QuoteRequestForm initialIndustry={initialIndustry} />
           </div>
 
           {/* Sidebar: Direct Support & Process Overview */}
