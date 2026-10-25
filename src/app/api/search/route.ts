@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { productService } from "@/services/product.service";
+import { withServedImagesAll } from "@/lib/product-images";
 import { matchesProduct, scoreProductRelevance } from "@/lib/search";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +18,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const allProducts = await productService.getAll();
+    const allProducts = await productService.getAll().then(withServedImagesAll);
     const matched = allProducts.filter((p) => matchesProduct(p, query));
 
     // Sort by relevance score descending

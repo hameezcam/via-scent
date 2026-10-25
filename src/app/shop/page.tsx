@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { productService } from "@/services/product.service";
+import { withServedImagesAll } from "@/lib/product-images";
 import { categoryService } from "@/services/category.service";
 import { ShopContainer } from "@/components/shop/ShopContainer";
 
@@ -14,7 +15,7 @@ export const metadata = {
 
 export default async function ShopPage() {
   const [products, categories] = await Promise.all([
-    productService.getAll(),
+    productService.getAll().then(withServedImagesAll),
     categoryService.getAll(),
   ]);
 

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { productService } from "@/services/product.service";
+import { withServedImagesAll } from "@/lib/product-images";
 import { categoryService } from "@/services/category.service";
 import { ProductCategory } from "@/types/product";
 import { ShopContainer } from "@/components/shop/ShopContainer";
@@ -53,7 +54,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   const [allProducts, allCategories] = await Promise.all([
-    productService.getAll(),
+    productService.getAll().then(withServedImagesAll),
     categoryService.getAll(),
   ]);
 

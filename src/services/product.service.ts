@@ -249,11 +249,22 @@ class ProductServiceImpl implements IProductService {
     const current = catalog.find((p) => p.id === productId);
     if (!current) return catalog.slice(0, limit);
 
-    const related = catalog.filter(
-      (p) => p.id !== productId && (p.category === current.category || p.scentFamily === current.scentFamily)
+    const others = catalog.filter((p) => p.id !== productId);
+    const sameCategory = others.filter((p) => p.category === current.category);
+    const sameScent = others.filter(
+      (p) => p.category !== current.category && current.scentFamily && p.scentFamily === current.scentFamily
     );
+    // Diffusers pair with oils and vice versa
+    const pairsWith: ProductCategory[] =
+      current.category === "fragrance-oils" ? ["aroma-diffusers", "home-fragrance"] : ["fragrance-oils"];
+    const complementary = others.filter((p) => pairsWith.includes(p.category));
 
-    return related.length > 0 ? related.slice(0, limit) : catalog.filter((p) => p.id !== productId).slice(0, limit);
+    const picked = new Map<string, Product>();
+    for (const p of [...sameCategory, ...sameScent, ...complementary, ...others]) {
+      if (picked.size >= limit) break;
+      picked.set(p.id, p);
+    }
+    return [...picked.values()];
   }
 
   async search(query: string): Promise<Product[]> {

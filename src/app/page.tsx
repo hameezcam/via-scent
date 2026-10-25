@@ -1,4 +1,5 @@
 import { productService } from "@/services/product.service";
+import { withServedImagesAll } from "@/lib/product-images";
 import { partnerService } from "@/services/partner.service";
 import { categoryService } from "@/services/category.service";
 import { interactiveRoomService } from "@/services/interactive-room.service";
@@ -21,7 +22,7 @@ export const metadata = {
 
 export default async function HomePage() {
   const [allProducts, partners, featuredCategories, roomConfig] = await Promise.all([
-    productService.getAll(),
+    productService.getAll().then(withServedImagesAll),
     partnerService.getAll(true),
     categoryService.getFeaturedInHome(),
     interactiveRoomService.getConfig(),

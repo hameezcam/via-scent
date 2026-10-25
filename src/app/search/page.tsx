@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { productService } from "@/services/product.service";
+import { withServedImagesAll } from "@/lib/product-images";
 import { SearchContainer } from "@/components/search/SearchContainer";
 
 export const metadata = {
@@ -8,7 +9,7 @@ export const metadata = {
 };
 
 export default async function SearchPage() {
-  const allProducts = await productService.getAll();
+  const allProducts = await productService.getAll().then(withServedImagesAll);
 
   return (
     <Suspense fallback={<div className="max-w-7xl mx-auto px-4 py-20 text-center text-stone-500">Searching catalogue...</div>}>

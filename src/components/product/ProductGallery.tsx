@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
-import { ShieldCheck, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { LUXURY_EASE } from "@/config/motion.config";
 
@@ -11,7 +11,6 @@ interface ProductGalleryProps {
   productName: string;
   isBestseller?: boolean;
   isNew?: boolean;
-  drScentAuthorized?: boolean;
 }
 
 export function ProductGallery({
@@ -19,13 +18,15 @@ export function ProductGallery({
   productName,
   isBestseller,
   isNew,
-  drScentAuthorized,
 }: ProductGalleryProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const displayImages = images && images.length > 0 ? images : ["/placeholder.jpg"];
   const safeIndex = activeImageIndex >= displayImages.length ? 0 : activeImageIndex;
   const currentImage = displayImages[safeIndex] || displayImages[0];
+
+  const touchStartX = useRef<number | null>(null);
+  const badge = isBestseller ? "Bestseller" : isNew ? "New" : null;
 
   useEffect(() => {
     setActiveImageIndex(0);
@@ -49,7 +50,7 @@ export function ProductGallery({
 
   return (
     <div
-      className="space-y-4 focus:outline-none"
+      className="space-y-3 focus:outline-none"
       tabIndex={0}
       onKeyDown={(e) => {
         if (displayImages.length <= 1) return;
@@ -63,15 +64,28 @@ export function ProductGallery({
       }}
       aria-label="Product image gallery (use arrow keys to change images)"
     >
-      {/* Main Image Frame */}
-      <div className="relative group aspect-[4/5] sm:aspect-[1/1] w-full rounded-sm overflow-hidden bg-white border border-[var(--warm-stone)]/40 shadow-xs">
+      {/* Main image: contained on a light ground so studio shots are never cropped */}
+      <div
+        className="relative group aspect-square w-full overflow-hidden bg-white border border-[var(--warm-stone)]/30"
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0].clientX;
+        }}
+        onTouchEnd={(e) => {
+          if (touchStartX.current === null || displayImages.length <= 1) return;
+          const delta = e.changedTouches[0].clientX - touchStartX.current;
+          touchStartX.current = null;
+          if (Math.abs(delta) < 40) return;
+          if (delta < 0) handleNext();
+          else handlePrev();
+        }}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={currentImage}
-            initial={{ opacity: 0.4, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0.4 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0.2 }}
-            transition={{ duration: 0.5, ease: LUXURY_EASE }}
+            transition={{ duration: 0.35, ease: LUXURY_EASE }}
             className="relative w-full h-full"
           >
             <Image
@@ -80,59 +94,47 @@ export function ProductGallery({
               fill
               priority
               unoptimized={typeof currentImage === "string" && currentImage.startsWith("data:")}
-              sizes="(max-width: 768px) 100vw, 55vw"
-              className="object-cover object-center"
+              sizes="(max-width: 1024px) 100vw, 55vw"
+              className="object-contain object-center p-4 sm:p-8"
             />
           </motion.div>
         </AnimatePresence>
 
-        {/* Ambient Film Grain */}
-        <div className="film-grain" />
-
-        {/* Badges Overlay */}
-        <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
-          {isBestseller && (
-            <span className="px-2.5 py-1 bg-[var(--near-black)]/90 backdrop-blur-sm text-[var(--champagne)] border border-[var(--champagne)]/40 rounded-sm text-[10px] uppercase tracking-[0.2em] font-medium">
-              Considered Bestseller
-            </span>
-          )}
-          {isNew && (
-            <span className="px-2.5 py-1 bg-[var(--ivory)]/95 backdrop-blur-sm text-[var(--near-black)] border border-[var(--warm-stone)]/60 rounded-sm text-[10px] uppercase tracking-[0.2em] font-medium">
-              New Formulation
-            </span>
-          )}
-        </div>
-
-        {drScentAuthorized && (
-          <div className="absolute top-4 right-4 z-10 bg-[var(--porcelain)]/95 backdrop-blur-sm px-3 py-1 rounded-sm text-[10px] tracking-widest font-medium uppercase text-[var(--near-black)] border border-[var(--champagne)]/40 shadow-xs flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-[var(--champagne)]" />
-            <span>Authorized Supply</span>
-          </div>
+        {badge && (
+          <span className="absolute top-3 left-3 z-10 px-2.5 py-1 bg-[var(--near-black)] text-[var(--porcelain)] text-[10px] uppercase tracking-[0.2em] font-medium">
+            {badge}
+          </span>
         )}
 
-        {/* Navigation Arrows */}
         {displayImages.length > 1 && (
           <>
             <button
               type="button"
               onClick={handlePrev}
               aria-label="Previous image"
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[var(--porcelain)]/90 hover:bg-white text-[var(--near-black)] border border-[var(--warm-stone)]/60 shadow-md backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--champagne)]"
+              className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[var(--near-black)] border border-[var(--warm-stone)]/50 shadow-sm items-center justify-center opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity cursor-pointer"
             >
-              <ChevronLeft className="w-5 h-5 text-[var(--near-black)]" />
+              <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               type="button"
               onClick={handleNext}
               aria-label="Next image"
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[var(--porcelain)]/90 hover:bg-white text-[var(--near-black)] border border-[var(--warm-stone)]/60 shadow-md backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--champagne)]"
+              className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[var(--near-black)] border border-[var(--warm-stone)]/50 shadow-sm items-center justify-center opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity cursor-pointer"
             >
-              <ChevronRight className="w-5 h-5 text-[var(--near-black)]" />
+              <ChevronRight className="w-5 h-5" />
             </button>
 
-            {/* Photo Counter Indicator */}
-            <div className="absolute bottom-3 right-3 z-10 px-3 py-1 rounded-sm text-[10px] font-mono tracking-widest bg-[var(--near-black)]/75 text-[var(--ivory)] backdrop-blur-sm border border-[var(--warm-stone)]/20 select-none">
-              {safeIndex + 1} / {displayImages.length}
+            {/* Dots on mobile, where swiping replaces the arrows */}
+            <div className="sm:hidden absolute bottom-3 inset-x-0 flex justify-center gap-1.5 z-10">
+              {displayImages.map((_, idx) => (
+                <span
+                  key={idx}
+                  className={`h-1.5 rounded-full transition-all ${
+                    idx === safeIndex ? "w-4 bg-[var(--near-black)]" : "w-1.5 bg-[var(--near-black)]/25"
+                  }`}
+                />
+              ))}
             </div>
           </>
         )}
@@ -140,7 +142,7 @@ export function ProductGallery({
 
       {/* Thumbnails */}
       {displayImages.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto pb-1" role="tablist" aria-label="Product image thumbnails">
+        <div className="hidden sm:flex gap-3 overflow-x-auto pb-1" role="tablist" aria-label="Product image thumbnails">
           {displayImages.map((img, idx) => {
             const isSelected = idx === safeIndex;
             return (
@@ -151,10 +153,10 @@ export function ProductGallery({
                 aria-selected={isSelected}
                 aria-label={`View image ${idx + 1}`}
                 onClick={() => setActiveImageIndex(idx)}
-                className={`relative w-20 h-20 rounded-sm border overflow-hidden flex-shrink-0 transition-all cursor-pointer ${
+                className={`relative w-20 h-20 bg-white border overflow-hidden flex-shrink-0 transition-all cursor-pointer ${
                   isSelected
-                    ? "border-[var(--champagne)] ring-1 ring-[var(--champagne)] opacity-100 shadow-xs"
-                    : "border-[var(--warm-stone)]/50 hover:border-[var(--champagne)]/60 opacity-60 hover:opacity-100"
+                    ? "border-[var(--near-black)]"
+                    : "border-[var(--warm-stone)]/40 opacity-60 hover:opacity-100"
                 }`}
               >
                 <Image
@@ -163,7 +165,7 @@ export function ProductGallery({
                   fill
                   unoptimized={typeof img === "string" && img.startsWith("data:")}
                   sizes="80px"
-                  className="object-cover"
+                  className="object-contain p-1.5"
                 />
               </button>
             );

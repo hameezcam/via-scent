@@ -5,9 +5,11 @@ import { ProductDetailClient } from "@/components/product/ProductDetailClient";
 import { PRODUCTS } from "@/data/products";
 import { BRAND_CONFIG, formatProductPrice, isPriceOnRequest } from "@/config/brand.config";
 import { getSiteUrl } from "@/lib/site-url";
+import { withServedImages, withServedImagesAll } from "@/lib/product-images";
 import type { Product } from "@/types/product";
 
-// Inline data: URLs are too large for share previews and structured data
+// Inline data: URLs are too large for share previews and structured data;
+// withServedImages swaps admin uploads for the image route first
 function publicImages(product: Product): string[] {
   return product.images.filter((src) => src && !src.startsWith("data:"));
 }
@@ -78,7 +80,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     openGraph: {
       title: `${product.name} - ${BRAND_CONFIG.brandName}`,
       description: product.shortDescription,
-      images: publicImages(product)
+      images: publicImages(withServedImages(product))
         .slice(0, 1)
         .map((url) => ({ url, width: 1000, height: 1000, alt: product.name })),
     },
@@ -87,13 +89,14 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await productService.getBySlug(slug);
+  const stored = await productService.getBySlug(slug);
 
-  if (!product) {
+  if (!stored) {
     notFound();
   }
 
-  const relatedProducts = await productService.getRelated(product.id, 3);
+  const product = withServedImages(stored);
+  const relatedProducts = withServedImagesAll(await productService.getRelated(product.id, 4));
 
   return (
     <>
