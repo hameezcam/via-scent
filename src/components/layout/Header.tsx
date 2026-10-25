@@ -91,6 +91,7 @@ export const DEFAULT_MAIN_NAV_ITEMS: NavMenuItem[] = [
     label: "SERVICES",
     href: "/business-scenting",
     items: [
+      { label: "Scent Finder", href: "/scent-finder" },
       { label: "B2B Sales", href: "/business-scenting" },
       { label: "Franchise", href: "/contact?topic=franchise" },
       { label: "Rental Services", href: "/business-scenting/request-quote" },
@@ -148,6 +149,7 @@ export function buildNavItemsFromCategories(categories: Category[]): NavMenuItem
     label: "SERVICES",
     href: "/business-scenting",
     items: [
+      { label: "Scent Finder", href: "/scent-finder" },
       { label: "B2B Sales", href: "/business-scenting" },
       { label: "Franchise", href: "/contact?topic=franchise" },
       { label: "Rental Services", href: "/business-scenting/request-quote" },

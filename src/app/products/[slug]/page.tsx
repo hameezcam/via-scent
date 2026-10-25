@@ -6,6 +6,8 @@ import { PRODUCTS } from "@/data/products";
 import { BRAND_CONFIG, formatProductPrice, isPriceOnRequest } from "@/config/brand.config";
 import { getSiteUrl } from "@/lib/site-url";
 import { withServedImages, withServedImagesAll } from "@/lib/product-images";
+import { reviewService } from "@/services/review.service";
+import type { PublicReview, ReviewSummary } from "@/types/review";
 import type { Product } from "@/types/product";
 
 // Inline data: URLs are too large for share previews and structured data;
@@ -14,7 +16,7 @@ function publicImages(product: Product): string[] {
   return product.images.filter((src) => src && !src.startsWith("data:"));
 }
 
-function productJsonLd(product: Product) {
+function productJsonLd(product: Product, reviews: PublicReview[], summary: ReviewSummary) {
   const siteUrl = getSiteUrl();
   const url = `${siteUrl}/products/${product.slug}`;
   const images = publicImages(product).map((src) => (src.startsWith("http") ? src : `${siteUrl}${src}`));
@@ -29,6 +31,18 @@ function productJsonLd(product: Product) {
     image: images,
     url,
     brand: { "@type": "Brand", name: "Dr. Scent" },
+    ...(summary.count > 0
+      ? {
+          aggregateRating: { "@type": "AggregateRating", ratingValue: summary.average, reviewCount: summary.count },
+          review: reviews.slice(0, 5).map((r) => ({
+            "@type": "Review",
+            reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5 },
+            author: { "@type": "Person", name: r.authorName },
+            datePublished: r.createdAt.slice(0, 10),
+            reviewBody: r.body,
+          })),
+        }
+      : {}),
     ...(isPriceOnRequest(price)
       ? {}
       : {
@@ -96,16 +110,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const product = withServedImages(stored);
-  const relatedProducts = withServedImagesAll(await productService.getRelated(product.id, 4));
+  const [related, { reviews, summary }] = await Promise.all([
+    productService.getRelated(product.id, 4),
+    reviewService.getApprovedForProduct(product.id),
+  ]);
+  const relatedProducts = withServedImagesAll(related);
 
   return (
     <>
       <script
         type="application/ld+json"
         // Escape "<" so product text can never close the script tag
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(product)).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(product, reviews, summary)).replace(/</g, "\\u003c") }}
       />
-      <ProductDetailClient product={product} relatedProducts={relatedProducts} />
+      <ProductDetailClient product={product} relatedProducts={relatedProducts} reviews={reviews} reviewSummary={summary} />
     </>
   );
 }

@@ -17,6 +17,7 @@ import {
   FolderTree,
   Sparkles,
   LogOut,
+  MessageSquareQuote,
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -37,6 +38,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
     { label: "Products Catalogue", href: "/admin/products", icon: Store },
+    { label: "Reviews", href: "/admin/reviews", icon: MessageSquareQuote },
     { label: "Interactive Living Room", href: "/admin/interactive-room", icon: Sparkles },
     { label: "Categories", href: "/admin/categories", icon: FolderTree },
     { label: "Trusted Clients", href: "/admin/partners", icon: Building2 },

@@ -24,10 +24,14 @@ import { useCart } from "@/context/CartContext";
 import { ProductGallery } from "./ProductGallery";
 import { ProductCard } from "./ProductCard";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
+import { ProductReviews, ReviewSummaryLink } from "./ProductReviews";
+import type { PublicReview, ReviewSummary } from "@/types/review";
 
 interface ProductDetailClientProps {
   product: Product;
   relatedProducts: Product[];
+  reviews?: PublicReview[];
+  reviewSummary?: ReviewSummary;
 }
 
 /** One collapsible section of the product details, open or closed independently. */
@@ -52,7 +56,12 @@ function DetailSection({
   );
 }
 
-export function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
+export function ProductDetailClient({
+  product,
+  relatedProducts,
+  reviews = [],
+  reviewSummary = { average: 0, count: 0 },
+}: ProductDetailClientProps) {
   const router = useRouter();
   const { addItem } = useCart();
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
@@ -143,6 +152,9 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
             {product.tagline && (
               <p className="mt-3 text-sm sm:text-base text-[var(--deep-espresso)]/80 leading-relaxed">{product.tagline}</p>
             )}
+            <div>
+              <ReviewSummaryLink summary={reviewSummary} />
+            </div>
 
             <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
               {priceDisplay}
@@ -395,6 +407,8 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
             </ul>
           </div>
         </div>
+
+        <ProductReviews productId={product.id} reviews={reviews} summary={reviewSummary} />
 
         {/* Related products */}
         {relatedProducts.length > 0 && (

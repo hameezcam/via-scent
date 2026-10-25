@@ -10,6 +10,7 @@ import { B2BFeatureSection } from "@/components/home/B2BFeatureSection";
 import { TrustSection } from "@/components/home/TrustSection";
 import { RecentlyAddedSection } from "@/components/home/RecentlyAddedSection";
 import { InteractiveRoomSection } from "@/components/home/InteractiveRoomSection";
+import { ScentFinderTeaser } from "@/components/home/ScentFinderTeaser";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -45,6 +46,9 @@ export default async function HomePage() {
 
       {/* 4.C Featured Categories ("Find your atmosphere.") */}
       <FeaturedCategories initialCategories={featuredCategories} />
+
+      {/* Scent finder prompt */}
+      <ScentFinderTeaser />
 
       {/* 4.D New Arrivals */}
       <RecentlyAddedSection products={recentlyAddedToDisplay} />
