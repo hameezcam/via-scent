@@ -28,11 +28,6 @@ export default async function HomePage() {
   ]);
   const newProducts = allProducts.filter((p) => p.isNew);
 
-  const featuredHeroProduct =
-    allProducts.find((p) => p.slug === "dr-scent-smart-tower-pro") ||
-    allProducts.find((p) => p.featured) ||
-    allProducts[0];
-
   // Extract up to 4 recently added products (prioritizing isNew)
   const recentlyAddedToDisplay = [
     ...newProducts,
@@ -42,22 +37,22 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* 4.A Hero */}
-      <HeroSection featuredProduct={featuredHeroProduct} />
+      <HeroSection />
 
-      {/* 4.B Featured Categories ("Find your atmosphere.") */}
+      {/* 4.B Delivery, payment, warranty and returns at a glance */}
+      <TrustSection />
+
+      {/* 4.C Featured Categories ("Find your atmosphere.") */}
       <FeaturedCategories initialCategories={featuredCategories} />
 
-      {/* 4.C Recently Added Products */}
+      {/* 4.D New Arrivals */}
       <RecentlyAddedSection products={recentlyAddedToDisplay} />
 
-      {/* 4.D Interactive Room Collection with Product Hotspots */}
+      {/* 4.E Interactive Room Collection with Product Hotspots */}
       <InteractiveRoomSection initialConfig={roomConfig} />
 
-      {/* 4.E Business Scenting Feature */}
+      {/* 4.F Business Scenting Feature */}
       <B2BFeatureSection />
-
-      {/* 4.F Trust & Service Information */}
-      <TrustSection />
 
       {/* 4.G Our Trusted Clients Slideshow */}
       <TrustedPartnersSection initialPartners={partners} />

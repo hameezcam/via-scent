@@ -32,8 +32,11 @@ export function RecentlyAddedSection({ products }: RecentlyAddedSectionProps) {
           transition={{ duration: 0.6, ease: LUXURY_EASE }}
           className="text-center mb-10 sm:mb-14"
         >
-          <h2 className="font-sans font-bold text-xl sm:text-2xl lg:text-[26px] text-[#151412] tracking-[0.14em] uppercase">
-            RECENTLY ADDED PRODUCTS
+          <span className="text-[10px] font-semibold tracking-[0.24em] uppercase text-[#B49A70] block mb-3">
+            Just in
+          </span>
+          <h2 className="font-serif text-[2rem] sm:text-5xl font-normal text-[#151412] tracking-tight leading-[1.12]">
+            New arrivals
           </h2>
         </motion.div>
 

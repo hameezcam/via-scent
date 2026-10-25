@@ -11,32 +11,32 @@ export function B2BFeatureSection() {
   const industries = [
     {
       icon: Hotel,
-      title: "Hotels & Luxury Resorts",
-      description: "Indelible welcome atmospheres in lobbies, oceanfront villas, and executive hospitality suites across Sri Lanka.",
+      title: "Hotels & Resorts",
+      description: "A welcoming scent guests remember, from the lobby to the rooms.",
       image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
     },
     {
       icon: Building2,
-      title: "Corporate Towers & Boardrooms",
-      description: "Airflow-integrated HVAC atomization that projects prestige, enhances mental clarity, and neutralizes transit fatigue.",
+      title: "Offices",
+      description: "A fresh, consistent scent through the air-conditioning, floor by floor.",
       image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
     },
     {
       icon: Store,
-      title: "Flagship Retail & Showrooms",
-      description: "Prolong client dwell time and reinforce luxury positioning with subtle, uniform signature olfactive merchandising.",
+      title: "Retail & Showrooms",
+      description: "A signature scent that makes customers linger and remember your brand.",
       image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
     },
     {
       icon: Sparkles,
-      title: "Wellness Spas & Private Sanctuaries",
-      description: "Hygienic, residue-free botanical micro-mists that induce restorative tranquility without synthetic heavy residues.",
+      title: "Spas & Clinics",
+      description: "Calm, clean air with no residue on surfaces or fabrics.",
       image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
     },
   ];
 
   return (
-    <section className="py-24 sm:py-32 bg-[#EFEAE1]/60 border-b border-[#E7E2D8] relative">
+    <section className="py-16 sm:py-28 bg-[#EFEAE1]/60 border-b border-[#E7E2D8] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -45,19 +45,19 @@ export function B2BFeatureSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.8, ease: LUXURY_EASE }}
-          className="max-w-3xl mb-16 text-left"
+          className="max-w-3xl mb-10 sm:mb-14 text-left"
         >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFFFF] border border-[#B49A70]/40 text-[#B49A70] text-[10px] font-semibold tracking-[0.24em] uppercase mb-4 shadow-xs">
             <Building2 className="w-3.5 h-3.5 text-[#B49A70]" />
-            <span>ARCHITECTURAL SCENTING FOR BUSINESS</span>
+            <span>Scenting for business</span>
           </div>
 
-          <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal text-[#151412] tracking-tight leading-[1.12]">
+          <h2 className="font-serif text-[2rem] sm:text-5xl font-normal text-[#151412] tracking-tight leading-[1.12]">
             Make your space unforgettable.
           </h2>
 
           <p className="text-sm sm:text-base text-[#57534E] mt-4 font-normal leading-relaxed">
-            Professional scent architecture designed to contribute to a distinctive guest atmosphere and refined brand identity. We engineer complete HVAC duct integrations, high-capacity autonomous column nebulizers, and structured monthly replenishment programs for commercial environments across Sri Lanka.
+            Hotels, offices, showrooms and clinics across Sri Lanka use our diffusers to give their spaces a signature scent. We install the machines, connect them to your air-conditioning if needed, and refill the oil every month.
           </p>
         </motion.div>
 
@@ -101,7 +101,7 @@ export function B2BFeatureSection() {
 
                 <div className="px-5 pb-5 pt-1">
                   <span className="text-[10px] tracking-[0.16em] uppercase font-bold text-[#B49A70] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                    <span>Engineering Protocol</span>
+                    <span>Learn more</span>
                     <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -121,13 +121,13 @@ export function B2BFeatureSection() {
           <div className="space-y-2 text-center lg:text-left max-w-xl z-10">
             <div className="inline-flex items-center gap-1.5 text-[#B49A70] text-[10px] font-bold uppercase tracking-widest mb-1">
               <ShieldCheck className="w-3.5 h-3.5 text-[#B49A70]" />
-              <span>Complimentary Spatial Airflow Evaluation</span>
+              <span>Free site visit</span>
             </div>
             <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#FFFFFF]">
-              Discuss your commercial space with our consultants.
+              Tell us about your space.
             </h3>
             <p className="text-xs sm:text-sm text-[#D8D0C4] leading-relaxed">
-              Schedule an on-site HVAC or floorplan diagnostic in Colombo or islandwide. We will evaluate air-exchange cubic volume and provide bespoke fragrance sampling.
+              We visit anywhere in Sri Lanka, recommend the right machine for your floor area, and bring scents for you to try.
             </p>
           </div>
 
@@ -136,7 +136,7 @@ export function B2BFeatureSection() {
               href="/business-scenting/request-quote"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#B49A70] hover:bg-[#CBB694] text-[#151412] text-xs font-bold tracking-[0.2em] uppercase rounded transition-all shadow-md cursor-pointer"
             >
-              <span>Discuss Your Space</span>
+              <span>Get a quote</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
 
