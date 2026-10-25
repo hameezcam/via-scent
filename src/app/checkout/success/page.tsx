@@ -21,6 +21,7 @@ import { Order } from "@/types/order";
 function SuccessContent() {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("orderNumber");
+  const token = searchParams.get("token") || "";
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(() => Boolean(orderNumber));
@@ -32,7 +33,9 @@ function SuccessContent() {
 
     async function fetchOrder() {
       try {
-        const res = await fetch(`/api/admin/orders?orderNumber=${encodeURIComponent(orderNumber!)}`);
+        const res = await fetch(
+          `/api/orders/confirmation?orderNumber=${encodeURIComponent(orderNumber!)}&token=${encodeURIComponent(token)}`
+        );
         if (res.ok) {
           const data = await res.json();
           setOrder(data);
@@ -45,7 +48,7 @@ function SuccessContent() {
     }
 
     fetchOrder();
-  }, [orderNumber]);
+  }, [orderNumber, token]);
 
   if (loading) {
     return (

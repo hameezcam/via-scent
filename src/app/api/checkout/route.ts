@@ -47,12 +47,20 @@ export async function POST(req: NextRequest) {
 
     const newOrder = await orderService.createOrder(orderInput);
 
+    // Identifies the order to the customer's own browser for the confirmation page
+    const orderRef = {
+      id: newOrder.id,
+      orderNumber: newOrder.orderNumber,
+      confirmationToken: newOrder.confirmationToken,
+    };
+
     // Prepare response based on payment method
     if (newOrder.payment.method === "online_gateway") {
       // Generate secure gateway payment intent token (for PayHere / IPG integration)
       const mockSignature = `sig_${Date.now()}_${Buffer.from(newOrder.orderNumber).toString("base64")}`;
       return NextResponse.json({
         success: true,
+        order: orderRef,
         orderId: newOrder.id,
         orderNumber: newOrder.orderNumber,
         pricingSnapshot: newOrder.pricingSnapshot,
@@ -63,7 +71,7 @@ export async function POST(req: NextRequest) {
           amountLKR: newOrder.pricingSnapshot.totalLKR,
           currency: "LKR",
           signature: mockSignature,
-          redirectUrl: `/checkout/online-simulation?orderId=${newOrder.id}&sig=${mockSignature}`,
+          redirectUrl: `/checkout/online-simulation?orderNumber=${newOrder.orderNumber}&token=${newOrder.confirmationToken}`,
         },
       });
     }
@@ -71,6 +79,7 @@ export async function POST(req: NextRequest) {
     // For Cash on Delivery
     return NextResponse.json({
       success: true,
+      order: orderRef,
       orderId: newOrder.id,
       orderNumber: newOrder.orderNumber,
       pricingSnapshot: newOrder.pricingSnapshot,

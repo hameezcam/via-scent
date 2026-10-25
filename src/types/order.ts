@@ -76,6 +76,8 @@ export interface Order {
   payment: PaymentRecord;
   status: OrderStatus;
   history: OrderHistoryEntry[];
+  /** Secret shared only with the customer's browser, used to view their own confirmation page. */
+  confirmationToken?: string;
 }
 
 export type ReturnStatus =

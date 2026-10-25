@@ -10,10 +10,11 @@ import { Order } from "@/types/order";
 function OnlineSimulationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
+  const orderNumber = searchParams.get("orderNumber");
+  const token = searchParams.get("token") || "";
 
   const [order, setOrder] = useState<Order | null>(null);
-  const [loading, setLoading] = useState(() => Boolean(orderId));
+  const [loading, setLoading] = useState(() => Boolean(orderNumber));
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,13 +25,15 @@ function OnlineSimulationContent() {
   const [cardHolder, setCardHolder] = useState("Kasun Perera");
 
   useEffect(() => {
-    if (!orderId) {
+    if (!orderNumber) {
       return;
     }
 
     async function fetchOrder() {
       try {
-        const res = await fetch(`/api/admin/orders?orderId=${encodeURIComponent(orderId!)}`);
+        const res = await fetch(
+          `/api/orders/confirmation?orderNumber=${encodeURIComponent(orderNumber!)}&token=${encodeURIComponent(token)}`
+        );
         if (res.ok) {
           const data = await res.json();
           setOrder(data);
@@ -46,7 +49,7 @@ function OnlineSimulationContent() {
     }
 
     fetchOrder();
-  }, [orderId]);
+  }, [orderNumber, token]);
 
   const handleAuthorizePayment = async () => {
     if (!order) return;
@@ -74,7 +77,9 @@ function OnlineSimulationContent() {
       }
 
       // Redirect to confirmed success page
-      router.push(`/checkout/success?orderNumber=${encodeURIComponent(order.orderNumber)}`);
+      router.push(
+        `/checkout/success?orderNumber=${encodeURIComponent(order.orderNumber)}&token=${encodeURIComponent(token)}`
+      );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Payment failed.";
       setError(msg);

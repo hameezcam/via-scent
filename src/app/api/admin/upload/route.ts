@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { put } from "@vercel/blob";
 
 export const dynamic = "force-dynamic";
 
@@ -53,28 +54,40 @@ export async function POST(req: NextRequest) {
 
       let destinationUrl: string | null = null;
 
-      // Attempt 1: Save to public/uploads on the local/persistent filesystem
-      try {
-        if (!fs.existsSync(uploadsDir)) {
-          fs.mkdirSync(uploadsDir, { recursive: true });
-        }
+      const ext = path.extname(file.name) || ".jpg";
+      const sanitized = file.name
+        .replace(/\.[^/.]+$/, "")
+        .replace(/[^a-zA-Z0-9_-]/g, "_")
+        .substring(0, 24);
+      const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+      const filename = `${sanitized || "photo"}-${uniqueSuffix}${ext}`;
 
-        const ext = path.extname(file.name) || ".jpg";
-        const sanitized = file.name
-          .replace(/\.[^/.]+$/, "")
-          .replace(/[^a-zA-Z0-9_-]/g, "_")
-          .substring(0, 24);
-        const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-        const filename = `${sanitized || "photo"}-${uniqueSuffix}${ext}`;
-        const filePath = path.join(uploadsDir, filename);
-
-        await fs.promises.writeFile(filePath, buffer);
-        destinationUrl = `/uploads/${filename}`;
-      } catch (writeErr) {
-        console.warn("Filesystem write unavailable (e.g. read-only serverless), falling back to Base64 data URL:", writeErr);
+      // Attempt 1: Vercel Blob (durable CDN storage) when a Blob store is connected
+      if (process.env.BLOB_READ_WRITE_TOKEN) {
+        const blob = await put(`uploads/${filename}`, buffer, {
+          access: "public",
+          contentType: file.type || "image/jpeg",
+        });
+        destinationUrl = blob.url;
       }
 
-      // Attempt 2: If filesystem is read-only (e.g. Vercel serverless runtime), encode as high-fidelity Data URL
+      // Attempt 2: Save to public/uploads on the local/persistent filesystem
+      if (!destinationUrl) {
+        try {
+          if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+          }
+
+          const filePath = path.join(uploadsDir, filename);
+
+          await fs.promises.writeFile(filePath, buffer);
+          destinationUrl = `/uploads/${filename}`;
+        } catch (writeErr) {
+          console.warn("Filesystem write unavailable (e.g. read-only serverless), falling back to Base64 data URL:", writeErr);
+        }
+      }
+
+      // Attempt 3: If filesystem is read-only (e.g. Vercel serverless runtime), encode as high-fidelity Data URL
       if (!destinationUrl) {
         const mime = file.type || "image/jpeg";
         destinationUrl = `data:${mime};base64,${buffer.toString("base64")}`;

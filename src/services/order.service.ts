@@ -168,6 +168,7 @@ export class OrderService {
     const newOrder: Order = {
       id: orderId,
       orderNumber,
+      confirmationToken: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
       customer: input.customer,
       items: validatedItems,

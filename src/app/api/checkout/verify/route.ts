@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { orderService } from "@/services/order.service";
+import { isSimulatedPaymentAllowed } from "@/services/settings.service";
 
 export async function POST(req: NextRequest) {
+  // The only gateway today is a simulation: refuse to mark orders paid
+  // unless simulated payments are explicitly enabled for local testing.
+  if (!isSimulatedPaymentAllowed()) {
+    return NextResponse.json(
+      { error: "Online card payments are not available yet. Please choose Cash on Delivery." },
+      { status: 403 }
+    );
+  }
+
   try {
     const { orderId, transactionId, signature } = await req.json();
 

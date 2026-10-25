@@ -158,14 +158,14 @@ export default function CheckoutPage() {
       // Clear the local cart
       clearCart();
 
+      const orderQuery = `orderNumber=${encodeURIComponent(data.order.orderNumber)}&token=${encodeURIComponent(
+        data.order.confirmationToken
+      )}`;
+
       if (paymentMethod === "cod") {
-        router.push(`/checkout/success?orderNumber=${encodeURIComponent(data.order.orderNumber)}`);
+        router.push(`/checkout/success?${orderQuery}`);
       } else {
-        router.push(
-          `/checkout/online-simulation?orderId=${encodeURIComponent(data.order.id)}&orderNumber=${encodeURIComponent(
-            data.order.orderNumber
-          )}`
-        );
+        router.push(`/checkout/online-simulation?${orderQuery}`);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to place order.";
