@@ -34,12 +34,12 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
   });
 
   const serviceOptions = [
-    "HVAC Central Duct Scenting",
-    "Standalone Architectural Columns",
-    "Bespoke Brand Fragrance Formulation",
-    "Monthly Franchise Refill Logistics",
-    "Temporary Exhibition / Event Installation",
-    "Executive Olfactory Sample Suite",
+    "Scent through the air-conditioning",
+    "Standalone diffusers",
+    "A signature scent for my brand",
+    "Monthly oil refills and servicing",
+    "Scent for an event or exhibition",
+    "Scent samples to try",
   ];
 
   const handleCheckboxChange = (service: string) => {
@@ -58,24 +58,24 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
     const errors: Partial<Record<keyof B2BQuoteRequest, string>> = {};
 
     if (!formData.fullName.trim()) {
-      errors.fullName = "Please provide your full name.";
+      errors.fullName = "Please enter your name.";
     }
     if (!formData.companyName.trim()) {
-      errors.companyName = "Please provide your organization or establishment name.";
+      errors.companyName = "Please enter your business name.";
     }
     if (!formData.businessEmail.trim()) {
-      errors.businessEmail = "Please provide a valid business email address.";
+      errors.businessEmail = "Please enter your email address.";
     } else if (!formData.businessEmail.includes("@") || !formData.businessEmail.includes(".")) {
-      errors.businessEmail = "Please enter a valid corporate email format.";
+      errors.businessEmail = "Please enter a valid email address.";
     }
     if (!formData.phoneNumber.trim()) {
-      errors.phoneNumber = "Please provide a telephone or mobile number.";
+      errors.phoneNumber = "Please enter a phone number.";
     }
     if (!formData.industry) {
-      errors.industry = "Please select your primary industry sector.";
+      errors.industry = "Please choose your type of business.";
     }
     if (!formData.privacyConsent) {
-      errors.privacyConsent = "Please review and accept our commercial confidentiality & privacy terms.";
+      errors.privacyConsent = "Please tick the box to agree to our privacy notice.";
     }
 
     setFormState({
@@ -101,7 +101,7 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
         errors: {},
         submittedData: { ...formData },
         message:
-          "Commercial consultation brief received. A dedicated VIA Scent architectural specialist will review your space requirements within 24 hours.",
+          "Thanks, we've got your request and will be in touch within one business day.",
       });
     }, 700);
   };
@@ -115,23 +115,23 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
 
         <div className="space-y-2.5 max-w-xl mx-auto">
           <span className="text-[10px] font-medium tracking-[0.25em] uppercase text-[var(--champagne)]">
-            Consultation Brief Registered
+            Request received
           </span>
           <h2 className="font-serif text-2xl sm:text-3xl text-[var(--near-black)] font-normal">
             Thank you, {formState.submittedData?.fullName}
           </h2>
           <p className="text-xs sm:text-sm text-[var(--deep-espresso)]/80 leading-relaxed font-light">
-            Your commercial scenting brief for <strong>{formState.submittedData?.companyName}</strong> ({formState.submittedData?.industry}) has been assigned to our Colombo corporate scent engineering team.
+            We&apos;ve received your request for <strong>{formState.submittedData?.companyName}</strong>.
           </p>
         </div>
 
         <div className="max-w-xl mx-auto p-4 bg-[var(--ivory)] rounded-sm border border-[var(--warm-stone)]/50 text-left text-xs text-[var(--deep-espresso)] space-y-1.5 font-light">
           <div className="flex items-center gap-2 font-medium text-[var(--near-black)]">
             <Sparkles className="w-4 h-4 text-[var(--champagne)] shrink-0" />
-            <span>Next Steps in Architecture</span>
+            <span>What happens next</span>
           </div>
           <p className="leading-relaxed">
-            Our engineers will examine HVAC specifications and floorplans. We will contact you via {formState.submittedData?.preferredContact === "phone" ? "telephone" : formState.submittedData?.preferredContact} within 1 business day to schedule your complimentary scent demonstration.
+            We&apos;ll contact you by {formState.submittedData?.preferredContact === "site-visit" ? "phone" : formState.submittedData?.preferredContact === "whatsapp" ? "WhatsApp" : formState.submittedData?.preferredContact} within one business day to arrange your free site visit, where you can try scents in your own space.
           </p>
         </div>
 
@@ -156,14 +156,14 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
             }}
             className="px-6 py-3 border border-[var(--warm-stone)]/60 text-[var(--deep-espresso)] text-xs uppercase tracking-[0.15em] font-light rounded-sm hover:border-[var(--champagne)] transition-colors cursor-pointer"
           >
-            Submit Another Brief
+            Send another request
           </button>
 
           <Link
             href="/shop"
             className="px-6 py-3 bg-[var(--near-black)] text-[var(--porcelain)] text-xs uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[var(--champagne)] transition-colors"
           >
-            Explore Retail Catalogue
+            Browse the shop
           </Link>
         </div>
       </div>
@@ -176,7 +176,7 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
       <div className="p-4 bg-[var(--ivory)] rounded-sm border border-[var(--warm-stone)]/40 text-xs text-[var(--deep-espresso)]/80 flex items-start gap-3 font-light">
         <Info className="w-4 h-4 text-[var(--champagne)] shrink-0 mt-0.5" />
         <p>
-          Fields marked with an asterisk (<span className="text-red-500 font-bold">*</span>) are essential for accurate spatial evaluation. All commercial layout plans remain strictly confidential.
+          Fields marked with <span className="text-red-500 font-bold">*</span> are required. We keep your details private.
         </p>
       </div>
 
@@ -198,13 +198,13 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
       {/* Section 1: Contact Information */}
       <div className="space-y-4">
         <h3 className="font-serif text-lg font-normal text-[var(--near-black)] pb-2 border-b border-[var(--warm-stone)]/30 flex items-center gap-2">
-          <span>1. Principal Contact</span>
+          <span>1. Your details</span>
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="fullName" className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-1.5">
-              Contact Person <span className="text-red-500">*</span>
+              Your name <span className="text-red-500">*</span>
             </label>
             <input
               id="fullName"
@@ -223,14 +223,14 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
 
           <div>
             <label htmlFor="companyName" className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-1.5">
-              Organization / Property Name <span className="text-red-500">*</span>
+              Business name <span className="text-red-500">*</span>
             </label>
             <input
               id="companyName"
               type="text"
               value={formData.companyName}
               onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-              placeholder="e.g. Cinnamon Grand / Colombo Financial Centre"
+              placeholder="e.g. Ocean View Hotel"
               className={`w-full px-3.5 py-2.5 text-xs bg-[var(--porcelain)] border rounded-sm text-[var(--near-black)] focus:bg-white focus:outline-none focus:border-[var(--champagne)] transition-colors ${
                 formState.errors.companyName ? "border-red-400" : "border-[var(--warm-stone)]/50"
               }`}
@@ -244,14 +244,14 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="businessEmail" className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-1.5">
-              Corporate Email <span className="text-red-500">*</span>
+              Email <span className="text-red-500">*</span>
             </label>
             <input
               id="businessEmail"
               type="email"
               value={formData.businessEmail}
               onChange={(e) => setFormData({ ...formData, businessEmail: e.target.value })}
-              placeholder="e.g. p.perera@hotelgroup.lk"
+              placeholder="e.g. priyantha@yourbusiness.lk"
               className={`w-full px-3.5 py-2.5 text-xs bg-[var(--porcelain)] border rounded-sm text-[var(--near-black)] focus:bg-white focus:outline-none focus:border-[var(--champagne)] transition-colors ${
                 formState.errors.businessEmail ? "border-red-400" : "border-[var(--warm-stone)]/50"
               }`}
@@ -263,7 +263,7 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
 
           <div>
             <label htmlFor="phoneNumber" className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-1.5">
-              Direct Telephone / WhatsApp <span className="text-red-500">*</span>
+              Phone / WhatsApp <span className="text-red-500">*</span>
             </label>
             <input
               id="phoneNumber"
@@ -285,13 +285,13 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
       {/* Section 2: Space & Venue Profile */}
       <div className="space-y-4">
         <h3 className="font-serif text-lg font-normal text-[var(--near-black)] pb-2 border-b border-[var(--warm-stone)]/30">
-          2. Environment & Scale
+          2. Your space
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label htmlFor="industry" className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-1.5">
-              Industry Sector <span className="text-red-500">*</span>
+              Type of business <span className="text-red-500">*</span>
             </label>
             <select
               id="industry"
@@ -299,14 +299,14 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
               onChange={(e) => setFormData({ ...formData, industry: e.target.value as IndustryType })}
               className="w-full px-3.5 py-2.5 text-xs bg-[var(--porcelain)] border border-[var(--warm-stone)]/50 rounded-sm text-[var(--near-black)] focus:bg-white focus:outline-none focus:border-[var(--champagne)] cursor-pointer"
             >
-              <option value="">Select industry category...</option>
-              <option value="hospitality">Resorts & Boutique Hotels</option>
-              <option value="corporate">Corporate Headquarters & Boardrooms</option>
-              <option value="retail">Luxury Showrooms & Flagship Retail</option>
-              <option value="wellness-spa">Wellness Spas & Aesthetic Clinics</option>
-              <option value="dining-nightlife">Restaurants & Private Member Clubs</option>
-              <option value="real-estate">High-Rise Residential Developments</option>
-              <option value="other">Other Commercial Venue</option>
+              <option value="">Choose your type of business...</option>
+              <option value="hospitality">Hotels & Resorts</option>
+              <option value="corporate">Offices</option>
+              <option value="retail">Retail & Showrooms</option>
+              <option value="wellness-spa">Spas & Clinics</option>
+              <option value="dining-nightlife">Restaurants & Cafés</option>
+              <option value="real-estate">Apartment Buildings</option>
+              <option value="other">Other</option>
             </select>
             {formState.errors.industry && (
               <p className="text-[10px] text-red-600 mt-1">{formState.errors.industry}</p>
@@ -315,7 +315,7 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
 
           <div>
             <label htmlFor="cityDistrict" className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-1.5">
-              Location in Sri Lanka
+              Area
             </label>
             <select
               id="cityDistrict"
@@ -325,16 +325,16 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
             >
               <option value="Colombo (Districts 1-15)">Colombo (Districts 1-15)</option>
               <option value="Greater Colombo & Suburbs">Greater Colombo & Suburbs</option>
-              <option value="Galle & Southern Coast">Galle & Southern Coastal Belt</option>
+              <option value="Galle & Southern Coast">Galle & South Coast</option>
               <option value="Kandy & Central Province">Kandy & Central Province</option>
               <option value="Negombo & Western Coastal">Negombo & Western Coast</option>
-              <option value="Other Area">Other Region in Sri Lanka</option>
+              <option value="Other Area">Elsewhere in Sri Lanka</option>
             </select>
           </div>
 
           <div>
             <label htmlFor="spaceSize" className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-1.5">
-              Estimated Total Area
+              Approximate size
             </label>
             <select
               id="spaceSize"
@@ -342,11 +342,11 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
               onChange={(e) => setFormData({ ...formData, spaceSize: e.target.value as SpaceSizeType })}
               className="w-full px-3.5 py-2.5 text-xs bg-[var(--porcelain)] border border-[var(--warm-stone)]/50 rounded-sm text-[var(--near-black)] focus:bg-white focus:outline-none focus:border-[var(--champagne)] cursor-pointer"
             >
-              <option value="">Select space dimension...</option>
-              <option value="compact">Under 500 sq.ft (Executive Suite)</option>
-              <option value="medium">500 – 2,500 sq.ft (Boutique / Lounge)</option>
-              <option value="large">2,500 – 10,000 sq.ft (Lobby / Multi-Zone)</option>
-              <option value="hvac-enterprise">10,000+ sq.ft (Central HVAC Integration)</option>
+              <option value="">Choose a size...</option>
+              <option value="compact">Under 500 sq ft (a room or small office)</option>
+              <option value="medium">500 – 2,500 sq ft (a shop, café or lobby)</option>
+              <option value="large">2,500 – 10,000 sq ft (several areas or a floor)</option>
+              <option value="hvac-enterprise">Over 10,000 sq ft (a whole building)</option>
             </select>
           </div>
         </div>
@@ -355,7 +355,7 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
       {/* Section 3: Services of Interest */}
       <div className="space-y-4">
         <h3 className="font-serif text-lg font-normal text-[var(--near-black)] pb-2 border-b border-[var(--warm-stone)]/30">
-          3. Scent Solutions of Interest
+          3. What are you interested in?
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -386,33 +386,33 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
       {/* Section 4: Project Notes & Preferred Contact */}
       <div className="space-y-4">
         <h3 className="font-serif text-lg font-normal text-[var(--near-black)] pb-2 border-b border-[var(--warm-stone)]/30">
-          4. Architectural Notes & Preferred Communication
+          4. Anything else?
         </h3>
 
         <div>
           <label htmlFor="requirementsDescription" className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-1.5">
-            Ventilation Characteristics or Target Atmosphere (Optional)
+            Tell us more (optional)
           </label>
           <textarea
             id="requirementsDescription"
             rows={4}
             value={formData.requirementsDescription}
             onChange={(e) => setFormData({ ...formData, requirementsDescription: e.target.value })}
-            placeholder="Please detail ceiling heights, HVAC duct layout, target scent profile, or desired installation timeline..."
+            placeholder="e.g. which areas you want scented, the kind of scent you like, or when you'd like it installed"
             className="w-full px-3.5 py-2.5 text-xs bg-[var(--porcelain)] border border-[var(--warm-stone)]/50 rounded-sm text-[var(--near-black)] placeholder-[var(--warm-stone)]/70 focus:bg-white focus:outline-none focus:border-[var(--champagne)] transition-colors font-light"
           />
         </div>
 
         <div>
           <label className="block text-[10px] font-medium text-[var(--deep-espresso)] uppercase tracking-[0.15em] mb-2">
-            Preferred Method for Initial Consultation
+            How should we contact you?
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               { id: "phone", label: "Phone Call" },
               { id: "whatsapp", label: "WhatsApp" },
-              { id: "email", label: "Email Brief" },
-              { id: "site-visit", label: "On-Site Survey" },
+              { id: "email", label: "Email" },
+              { id: "site-visit", label: "Visit me" },
             ].map((method) => (
               <label
                 key={method.id}
@@ -449,7 +449,7 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
             className="rounded-sm border-[var(--warm-stone)] text-[var(--champagne)] focus:ring-[var(--champagne)] w-4 h-4 mt-0.5 shrink-0 cursor-pointer"
           />
           <span>
-            I consent to {BRAND_CONFIG.brandName} processing the provided information strictly for the purpose of this commercial scenting enquiry, in accordance with the{" "}
+            I consent to {BRAND_CONFIG.brandName} using these details to reply to my enquiry, as described in the{" "}
             <Link href="/privacy" className="text-[var(--near-black)] underline hover:text-[var(--champagne)]">
               Privacy Notice
             </Link>
@@ -467,7 +467,7 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
       <div className="pt-4 border-t border-[var(--warm-stone)]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-[11px] text-[var(--deep-espresso)]/70 flex items-center gap-1.5 font-light">
           <Clock className="w-4 h-4 text-[var(--champagne)]" />
-          <span>Our Colombo commercial engineering team responds within 1 business day.</span>
+          <span>We reply within one business day.</span>
         </div>
 
         <button
@@ -476,11 +476,11 @@ export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: I
           className="w-full sm:w-auto px-8 py-3.5 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--champagne)] hover:text-white disabled:opacity-50 text-xs font-medium tracking-[0.2em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm cursor-pointer"
         >
           {formState.status === "submitting" ? (
-            <span>Registering Brief...</span>
+            <span>Sending...</span>
           ) : (
             <>
               <Send className="w-3.5 h-3.5" />
-              <span>Submit Commercial Brief</span>
+              <span>Send request</span>
             </>
           )}
         </button>
