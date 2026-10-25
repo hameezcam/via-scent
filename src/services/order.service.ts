@@ -2,6 +2,7 @@ import { Order, OrderItem, CustomerDetails, PaymentMethod, OrderStatus, PaymentS
 import { settingsService } from "./settings.service";
 import { productService } from "./product.service";
 import { createDocumentStore } from "@/lib/document-store";
+import { PAYHERE_STATUS } from "@/lib/payhere";
 
 export interface CreateOrderInput {
   customer: CustomerDetails;
@@ -238,6 +239,61 @@ export class OrderService {
 
     await this.updateOrder(order);
     return { success: true, order, newlyPaid: true };
+  }
+
+  /**
+   * Applies a verified PayHere notification to an order.
+   * Safe to call more than once: a paid order never changes again.
+   */
+  public async applyPayHereNotification(
+    orderNumber: string,
+    result: { statusCode: number; paymentId?: string }
+  ): Promise<{ success: boolean; order?: Order; newlyPaid?: boolean; message?: string }> {
+    const order = await this.getOrderByNumber(orderNumber);
+    if (!order) {
+      return { success: false, message: "Order not found." };
+    }
+    if (order.payment.method !== "online_gateway") {
+      return { success: false, message: "Order is not an online payment order." };
+    }
+    if (order.payment.status === "paid") {
+      return { success: true, order, newlyPaid: false };
+    }
+
+    const now = new Date().toISOString();
+
+    if (result.statusCode === PAYHERE_STATUS.SUCCESS) {
+      order.payment.status = "paid";
+      order.payment.gateway = "payhere";
+      order.payment.transactionId = result.paymentId;
+      order.payment.paidAt = now;
+      order.payment.failureReason = undefined;
+      order.status = "confirmed";
+      order.history.push({
+        timestamp: now,
+        status: "confirmed",
+        note: `Card payment received through PayHere (payment ID ${result.paymentId ?? "unknown"}).`,
+        updatedBy: "payhere",
+      });
+      await this.updateOrder(order);
+      return { success: true, order, newlyPaid: true };
+    }
+
+    if (result.statusCode === PAYHERE_STATUS.CANCELED || result.statusCode === PAYHERE_STATUS.FAILED) {
+      // The order stays open: the customer may retry, and a later success still counts
+      order.payment.status = "failed";
+      order.payment.failureReason =
+        result.statusCode === PAYHERE_STATUS.CANCELED ? "Payment was cancelled by the customer." : "Payment was declined.";
+      order.history.push({
+        timestamp: now,
+        status: order.status,
+        note: `PayHere reported: ${order.payment.failureReason}`,
+        updatedBy: "payhere",
+      });
+      await this.updateOrder(order);
+    }
+
+    return { success: true, order, newlyPaid: false };
   }
 
   public async recordPaymentCollection(

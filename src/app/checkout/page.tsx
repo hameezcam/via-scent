@@ -68,9 +68,12 @@ export default function CheckoutPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [paymentCancelled, setPaymentCancelled] = useState(false);
 
   useEffect(() => {
     async function loadSettings() {
+      // PayHere sends customers back here if they back out of paying
+      setPaymentCancelled(new URLSearchParams(window.location.search).get("payment") === "cancelled");
       try {
         const res = await fetch("/api/settings");
         if (res.ok) {
@@ -155,6 +158,24 @@ export default function CheckoutPage() {
         throw new Error(data.error || "Order creation failed. Please try again.");
       }
 
+      // Card payment: hand the customer to PayHere's secure page. The cart stays
+      // until the payment is confirmed, so cancelling doesn't lose it.
+      if (data.paymentType === "payhere") {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = data.payhere.action;
+        for (const [name, value] of Object.entries(data.payhere.fields as Record<string, string>)) {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = name;
+          input.value = value;
+          form.appendChild(input);
+        }
+        document.body.appendChild(form);
+        form.submit();
+        return;
+      }
+
       // Clear the local cart
       clearCart();
 
@@ -214,6 +235,18 @@ export default function CheckoutPage() {
             Complete your order with verified Sri Lankan doorstep courier delivery.
           </p>
         </div>
+
+        {paymentCancelled && !errorMessage && (
+          <div className="mb-8 p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-md text-sm flex items-start gap-3">
+            <Info className="w-5 h-5 shrink-0 text-amber-700 mt-0.5" />
+            <div>
+              <p className="font-semibold">Card payment not completed</p>
+              <p className="text-xs text-amber-800 mt-0.5">
+                You haven&apos;t been charged, and your cart is still here. You can try again or choose Cash on Delivery.
+              </p>
+            </div>
+          </div>
+        )}
 
         {errorMessage && (
           <div className="mb-8 p-4 bg-red-50 border border-red-200 text-red-800 rounded-md text-sm flex items-start gap-3">
@@ -459,14 +492,14 @@ export default function CheckoutPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 font-medium text-stone-900 text-sm">
                           <CreditCard className="w-4 h-4 text-amber-800" />
-                          <span>Online Digital Payment (Visa / Mastercard / PayHere)</span>
+                          <span>Pay by card (Visa / Mastercard)</span>
                         </div>
                         <span className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded">
-                          Instant Confirmation
+                          Secure
                         </span>
                       </div>
                       <p className="text-xs text-stone-600 mt-1 leading-relaxed">
-                        Pay securely using Sri Lankan or international credit/debit cards. Verified server-side with digital cryptographic signatures.
+                        Pay on PayHere&apos;s secure page with a Sri Lankan or international credit or debit card. We never see or store your card details.
                       </p>
                     </div>
                   </label>
@@ -575,7 +608,7 @@ export default function CheckoutPage() {
                 ) : (
                   <>
                     <span>
-                      {paymentMethod === "cod" ? "Confirm & Place COD Order" : "Proceed to Gateway Payment"}
+                      {paymentMethod === "cod" ? "Confirm & Place COD Order" : "Continue to secure card payment"}
                     </span>
                     <ArrowRight className="w-4 h-4" />
                   </>

@@ -1,6 +1,7 @@
 import { StoreSettings, DeliverySettings, PaymentSettings, ReturnSettings, WarrantySettings, AuditLogEntry } from "../types/settings";
 import { createDocumentStore } from "@/lib/document-store";
 import { BRAND_CONFIG } from "@/config/brand.config";
+import { isPayHereConfigured } from "@/lib/payhere";
 
 export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   brand: {
@@ -23,7 +24,7 @@ export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   },
   payments: {
     codEnabled: true, // Enabled by default
-    onlineGatewayEnabled: false, // Off until a live PayHere integration is connected
+    onlineGatewayEnabled: true, // Customers only see it once PayHere keys are set (see getEffectivePaymentSettings)
     defaultMethod: "cod",
     activeGateway: "payhere",
     merchantIdPlaceholder: "VIA_SCENT_MERCHANT_10928",
@@ -72,9 +73,9 @@ const auditStore = createDocumentStore<AuditLogEntry>({
 });
 
 /**
- * Online card payments currently run through a simulated gateway page.
- * They stay unavailable to customers unless ENABLE_SIMULATED_PAYMENTS=true
- * (local testing only) until a real PayHere integration replaces the mock.
+ * Online card payments go through PayHere once PAYHERE_MERCHANT_ID and
+ * PAYHERE_MERCHANT_SECRET are set. The simulated gateway page only works
+ * when ENABLE_SIMULATED_PAYMENTS=true (local testing).
  */
 export function isSimulatedPaymentAllowed(): boolean {
   return process.env.ENABLE_SIMULATED_PAYMENTS === "true";
@@ -105,7 +106,7 @@ class SettingsService {
     const payments = (await this.getSettings()).payments;
     return {
       ...payments,
-      onlineGatewayEnabled: payments.onlineGatewayEnabled && isSimulatedPaymentAllowed(),
+      onlineGatewayEnabled: payments.onlineGatewayEnabled && (isPayHereConfigured() || isSimulatedPaymentAllowed()),
     };
   }
 
