@@ -2,6 +2,8 @@ import { NextRequest, NextResponse, after } from "next/server";
 import { orderService, CreateOrderInput } from "@/services/order.service";
 import { settingsService } from "@/services/settings.service";
 import { notifyOrderPlaced } from "@/services/order-email.service";
+import { buildCheckoutForm, getPayHereConfig } from "@/lib/payhere";
+import { getSiteUrl } from "@/lib/site-url";
 
 export async function POST(req: NextRequest) {
   try {
@@ -57,6 +59,29 @@ export async function POST(req: NextRequest) {
 
     // Prepare response based on payment method
     if (newOrder.payment.method === "online_gateway") {
+      const payhere = getPayHereConfig();
+      if (payhere) {
+        // Real card payment: the browser posts this signed form to PayHere's hosted page
+        return NextResponse.json({
+          success: true,
+          order: orderRef,
+          orderId: newOrder.id,
+          orderNumber: newOrder.orderNumber,
+          pricingSnapshot: newOrder.pricingSnapshot,
+          paymentType: "payhere",
+          payhere: buildCheckoutForm(
+            payhere,
+            {
+              orderNumber: newOrder.orderNumber,
+              confirmationToken: newOrder.confirmationToken ?? "",
+              totalLKR: newOrder.pricingSnapshot.totalLKR,
+              customer: newOrder.customer,
+            },
+            getSiteUrl()
+          ),
+        });
+      }
+
       // Generate secure gateway payment intent token (for PayHere / IPG integration)
       const mockSignature = `sig_${Date.now()}_${Buffer.from(newOrder.orderNumber).toString("base64")}`;
       return NextResponse.json({

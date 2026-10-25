@@ -9,3 +9,4 @@ import "./interactive-room.test";
 import "./admin-auth-and-payments.test";
 import "./order-emails.test";
 import "./scent-finder-and-reviews.test";
+import "./payhere.test";
