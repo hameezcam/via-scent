@@ -2,14 +2,13 @@ import { productService } from "@/services/product.service";
 import { withServedImagesAll } from "@/lib/product-images";
 import { partnerService } from "@/services/partner.service";
 import { categoryService } from "@/services/category.service";
-import { interactiveRoomService } from "@/services/interactive-room.service";
 import { HeroSection } from "@/components/home/HeroSection";
 import { TrustedPartnersSection } from "@/components/home/TrustedPartnersSection";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { B2BFeatureSection } from "@/components/home/B2BFeatureSection";
 import { TrustSection } from "@/components/home/TrustSection";
 import { RecentlyAddedSection } from "@/components/home/RecentlyAddedSection";
-import { InteractiveRoomSection } from "@/components/home/InteractiveRoomSection";
+import { VideoFeatureSection } from "@/components/home/VideoFeatureSection";
 import { ScentFinderTeaser } from "@/components/home/ScentFinderTeaser";
 
 export const dynamic = "force-dynamic";
@@ -22,11 +21,10 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [allProducts, partners, featuredCategories, roomConfig] = await Promise.all([
+  const [allProducts, partners, featuredCategories] = await Promise.all([
     productService.getAll().then(withServedImagesAll),
     partnerService.getAll(true),
     categoryService.getFeaturedInHome(),
-    interactiveRoomService.getConfig(),
   ]);
   const newProducts = allProducts.filter((p) => p.isNew);
 
@@ -53,8 +51,8 @@ export default async function HomePage() {
       {/* 4.D New Arrivals */}
       <RecentlyAddedSection products={recentlyAddedToDisplay} />
 
-      {/* 4.E Interactive Room Collection with Product Hotspots */}
-      <InteractiveRoomSection initialConfig={roomConfig} />
+      {/* 4.E Film of a diffuser in action */}
+      <VideoFeatureSection />
 
       {/* 4.F Business Scenting Feature */}
       <B2BFeatureSection />
