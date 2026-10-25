@@ -8,7 +8,7 @@ import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { B2BFeatureSection } from "@/components/home/B2BFeatureSection";
 import { TrustSection } from "@/components/home/TrustSection";
 import { RecentlyAddedSection } from "@/components/home/RecentlyAddedSection";
-import { HowItWorksSection } from "@/components/home/HowItWorksSection";
+import { VideoFeatureSection } from "@/components/home/VideoFeatureSection";
 import { ScentFinderTeaser } from "@/components/home/ScentFinderTeaser";
 
 export const dynamic = "force-dynamic";
@@ -51,8 +51,8 @@ export default async function HomePage() {
       {/* 4.D New Arrivals */}
       <RecentlyAddedSection products={recentlyAddedToDisplay} />
 
-      {/* 4.E How cold-air diffusion works */}
-      <HowItWorksSection />
+      {/* 4.E Film of a diffuser in action */}
+      <VideoFeatureSection />
 
       {/* 4.F Business Scenting Feature */}
       <B2BFeatureSection />
