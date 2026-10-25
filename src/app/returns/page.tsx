@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
+import { BRAND_CONFIG } from "@/config/brand.config";
 import {
   RotateCcw,
   ShieldCheck,
@@ -122,7 +123,7 @@ export default function ReturnsPage() {
               1. How Customers Request a Return
             </h2>
             <p>
-              To initiate a return or exchange, complete the interactive Return Request Form below or contact our Colombo concierge at <code>concierge@viascent.lk</code>. You will need to provide your VIA Scent order number, contact phone, the specific item name or SKU, and the reason for the return.
+              To initiate a return or exchange, complete the interactive Return Request Form below or contact our Colombo concierge at <code>{BRAND_CONFIG.contact.email}</code>. You will need to provide your VIA Scent order number, contact phone, the specific item name or SKU, and the reason for the return.
             </p>
           </section>
 

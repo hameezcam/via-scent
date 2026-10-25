@@ -922,7 +922,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="py-3 px-4">
                       <span className="text-stone-600">
-                        {p.warrantyDurationMonths ? `${p.warrantyDurationMonths} Mos` : "Standard"}
+                        {p.warrantyDurationMonths === 0 ? "None" : `${p.warrantyDurationMonths ?? 6} Mos`}
                       </span>
                     </td>
                     <td className="py-3 px-4">

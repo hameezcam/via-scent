@@ -121,7 +121,7 @@ export function HomeConsultationForm() {
 
         <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
           <a
-            href={`https://wa.me/94770000000?text=${encodeURIComponent(
+            href={`https://wa.me/${BRAND_CONFIG.contact.whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
               `Hello VIA Scent, I just requested an In-Home Scent Consultation for my residence (${formData.residenceType} in ${formData.cityDistrict}). My name is ${formData.fullName}.`
             )}`}
             target="_blank"
