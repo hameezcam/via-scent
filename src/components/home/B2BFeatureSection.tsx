@@ -3,37 +3,18 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Building2, Hotel, Store, UtensilsCrossed, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import { Building2, Hotel, Store, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { LUXURY_EASE } from "@/config/motion.config";
+import { INDUSTRIES } from "@/config/industries.config";
 
 export function B2BFeatureSection() {
-  const industries = [
-    {
-      icon: Hotel,
-      title: "Hotels & Resorts",
-      description: "A welcoming scent guests remember, from the lobby to the rooms.",
-      image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      icon: Building2,
-      title: "Offices",
-      description: "A fresh, consistent scent through the air-conditioning, floor by floor.",
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      icon: Store,
-      title: "Retail & Showrooms",
-      description: "A signature scent that makes customers linger and remember your brand.",
-      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      icon: Sparkles,
-      title: "Spas & Clinics",
-      description: "Calm, clean air with no residue on surfaces or fabrics.",
-      image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
-    },
-  ];
+  const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+    "hotels-resorts": Hotel,
+    offices: Building2,
+    "retail-showrooms": Store,
+    "spas-clinics": Sparkles,
+  };
 
   return (
     <section className="py-16 sm:py-28 bg-[#EFEAE1]/60 border-b border-[#E7E2D8] relative">
@@ -63,8 +44,8 @@ export function B2BFeatureSection() {
 
         {/* Commercial Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
-          {industries.map((ind, idx) => {
-            const IconComponent = ind.icon;
+          {INDUSTRIES.map((ind, idx) => {
+            const IconComponent = icons[ind.slug] ?? Building2;
             return (
               <motion.div
                 key={ind.title}
@@ -72,15 +53,16 @@ export function B2BFeatureSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ duration: 0.7, delay: idx * 0.08, ease: LUXURY_EASE }}
-                className="group bg-[#FFFFFF] border border-[#E7E2D8] hover:border-[#B49A70]/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-500 flex flex-col justify-between"
+                className="group bg-[#FFFFFF] border border-[#E7E2D8] hover:border-[#B49A70]/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-500"
               >
+                <Link href={`/business-scenting/${ind.slug}`} className="h-full flex flex-col justify-between">
                 <div>
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100">
                     <Image
                       src={ind.image}
                       alt={ind.title}
                       fill
-                      sizes="300px"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 300px"
                       className="object-cover group-hover:scale-105 transition-transform duration-700 brightness-90"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -94,7 +76,7 @@ export function B2BFeatureSection() {
                       {ind.title}
                     </h3>
                     <p className="text-xs text-[#57534E] leading-relaxed mt-2">
-                      {ind.description}
+                      {ind.cardText}
                     </p>
                   </div>
                 </div>
@@ -105,6 +87,7 @@ export function B2BFeatureSection() {
                     <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
+                </Link>
               </motion.div>
             );
           })}

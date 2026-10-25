@@ -13,13 +13,13 @@ import {
 import { B2BQuoteRequest, B2BFormState, IndustryType, SpaceSizeType, PreferredContactMethod } from "@/types/enquiry";
 import { BRAND_CONFIG } from "@/config/brand.config";
 
-export function QuoteRequestForm() {
+export function QuoteRequestForm({ initialIndustry = "" }: { initialIndustry?: IndustryType | "" } = {}) {
   const [formData, setFormData] = useState<B2BQuoteRequest>({
     fullName: "",
     companyName: "",
     businessEmail: "",
     phoneNumber: "",
-    industry: "",
+    industry: initialIndustry,
     cityDistrict: "Colombo (Districts 1-15)",
     spaceSize: "",
     servicesOfInterest: [],
