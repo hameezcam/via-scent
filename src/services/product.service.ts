@@ -296,7 +296,7 @@ class ProductServiceImpl implements IProductService {
       isPublished: productInput.isPublished !== undefined ? productInput.isPublished : true,
       isArchived: false,
       inventoryCount: productInput.inventoryCount !== undefined ? productInput.inventoryCount : 10,
-      warrantyDurationMonths: productInput.warrantyDurationMonths || 6,
+      warrantyDurationMonths: productInput.warrantyDurationMonths ?? 6,
     };
 
     if (isPostgresConfigured()) {

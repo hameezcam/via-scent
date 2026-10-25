@@ -1,15 +1,16 @@
 import { StoreSettings, DeliverySettings, PaymentSettings, ReturnSettings, WarrantySettings, AuditLogEntry } from "../types/settings";
 import { createDocumentStore } from "@/lib/document-store";
+import { BRAND_CONFIG } from "@/config/brand.config";
 
 export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   brand: {
     brandName: "VIA Scent",
     brandShortName: "VIA Scent",
     franchiseStatement: "Authorized Franchisee Partner for Dr. Scent in Sri Lanka",
-    contactEmail: "concierge@viascent.lk",
-    contactPhone: "+94 11 234 5678",
-    contactWhatsApp: "+94 77 123 4567",
-    showroomAddress: "VIA Scent Boutique, Level 3, One Galle Face / Crescat Boulevard, Colombo 03, Sri Lanka",
+    contactEmail: BRAND_CONFIG.contact.email,
+    contactPhone: BRAND_CONFIG.contact.phone,
+    contactWhatsApp: BRAND_CONFIG.contact.whatsapp,
+    showroomAddress: BRAND_CONFIG.contact.address,
     operatingHours: "Monday – Saturday: 10:00 AM – 7:30 PM | Sunday: 11:00 AM – 5:00 PM",
   },
   delivery: {

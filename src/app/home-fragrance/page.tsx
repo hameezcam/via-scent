@@ -567,7 +567,7 @@ export default async function HomeFragranceMarketingPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 pt-1">
                   <a
-                    href="https://wa.me/94770000000"
+                    href={`https://wa.me/${BRAND_CONFIG.contact.whatsapp.replace(/[^0-9]/g, "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#25D366] text-white rounded-xl text-xs font-semibold tracking-wider uppercase hover:bg-[#20ba5a] transition-colors"
@@ -575,7 +575,7 @@ export default async function HomeFragranceMarketingPage() {
                     <span>WhatsApp Concierge</span>
                   </a>
                   <a
-                    href="tel:+94112000000"
+                    href={`tel:${BRAND_CONFIG.contact.phone.replace(/\s+/g, "")}`}
                     className="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 text-[#F8F6F1] rounded-xl text-xs font-medium tracking-wider uppercase hover:border-[#B49A70] hover:text-[#B49A70] transition-colors"
                   >
                     <PhoneCall className="w-3.5 h-3.5" />

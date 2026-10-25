@@ -304,10 +304,12 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
                   <Truck className="w-4 h-4 text-[var(--champagne)] shrink-0" />
                   <span>Islandwide Tracked Delivery</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-[var(--champagne)] shrink-0" />
-                  <span>{warrantyLabel}</span>
-                </div>
+                {warrantyLabel && (
+                  <div className="flex items-center gap-2">
+                    <Award className="w-4 h-4 text-[var(--champagne)] shrink-0" />
+                    <span>{warrantyLabel}</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <RotateCcw className="w-4 h-4 text-[var(--champagne)] shrink-0" />
                   <span>7-Day Return / Replacement Protection</span>
@@ -367,7 +369,7 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
                       <span className="text-[var(--deep-espresso)]/70 font-light">{spec.label}</span>
                       <span className="text-[var(--near-black)] font-medium text-right font-mono">
                         {/* Keep warranty consistent with the structured duration used for claims */}
-                        {spec.label.toLowerCase() === "warranty" ? warrantyLabel : spec.value}
+                        {spec.label.toLowerCase() === "warranty" ? warrantyLabel ?? "Not covered" : spec.value}
                       </span>
                     </div>
                   ))}

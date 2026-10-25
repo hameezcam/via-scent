@@ -48,10 +48,10 @@ export const BRAND_CONFIG: BrandConfig = {
     locale: "en-LK",
   },
   contact: {
-    email: "concierge@viascent.lk",
-    phone: "+94 11 234 5678",
-    whatsapp: "+94 77 123 4567",
-    address: "VIA Scent Boutique, Level 3, One Galle Face / Crescat Boulevard, Colombo 03, Sri Lanka",
+    email: "info@vialk.com",
+    phone: "+94 71 019 3193",
+    whatsapp: "+94 71 019 3193",
+    address: "267, 17 Galle Rd, Colombo 03, Sri Lanka",
     hours: "Monday – Saturday: 10:00 AM – 7:30 PM | Sunday: 11:00 AM – 5:00 PM",
   },
   social: {
@@ -87,8 +87,12 @@ export function formatProductPrice(amount: number | undefined | null): string {
   return isPriceOnRequest(amount) ? "Price on request" : formatLKR(amount!);
 }
 
-/** e.g. 6 -> "6-Month Official Franchise Warranty", 24 -> "2-Year Official Franchise Warranty" */
-export function formatWarranty(months: number | undefined | null): string {
+/**
+ * e.g. 6 -> "6-Month Official Franchise Warranty", 24 -> "2-Year Official Franchise Warranty".
+ * Returns null when the product has no warranty (0 months, e.g. oils and sprays).
+ */
+export function formatWarranty(months: number | undefined | null): string | null {
+  if (months === 0) return null;
   const m = months && months > 0 ? months : 6;
   const duration = m % 12 === 0 ? `${m / 12}-Year` : `${m}-Month`;
   return `${duration} Official Franchise Warranty`;
