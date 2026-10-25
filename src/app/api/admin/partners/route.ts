@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       adminUser
     );
 
-    settingsService.addAuditLog({
+    await settingsService.addAuditLog({
       category: "PARTNERS",
       action: "CREATE_PARTNER",
       performedBy: adminUser,
@@ -71,7 +71,7 @@ export async function PUT(req: NextRequest) {
 
     if (body.action === "reorder" && Array.isArray(body.orderedIds)) {
       const updated = await partnerService.reorder(body.orderedIds, adminUser);
-      settingsService.addAuditLog({
+      await settingsService.addAuditLog({
         category: "PARTNERS",
         action: "REORDER_PARTNERS",
         performedBy: adminUser,
@@ -88,7 +88,7 @@ export async function PUT(req: NextRequest) {
     const existing = await partnerService.getById(body.id);
     const updated = await partnerService.update(body.id, body, adminUser);
 
-    settingsService.addAuditLog({
+    await settingsService.addAuditLog({
       category: "PARTNERS",
       action: "UPDATE_PARTNER",
       performedBy: adminUser,
@@ -118,7 +118,7 @@ export async function DELETE(req: NextRequest) {
     const existing = await partnerService.getById(id);
     await partnerService.delete(id, adminUser);
 
-    settingsService.addAuditLog({
+    await settingsService.addAuditLog({
       category: "PARTNERS",
       action: "DELETE_PARTNER",
       performedBy: adminUser,

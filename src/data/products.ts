@@ -161,7 +161,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     drScentAuthorized: true,
-    warrantyPeriod: "1 Year Official Warranty",
+    warrantyPeriod: "6 Month Official Franchisee Warranty",
   },
   {
     id: "prod-diff-02",
@@ -207,7 +207,7 @@ export const PRODUCTS: Product[] = [
       { label: "Dimensions", value: "112mm x 112mm x 285mm" },
       { label: "Power", value: "12V DC / 8W (Adapter Included)" },
       { label: "Controls", value: "Bluetooth App + Manual touch panel" },
-      { label: "Warranty", value: "1 Year Official Franchise Warranty" },
+      { label: "Warranty", value: "6 Month Official Franchise Warranty" },
     ],
     variants: [
       {
@@ -228,7 +228,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     drScentAuthorized: true,
-    warrantyPeriod: "1 Year Official Warranty",
+    warrantyPeriod: "6 Month Official Franchisee Warranty",
   },
   {
     id: "prod-diff-03",
@@ -579,7 +579,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     drScentAuthorized: true,
-    warrantyPeriod: "1 Year Official Warranty",
+    warrantyPeriod: "6 Month Official Franchisee Warranty",
   },
   {
     id: "prod-gift-01",
@@ -975,7 +975,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     drScentAuthorized: true,
-    warrantyPeriod: "1 Year Official Warranty",
+    warrantyPeriod: "6 Month Official Franchisee Warranty",
   },
   {
     id: "prod-diff-disp-01",
@@ -1019,7 +1019,7 @@ export const PRODUCTS: Product[] = [
       },
     ],
     drScentAuthorized: true,
-    warrantyPeriod: "1 Year Official Warranty",
+    warrantyPeriod: "6 Month Official Franchisee Warranty",
   },
   {
     id: "prod-oil-car-01",

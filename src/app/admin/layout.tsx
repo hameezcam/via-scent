@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -16,6 +16,7 @@ import {
   Building2,
   FolderTree,
   Sparkles,
+  LogOut,
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -24,6 +25,13 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.replace("/admin-login");
+    router.refresh();
+  };
 
   const navItems = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -56,9 +64,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
 
           <div className="flex items-center gap-4 text-xs">
-            <span className="hidden sm:inline text-stone-400">
-              Logged in: <strong className="text-stone-200 font-mono">admin@viascent.lk</strong>
-            </span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-stone-800 hover:bg-stone-700 text-stone-200 transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Log out</span>
+            </button>
             <Link
               href="/"
               target="_blank"

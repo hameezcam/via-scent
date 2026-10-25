@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const DATA_FILE = path.join(process.cwd(), "src/data/newsletter-subscribers.json");
+import { createDocumentStore } from "@/lib/document-store";
 
 interface SubscriberRecord {
   email: string;
@@ -10,30 +7,11 @@ interface SubscriberRecord {
   source: string;
 }
 
-function getSubscribers(): SubscriberRecord[] {
-  try {
-    if (!fs.existsSync(DATA_FILE)) {
-      fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2), "utf-8");
-      return [];
-    }
-    const content = fs.readFileSync(DATA_FILE, "utf-8");
-    return JSON.parse(content);
-  } catch {
-    return [];
-  }
-}
-
-function saveSubscribers(list: SubscriberRecord[]): void {
-  try {
-    const dir = path.dirname(DATA_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(DATA_FILE, JSON.stringify(list, null, 2), "utf-8");
-  } catch (err) {
-    console.error("[Newsletter API] Error saving subscriber:", err);
-  }
-}
+const subscriberStore = createDocumentStore<SubscriberRecord>({
+  collection: "newsletter",
+  fileName: "newsletter-subscribers.json",
+  getId: (subscriber) => subscriber.email,
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,8 +27,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const subscribers = getSubscribers();
-    const existing = subscribers.find((s) => s.email === email);
+    const existing = await subscriberStore.get(email);
 
     if (existing) {
       return NextResponse.json({
@@ -67,8 +44,7 @@ export async function POST(req: NextRequest) {
       source: "homepage_newsletter",
     };
 
-    subscribers.push(newSubscriber);
-    saveSubscribers(subscribers);
+    await subscriberStore.put(email, newSubscriber);
 
     return NextResponse.json({
       success: true,

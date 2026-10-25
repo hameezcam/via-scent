@@ -73,6 +73,23 @@ npm run lint
 
 ---
 
+## Production Environment Variables
+
+Set these in Vercel (Project Settings → Environment Variables):
+
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` (or `POSTGRES_URL`) | Postgres for products, orders, returns, warranty claims, settings and newsletter sign-ups |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Admin console login. `/admin` stays locked until `ADMIN_PASSWORD` is set |
+| `ADMIN_SESSION_SECRET` | Signs admin session cookies (e.g. `openssl rand -hex 32`) |
+| `BLOB_READ_WRITE_TOKEN` | Added automatically when a Vercel Blob store is connected; stores admin image uploads |
+| `NEXT_PUBLIC_SITE_URL` | Canonical domain, e.g. `https://viascent.lk` |
+| `NEXT_PUBLIC_ALLOW_INDEXING` | Set to `true` on production only, to let search engines index the site |
+
+Online card payments use a simulated gateway until PayHere is integrated, so they are hidden unless `ENABLE_SIMULATED_PAYMENTS=true` (local testing only).
+
+---
+
 ## Documentation
 
 - **Brand Configuration:** [docs/BRAND_CONFIGURATION.md](docs/BRAND_CONFIGURATION.md)

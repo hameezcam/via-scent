@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { returnsService } from "@/services/returns.service";
 
 export async function GET() {
-  const returns = returnsService.getAllReturns();
+  const returns = await returnsService.getAllReturns();
   return NextResponse.json(returns);
 }
 
@@ -16,7 +16,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "returnId and status are required." }, { status: 400 });
     }
 
-    const updated = returnsService.updateReturnStatus(returnId, status, adminUser, notes, refundAmountLKR);
+    const updated = await returnsService.updateReturnStatus(returnId, status, adminUser, notes, refundAmountLKR);
     return NextResponse.json({ success: true, returnRequest: updated });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to update return request.";

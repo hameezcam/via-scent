@@ -77,3 +77,19 @@ export function formatLKR(amount: number, showDecimals: boolean = false): string
 
   return `${BRAND_CONFIG.currency.symbol} ${formatted}`;
 }
+
+/** Products without a price are sold by quotation rather than online. */
+export function isPriceOnRequest(amount: number | undefined | null): boolean {
+  return !amount || amount <= 0;
+}
+
+export function formatProductPrice(amount: number | undefined | null): string {
+  return isPriceOnRequest(amount) ? "Price on request" : formatLKR(amount!);
+}
+
+/** e.g. 6 -> "6-Month Official Franchise Warranty", 24 -> "2-Year Official Franchise Warranty" */
+export function formatWarranty(months: number | undefined | null): string {
+  const m = months && months > 0 ? months : 6;
+  const duration = m % 12 === 0 ? `${m / 12}-Year` : `${m}-Month`;
+  return `${duration} Official Franchise Warranty`;
+}

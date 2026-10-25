@@ -1,10 +1,7 @@
-import fs from "fs";
-import path from "path";
 import { Order, OrderItem, CustomerDetails, PaymentMethod, OrderStatus, PaymentStatus, PricingSnapshot } from "../types/order";
 import { settingsService } from "./settings.service";
-import { PRODUCTS } from "../data/products";
-
-const ORDERS_FILE_PATH = path.join(process.cwd(), "src/data/orders.json");
+import { productService } from "./product.service";
+import { createDocumentStore } from "@/lib/document-store";
 
 export interface CreateOrderInput {
   customer: CustomerDetails;
@@ -17,29 +14,87 @@ export interface CreateOrderInput {
   notes?: string;
 }
 
-export class OrderService {
-  private inMemoryOrders: Order[] | null = null;
+// Demo order shown only in local file mode (never seeded into Postgres)
+const DEMO_ORDER: Order = {
+  id: "ord-demo-01",
+  orderNumber: "VIA-20261014-1001",
+  createdAt: new Date("2026-10-14T09:30:00Z").toISOString(),
+  customer: {
+    fullName: "Malik Fernando",
+    email: "malik.f@example.lk",
+    phone: "+94 77 123 4567",
+    addressLine1: "42 Alfred House Gardens",
+    city: "Colombo 03",
+    district: "Colombo",
+  },
+  items: [
+    {
+      productId: "prod-diff-01",
+      productSlug: "dr-scent-luxe-portable-diffuser",
+      productName: "Dr. Scent Portable Ambient Diffuser",
+      variantId: "var-port-gld",
+      variantName: "Champagne Gold",
+      sku: "DSC-PORT-GLD",
+      category: "aroma-diffusers",
+      unitPriceLKR: 29900,
+      quantity: 1,
+      lineTotalLKR: 29900,
+      image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
+    },
+  ],
+  pricingSnapshot: {
+    merchandiseSubtotalLKR: 29900,
+    deliveryFeeLKR: 500, // Retained snapshot fee
+    discountLKR: 0,
+    taxLKR: 0,
+    totalLKR: 30400,
+  },
+  payment: {
+    method: "cod",
+    status: "unpaid",
+  },
+  status: "placed_cod",
+  history: [
+    {
+      timestamp: new Date("2026-10-14T09:30:00Z").toISOString(),
+      status: "placed_cod",
+      note: "Demo Order placed with Cash on Delivery (COD). Unpaid.",
+      updatedBy: "malik.f@example.lk",
+    },
+  ],
+};
 
-  public calculateCheckoutTotals(
+const orderStore = createDocumentStore<Order>({
+  collection: "orders",
+  fileName: "orders.json",
+  getId: (order) => order.id,
+  seed: () => [DEMO_ORDER],
+});
+
+export class OrderService {
+  public async calculateCheckoutTotals(
     items: { productId: string; variantId: string; quantity: number }[],
     district?: string
-  ): {
+  ): Promise<{
     merchandiseSubtotalLKR: number;
     deliveryFeeLKR: number;
     discountLKR: number;
     taxLKR: number;
     totalLKR: number;
     validatedItems: OrderItem[];
-  } {
+  }> {
     let subtotalCents = 0; // Using integer arithmetic to prevent floating point inaccuracy
     const validatedItems: OrderItem[] = [];
 
     for (const itemInput of items) {
-      const product = PRODUCTS.find((p) => p.id === itemInput.productId);
-      if (!product) continue;
+      // Prices always come from the live catalogue, never from the client cart
+      const product = await productService.getById(itemInput.productId);
+      if (!product || product.isPublished === false || product.isArchived) continue;
 
       const variant = product.variants.find((v) => v.id === itemInput.variantId) || product.variants[0];
       const unitPriceLKR = variant ? variant.priceLKR : product.basePriceLKR;
+      // Price-on-request items (no price set) cannot be bought online
+      if (!unitPriceLKR || unitPriceLKR <= 0) continue;
       const quantity = Math.max(1, Math.min(itemInput.quantity, 10));
 
       const lineTotalCents = Math.round(unitPriceLKR * 100) * quantity;
@@ -63,8 +118,8 @@ export class OrderService {
     const merchandiseSubtotalLKR = subtotalCents / 100;
 
     // Delivery fee derived dynamically from active settings
-    const settings = settingsService.getSettings();
-    let deliveryFeeLKR = settingsService.getDeliveryFee(district);
+    const settings = await settingsService.getSettings();
+    let deliveryFeeLKR = await settingsService.getDeliveryFee(district);
 
     // Optional free delivery threshold
     if (settings.delivery.freeDeliveryThresholdLKR && merchandiseSubtotalLKR >= settings.delivery.freeDeliveryThresholdLKR) {
@@ -85,9 +140,9 @@ export class OrderService {
     };
   }
 
-  public createOrder(input: CreateOrderInput): Order {
+  public async createOrder(input: CreateOrderInput): Promise<Order> {
     const { merchandiseSubtotalLKR, deliveryFeeLKR, discountLKR, taxLKR, totalLKR, validatedItems } =
-      this.calculateCheckoutTotals(input.items, input.customer.district);
+      await this.calculateCheckoutTotals(input.items, input.customer.district);
 
     if (validatedItems.length === 0) {
       throw new Error("Cannot place an order with an empty or invalid cart.");
@@ -113,6 +168,7 @@ export class OrderService {
     const newOrder: Order = {
       id: orderId,
       orderNumber,
+      confirmationToken: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
       customer: input.customer,
       items: validatedItems,
@@ -135,19 +191,17 @@ export class OrderService {
       ],
     };
 
-    const orders = this.getAllOrders();
-    orders.unshift(newOrder);
-    this.saveOrders(orders);
+    await orderStore.put(newOrder.id, newOrder);
 
     return newOrder;
   }
 
-  public verifyOnlinePayment(
+  public async verifyOnlinePayment(
     orderId: string,
     transactionId: string,
     signature: string
-  ): { success: boolean; order?: Order; message?: string } {
-    const order = this.getOrderById(orderId);
+  ): Promise<{ success: boolean; order?: Order; message?: string }> {
+    const order = await this.getOrderById(orderId);
     if (!order) {
       return { success: false, message: "Order not found." };
     }
@@ -167,7 +221,7 @@ export class OrderService {
         note: "Online payment failed signature verification.",
         updatedBy: "gateway_webhook",
       });
-      this.updateOrder(order);
+      await this.updateOrder(order);
       return { success: false, message: "Payment verification failed." };
     }
 
@@ -182,16 +236,16 @@ export class OrderService {
       updatedBy: "gateway_webhook",
     });
 
-    this.updateOrder(order);
+    await this.updateOrder(order);
     return { success: true, order };
   }
 
-  public recordPaymentCollection(
+  public async recordPaymentCollection(
     orderId: string,
     adminUser: string,
     details: { receiptNumber?: string; notes?: string }
-  ): Order {
-    const order = this.getOrderById(orderId);
+  ): Promise<Order> {
+    const order = await this.getOrderById(orderId);
     if (!order) {
       throw new Error("Order not found.");
     }
@@ -209,17 +263,17 @@ export class OrderService {
       updatedBy: adminUser,
     });
 
-    this.updateOrder(order);
+    await this.updateOrder(order);
     return order;
   }
 
-  public updateOrderStatus(
+  public async updateOrderStatus(
     orderId: string,
     newStatus: OrderStatus,
     adminUser: string,
     note?: string
-  ): Order {
-    const order = this.getOrderById(orderId);
+  ): Promise<Order> {
+    const order = await this.getOrderById(orderId);
     if (!order) {
       throw new Error("Order not found.");
     }
@@ -233,108 +287,25 @@ export class OrderService {
       updatedBy: adminUser,
     });
 
-    this.updateOrder(order);
+    await this.updateOrder(order);
     return order;
   }
 
-  public getAllOrders(): Order[] {
-    if (this.inMemoryOrders) {
-      return this.inMemoryOrders;
-    }
-
-    try {
-      if (fs.existsSync(ORDERS_FILE_PATH)) {
-        const raw = fs.readFileSync(ORDERS_FILE_PATH, "utf-8");
-        this.inMemoryOrders = JSON.parse(raw);
-        return this.inMemoryOrders!;
-      }
-    } catch {
-      // Fallback
-    }
-
-    // Seed with a clear initial demo order if none exist
-    this.inMemoryOrders = [
-      {
-        id: "ord-demo-01",
-        orderNumber: "VIA-20261014-1001",
-        createdAt: new Date("2026-10-14T09:30:00Z").toISOString(),
-        customer: {
-          fullName: "Malik Fernando",
-          email: "malik.f@example.lk",
-          phone: "+94 77 123 4567",
-          addressLine1: "42 Alfred House Gardens",
-          city: "Colombo 03",
-          district: "Colombo",
-        },
-        items: [
-          {
-            productId: "prod-diff-01",
-            productSlug: "dr-scent-luxe-portable-diffuser",
-            productName: "Dr. Scent Portable Ambient Diffuser",
-            variantId: "var-port-gld",
-            variantName: "Champagne Gold",
-            sku: "DSC-PORT-GLD",
-            category: "aroma-diffusers",
-            unitPriceLKR: 29900,
-            quantity: 1,
-            lineTotalLKR: 29900,
-            image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
-          },
-        ],
-        pricingSnapshot: {
-          merchandiseSubtotalLKR: 29900,
-          deliveryFeeLKR: 500, // Retained snapshot fee
-          discountLKR: 0,
-          taxLKR: 0,
-          totalLKR: 30400,
-        },
-        payment: {
-          method: "cod",
-          status: "unpaid",
-        },
-        status: "placed_cod",
-        history: [
-          {
-            timestamp: new Date("2026-10-14T09:30:00Z").toISOString(),
-            status: "placed_cod",
-            note: "Demo Order placed with Cash on Delivery (COD). Unpaid.",
-            updatedBy: "malik.f@example.lk",
-          },
-        ],
-      },
-    ];
-
-    return this.inMemoryOrders;
+  public async getAllOrders(): Promise<Order[]> {
+    return orderStore.list();
   }
 
-  public getOrderById(id: string): Order | null {
-    const orders = this.getAllOrders();
-    return orders.find((o) => o.id === id) || null;
+  public async getOrderById(id: string): Promise<Order | null> {
+    return orderStore.get(id);
   }
 
-  public getOrderByNumber(orderNumber: string): Order | null {
-    const orders = this.getAllOrders();
+  public async getOrderByNumber(orderNumber: string): Promise<Order | null> {
+    const orders = await this.getAllOrders();
     return orders.find((o) => o.orderNumber === orderNumber) || null;
   }
 
-  private updateOrder(order: Order) {
-    const orders = this.getAllOrders();
-    const index = orders.findIndex((o) => o.id === order.id);
-    if (index > -1) {
-      orders[index] = order;
-      this.saveOrders(orders);
-    }
-  }
-
-  private saveOrders(orders: Order[]) {
-    this.inMemoryOrders = orders;
-    try {
-      const dir = path.dirname(ORDERS_FILE_PATH);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(ORDERS_FILE_PATH, JSON.stringify(orders, null, 2), "utf-8");
-    } catch {
-      // In-memory fallback
-    }
+  private async updateOrder(order: Order): Promise<void> {
+    await orderStore.put(order.id, order);
   }
 }
 

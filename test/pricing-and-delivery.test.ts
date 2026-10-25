@@ -2,29 +2,32 @@ import test, { beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { orderService } from "../src/services/order.service";
 import { settingsService } from "../src/services/settings.service";
-import { PRODUCTS } from "../src/data/products";
+import { productService } from "../src/services/product.service";
+
+// Orders are priced from the live catalogue, so tests buy from it too
+const catalogue = () => productService.getAll();
 
 // Ensure pristine baseline settings before tests
-beforeEach(() => {
-  settingsService.updateDeliverySettings({
+beforeEach(async () => {
+  await settingsService.updateDeliverySettings({
     defaultCourierFeeLKR: 500,
     districtFees: {},
     freeDeliveryThresholdLKR: null,
   });
 });
 
-test("Pricing & Delivery: Default courier fee is LKR 500 per order", () => {
-  const currentFee = settingsService.getDeliveryFee();
+test("Pricing & Delivery: Default courier fee is LKR 500 per order", async () => {
+  const currentFee = await settingsService.getDeliveryFee();
   assert.equal(currentFee, 500, "Default courier fee must be LKR 500");
 });
 
-test("Pricing & Delivery: Decimal-safe subtotal calculation prevents floating-point inaccuracies", () => {
-  const product = PRODUCTS[0];
+test("Pricing & Delivery: Decimal-safe subtotal calculation prevents floating-point inaccuracies", async () => {
+  const product = (await catalogue())[0];
   const variant = product.variants[0];
   const unitPrice = variant ? variant.priceLKR : product.basePriceLKR;
 
   const quantity = 3;
-  const result = orderService.calculateCheckoutTotals([
+  const result = await orderService.calculateCheckoutTotals([
     {
       productId: product.id,
       variantId: variant ? variant.id : "default",
@@ -46,15 +49,15 @@ test("Pricing & Delivery: Decimal-safe subtotal calculation prevents floating-po
   );
 });
 
-test("Pricing & Delivery: Free delivery threshold applies when configured", () => {
+test("Pricing & Delivery: Free delivery threshold applies when configured", async () => {
   try {
-    settingsService.updateDeliverySettings({
+    await settingsService.updateDeliverySettings({
       freeDeliveryThresholdLKR: 40000,
       defaultCourierFeeLKR: 500,
     });
 
-    const highValueItem = PRODUCTS.find((p) => p.basePriceLKR >= 40000) || PRODUCTS[0];
-    const result = orderService.calculateCheckoutTotals([
+    const highValueItem = (await catalogue()).find((p) => p.basePriceLKR >= 40000) || (await catalogue())[0];
+    const result = await orderService.calculateCheckoutTotals([
       {
         productId: highValueItem.id,
         variantId: highValueItem.variants[0]?.id || "default",
@@ -68,20 +71,20 @@ test("Pricing & Delivery: Free delivery threshold applies when configured", () =
       "Delivery fee must be waived (0 LKR) when subtotal exceeds free delivery threshold"
     );
   } finally {
-    settingsService.updateDeliverySettings({
+    await settingsService.updateDeliverySettings({
       freeDeliveryThresholdLKR: null,
       defaultCourierFeeLKR: 500,
     });
   }
 });
 
-test("Pricing & Delivery: Immutable snapshot retention - previous orders retain original fee when delivery fee changes", () => {
+test("Pricing & Delivery: Immutable snapshot retention - previous orders retain original fee when delivery fee changes", async () => {
   try {
     // Step 1: Ensure baseline fee is LKR 500 and districtFees is empty
-    settingsService.updateDeliverySettings({ defaultCourierFeeLKR: 500, districtFees: {} });
+    await settingsService.updateDeliverySettings({ defaultCourierFeeLKR: 500, districtFees: {} });
 
-    const product = PRODUCTS[0];
-    const order1 = orderService.createOrder({
+    const product = (await catalogue())[0];
+    const order1 = await orderService.createOrder({
       customer: {
         fullName: "Nimal Fernando",
         email: "nimal@example.com",
@@ -104,11 +107,11 @@ test("Pricing & Delivery: Immutable snapshot retention - previous orders retain 
     assert.equal(order1.pricingSnapshot.deliveryFeeLKR, 500, "Order 1 snapshot must be 500 LKR");
 
     // Step 2: Administrator updates delivery fee to LKR 750 without redeploying code
-    settingsService.updateDeliverySettings({ defaultCourierFeeLKR: 750, districtFees: {} }, "superadmin@viascent.lk");
-    assert.equal(settingsService.getDeliveryFee(), 750, "Active store delivery fee must now be 750 LKR");
+    await settingsService.updateDeliverySettings({ defaultCourierFeeLKR: 750, districtFees: {} }, "superadmin@viascent.lk");
+    assert.equal(await settingsService.getDeliveryFee(), 750, "Active store delivery fee must now be 750 LKR");
 
     // Step 3: Checkout for a new order reflects the new fee (750 LKR)
-    const order2 = orderService.createOrder({
+    const order2 = await orderService.createOrder({
       customer: {
         fullName: "Kamal Perera",
         email: "kamal@example.com",
@@ -131,7 +134,7 @@ test("Pricing & Delivery: Immutable snapshot retention - previous orders retain 
     assert.equal(order2.pricingSnapshot.deliveryFeeLKR, 750, "Order 2 snapshot must reflect new 750 LKR fee");
 
     // Step 4: CRITICAL ACCEPTANCE CRITERIA: Order 1 MUST retain its original LKR 500 fee snapshot!
-    const fetchedOrder1 = orderService.getOrderById(order1.id);
+    const fetchedOrder1 = await orderService.getOrderById(order1.id);
     assert.equal(
       fetchedOrder1?.pricingSnapshot.deliveryFeeLKR,
       500,
@@ -139,6 +142,6 @@ test("Pricing & Delivery: Immutable snapshot retention - previous orders retain 
     );
   } finally {
     // Restore fee back to default 500
-    settingsService.updateDeliverySettings({ defaultCourierFeeLKR: 500, districtFees: {} });
+    await settingsService.updateDeliverySettings({ defaultCourierFeeLKR: 500, districtFees: {} });
   }
 });

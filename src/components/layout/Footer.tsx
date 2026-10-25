@@ -401,7 +401,7 @@ export function Footer({ initialCategories }: FooterProps = {}) {
               </li>
               <li>
                 <Link href="/warranty" className="hover:text-[#F8F6F1] transition-colors">
-                  Warranty Registration
+                  Warranty Claims
                 </Link>
               </li>
             </ul>
@@ -442,12 +442,8 @@ export function Footer({ initialCategories }: FooterProps = {}) {
                 Accepted Payment Methods:
               </span>
               <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-[#A8A196]">
-                <span className="px-2 py-1 bg-[#1C1A17] border border-[#2D2924] rounded-xs">Visa</span>
-                <span className="px-2 py-1 bg-[#1C1A17] border border-[#2D2924] rounded-xs">Mastercard</span>
-                <span className="px-2 py-1 bg-[#1C1A17] border border-[#2D2924] rounded-xs">AMEX</span>
-                <span className="px-2 py-1 bg-[#1C1A17] border border-[#2D2924] rounded-xs">Koko (BNPL)</span>
-                <span className="px-2 py-1 bg-[#1C1A17] border border-[#2D2924] rounded-xs">Mintpay</span>
                 <span className="px-2 py-1 bg-[#1C1A17] border border-[#2D2924] rounded-xs">Cash on Delivery</span>
+                <span className="px-2 py-1 text-[#736B60]">Card payments coming soon</span>
               </div>
             </div>
           </div>

@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { settingsService } from "@/services/settings.service";
 
 export async function GET() {
-  const settings = settingsService.getSettings();
+  const settings = await settingsService.getSettings();
+  const payments = await settingsService.getEffectivePaymentSettings();
   return NextResponse.json({
     brand: settings.brand,
     delivery: {
@@ -13,9 +14,9 @@ export async function GET() {
       estimateText: settings.delivery.estimateText,
     },
     payments: {
-      codEnabled: settings.payments.codEnabled,
-      onlineGatewayEnabled: settings.payments.onlineGatewayEnabled,
-      defaultMethod: settings.payments.defaultMethod,
+      codEnabled: payments.codEnabled,
+      onlineGatewayEnabled: payments.onlineGatewayEnabled,
+      defaultMethod: payments.onlineGatewayEnabled ? payments.defaultMethod : "cod",
     },
     returns: {
       returnWindowDays: settings.returns.returnWindowDays,

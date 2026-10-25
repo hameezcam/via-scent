@@ -3,7 +3,7 @@ import { settingsService } from "@/services/settings.service";
 
 export async function GET() {
   try {
-    const logs = settingsService.getAuditLogs();
+    const logs = await settingsService.getAuditLogs();
     return NextResponse.json({ success: true, logs });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to load audit logs";

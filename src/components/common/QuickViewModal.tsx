@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { X, ShoppingBag, ArrowRight, Check, ShieldCheck, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { Product } from "@/types/product";
-import { formatLKR } from "@/config/brand.config";
+import { formatLKR, formatProductPrice, isPriceOnRequest } from "@/config/brand.config";
 import { useCart } from "@/context/CartContext";
 import { Badge } from "./Badge";
 
@@ -17,6 +18,7 @@ interface QuickViewModalProps {
 
 export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps) {
   const { addItem } = useCart();
+  const router = useRouter();
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -30,9 +32,14 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
     null;
   const price = currentVariant ? currentVariant.priceLKR : product.basePriceLKR;
   const originalPrice = currentVariant?.originalPriceLKR || product.originalPriceLKR;
+  const onRequest = isPriceOnRequest(price);
 
   const handleAddToCart = () => {
     if (!currentVariant) return;
+    if (onRequest) {
+      router.push("/business-scenting/request-quote");
+      return;
+    }
     addItem(product, currentVariant, quantity);
     setAdded(true);
     setTimeout(() => {
@@ -139,9 +146,9 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                 {/* Price */}
                 <div className="mt-3 flex items-baseline gap-2">
                   <span className="text-lg font-semibold text-stone-900">
-                    {formatLKR(price)}
+                    {formatProductPrice(price)}
                   </span>
-                  {originalPrice && originalPrice > price && (
+                  {!onRequest && originalPrice && originalPrice > price && (
                     <span className="text-xs text-stone-400 line-through">
                       {formatLKR(originalPrice)}
                     </span>
@@ -233,7 +240,7 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                     ) : (
                       <>
                         <ShoppingBag className="w-4 h-4" />
-                        Add to Cart
+                        {onRequest ? "Request a Quote" : "Add to Cart"}
                       </>
                     )}
                   </button>
