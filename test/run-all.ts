@@ -7,3 +7,4 @@ import "./image-upload.test";
 import "./category-management.test";
 import "./interactive-room.test";
 import "./admin-auth-and-payments.test";
+import "./order-emails.test";

@@ -85,6 +85,9 @@ Set these in Vercel (Project Settings → Environment Variables):
 | `BLOB_READ_WRITE_TOKEN` | Added automatically when a Vercel Blob store is connected; stores admin image uploads |
 | `NEXT_PUBLIC_SITE_URL` | Canonical domain, e.g. `https://viascent.lk` |
 | `NEXT_PUBLIC_ALLOW_INDEXING` | Set to `true` on production only, to let search engines index the site |
+| `RESEND_API_KEY` | Sends order emails through [Resend](https://resend.com). Without it, orders still work but no emails go out |
+| `EMAIL_FROM` | Sender, e.g. `VIA Scent <orders@vialk.com>`. The domain must be verified in Resend |
+| `ORDER_ALERT_EMAIL` | Where new-order alerts go (defaults to the store contact email) |
 
 Online card payments use a simulated gateway until PayHere is integrated, so they are hidden unless `ENABLE_SIMULATED_PAYMENTS=true` (local testing only).
 
