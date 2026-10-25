@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { orderService, CreateOrderInput } from "@/services/order.service";
 import { settingsService } from "@/services/settings.service";
+import { notifyOrderPlaced } from "@/services/order-email.service";
 
 export async function POST(req: NextRequest) {
   try {
@@ -76,7 +77,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // For Cash on Delivery
+    // For Cash on Delivery. Online orders are announced once payment is verified.
+    after(() => notifyOrderPlaced(newOrder));
     return NextResponse.json({
       success: true,
       order: orderRef,

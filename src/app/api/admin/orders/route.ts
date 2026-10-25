@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { orderService } from "@/services/order.service";
+import { notifyOrderStatusChanged } from "@/services/order-email.service";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -42,7 +43,11 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (status) {
+      const previousStatus = (await orderService.getOrderById(orderId))?.status;
       const updated = await orderService.updateOrderStatus(orderId, status, adminUser, note);
+      if (previousStatus !== updated.status) {
+        after(() => notifyOrderStatusChanged(updated));
+      }
       return NextResponse.json({ success: true, order: updated, message: `Status updated to ${status}.` });
     }
 

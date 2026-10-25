@@ -200,7 +200,7 @@ export class OrderService {
     orderId: string,
     transactionId: string,
     signature: string
-  ): Promise<{ success: boolean; order?: Order; message?: string }> {
+  ): Promise<{ success: boolean; order?: Order; message?: string; newlyPaid?: boolean }> {
     const order = await this.getOrderById(orderId);
     if (!order) {
       return { success: false, message: "Order not found." };
@@ -237,7 +237,7 @@ export class OrderService {
     });
 
     await this.updateOrder(order);
-    return { success: true, order };
+    return { success: true, order, newlyPaid: true };
   }
 
   public async recordPaymentCollection(

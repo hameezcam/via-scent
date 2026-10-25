@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { orderService } from "@/services/order.service";
 import { isSimulatedPaymentAllowed } from "@/services/settings.service";
+import { notifyOrderPlaced } from "@/services/order-email.service";
 
 export async function POST(req: NextRequest) {
   // The only gateway today is a simulation: refuse to mark orders paid
@@ -29,6 +30,11 @@ export async function POST(req: NextRequest) {
         { error: verificationResult.message || "Payment verification failed." },
         { status: 400 }
       );
+    }
+
+    const paidOrder = verificationResult.order;
+    if (verificationResult.newlyPaid && paidOrder) {
+      after(() => notifyOrderPlaced(paidOrder));
     }
 
     return NextResponse.json({
