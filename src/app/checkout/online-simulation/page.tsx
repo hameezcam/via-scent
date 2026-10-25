@@ -224,7 +224,7 @@ function OnlineSimulationContent() {
               ) : (
                 <>
                   <Lock className="w-4 h-4" />
-                  <span>Authorize & Complete Payment (LKR {order.pricingSnapshot.totalLKR.toLocaleString()})</span>
+                  <span>Authorize & Complete Payment ({formatLKR(order.pricingSnapshot.totalLKR)})</span>
                 </>
               )}
             </button>

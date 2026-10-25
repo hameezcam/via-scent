@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Product, ProductVariant } from "@/types/product";
-import { formatLKR } from "@/config/brand.config";
+import { formatLKR, formatWarranty, isPriceOnRequest } from "@/config/brand.config";
 import { useCart } from "@/context/CartContext";
 import { ProductGallery } from "./ProductGallery";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
@@ -47,6 +47,8 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
 
   const price = selectedVariant.priceLKR;
   const originalPrice = selectedVariant.originalPriceLKR || product.originalPriceLKR;
+  const onRequest = isPriceOnRequest(price);
+  const warrantyLabel = formatWarranty(product.warrantyDurationMonths);
 
   const handleAddToCart = () => {
     if (!product.inStock || !selectedVariant.inStock) return;
@@ -113,13 +115,19 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
 
               {/* Price & Availability */}
               <div className="flex items-baseline gap-4 pt-2 border-t border-b border-[var(--warm-stone)]/30 py-4">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs tracking-wider uppercase text-[var(--champagne)] font-medium">LKR</span>
+                {onRequest ? (
                   <span className="font-serif text-2xl sm:text-3xl text-[var(--near-black)] font-medium">
-                    {price.toLocaleString("en-LK")}
+                    Price on request
                   </span>
-                </div>
-                {originalPrice && originalPrice > price && (
+                ) : (
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs tracking-wider uppercase text-[var(--champagne)] font-medium">Rs.</span>
+                    <span className="font-serif text-2xl sm:text-3xl text-[var(--near-black)] font-medium">
+                      {price.toLocaleString("en-LK")}
+                    </span>
+                  </div>
+                )}
+                {!onRequest && originalPrice && originalPrice > price && (
                   <span className="text-xs text-[var(--warm-stone)] line-through">
                     {formatLKR(originalPrice, true)}
                   </span>
@@ -227,38 +235,49 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
                   </button>
                 </div>
 
-                {/* Add to Cart button */}
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  type="button"
-                  onClick={handleAddToCart}
-                  disabled={!product.inStock || !selectedVariant.inStock}
-                  className="flex-1 py-3.5 px-5 border border-[var(--near-black)] bg-white text-[var(--near-black)] hover:bg-[var(--near-black)] hover:text-white disabled:opacity-40 text-xs font-medium tracking-[0.16em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-                >
-                  {added ? (
-                    <>
-                      <Check className="w-4 h-4 text-emerald-600" />
-                      <span>Added to Cart</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingBag className="w-4 h-4" />
-                      <span>Add to Cart</span>
-                    </>
-                  )}
-                </motion.button>
+                {onRequest ? (
+                  <Link
+                    href="/business-scenting/request-quote"
+                    className="flex-1 py-3.5 px-5 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--champagne)] hover:text-white text-xs font-medium tracking-[0.16em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
+                  >
+                    <span>Request a Quote</span>
+                  </Link>
+                ) : (
+                  <>
+                  {/* Add to Cart button */}
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={handleAddToCart}
+                    disabled={!product.inStock || !selectedVariant.inStock}
+                    className="flex-1 py-3.5 px-5 border border-[var(--near-black)] bg-white text-[var(--near-black)] hover:bg-[var(--near-black)] hover:text-white disabled:opacity-40 text-xs font-medium tracking-[0.16em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                  >
+                    {added ? (
+                      <>
+                        <Check className="w-4 h-4 text-emerald-600" />
+                        <span>Added to Cart</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="w-4 h-4" />
+                        <span>Add to Cart</span>
+                      </>
+                    )}
+                  </motion.button>
 
-                {/* Buy Now button */}
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  type="button"
-                  onClick={handleBuyNow}
-                  disabled={!product.inStock || !selectedVariant.inStock}
-                  className="flex-1 py-3.5 px-5 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--champagne)] hover:text-white disabled:opacity-40 text-xs font-medium tracking-[0.16em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-                >
-                  <Zap className="w-4 h-4 text-[var(--champagne)]" />
-                  <span>Buy Now</span>
-                </motion.button>
+                  {/* Buy Now button */}
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={handleBuyNow}
+                    disabled={!product.inStock || !selectedVariant.inStock}
+                    className="flex-1 py-3.5 px-5 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--champagne)] hover:text-white disabled:opacity-40 text-xs font-medium tracking-[0.16em] uppercase rounded-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+                  >
+                    <Zap className="w-4 h-4 text-[var(--champagne)]" />
+                    <span>Buy Now</span>
+                  </motion.button>
+                  </>
+                )}
               </div>
 
               {/* Direct B2B consultation link for commercial units */}
@@ -287,7 +306,7 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
                 </div>
                 <div className="flex items-center gap-2">
                   <Award className="w-4 h-4 text-[var(--champagne)] shrink-0" />
-                  <span>{product.warrantyPeriod || "6-Month Franchise Warranty"}</span>
+                  <span>{warrantyLabel}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <RotateCcw className="w-4 h-4 text-[var(--champagne)] shrink-0" />
@@ -346,7 +365,10 @@ export function ProductDetailClient({ product, relatedProducts }: ProductDetailC
                       className="p-3.5 bg-white rounded-sm border border-[var(--warm-stone)]/40 flex justify-between text-xs"
                     >
                       <span className="text-[var(--deep-espresso)]/70 font-light">{spec.label}</span>
-                      <span className="text-[var(--near-black)] font-medium text-right font-mono">{spec.value}</span>
+                      <span className="text-[var(--near-black)] font-medium text-right font-mono">
+                        {/* Keep warranty consistent with the structured duration used for claims */}
+                        {spec.label.toLowerCase() === "warranty" ? warrantyLabel : spec.value}
+                      </span>
                     </div>
                   ))}
                 </div>

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { X, Sparkles, ShieldCheck } from "lucide-react";
 import { useReducedMotion } from "motion/react";
-import { BRAND_CONFIG } from "@/config/brand.config";
+import { BRAND_CONFIG, formatLKR } from "@/config/brand.config";
 
 interface DeliveryConfig {
   defaultCourierFeeLKR: number;
@@ -45,13 +45,13 @@ export function AnnouncementBar() {
   const shippingAnnouncement = deliverySettings.freeDeliveryThresholdLKR
     ? {
         prefix: "Complimentary Delivery",
-        highlight: `Islandwide shipping on orders over LKR ${deliverySettings.freeDeliveryThresholdLKR.toLocaleString("en-LK")}`,
+        highlight: `Islandwide shipping on orders over ${formatLKR(deliverySettings.freeDeliveryThresholdLKR)}`,
         href: "/shipping",
         linkText: "Delivery Terms",
       }
     : {
         prefix: "Islandwide Delivery",
-        highlight: `Standard courier rate of LKR ${deliverySettings.defaultCourierFeeLKR} across all 9 provinces`,
+        highlight: `Standard courier rate of ${formatLKR(deliverySettings.defaultCourierFeeLKR)} across all 9 provinces`,
         href: "/shipping",
         linkText: "Delivery Terms",
       };

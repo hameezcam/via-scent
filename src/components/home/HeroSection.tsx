@@ -253,7 +253,7 @@ function FeaturedProductCard({
         <div>
           <span className="text-[9px] text-[#8A8275] uppercase tracking-[0.18em] block">Price</span>
           <span className="font-semibold text-sm sm:text-[15px] text-[#F8F6F1]">
-            LKR {Number(product.basePriceLKR || 68500).toLocaleString("en-LK")}
+            {formatLKR(Number(product.basePriceLKR || 68500))}
           </span>
         </div>
         

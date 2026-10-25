@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Eye, ShoppingBag, Check, ShieldCheck, Sparkles } from "lucide-react";
 import { Product } from "@/types/product";
-import { formatLKR } from "@/config/brand.config";
+import { formatLKR, formatProductPrice, isPriceOnRequest } from "@/config/brand.config";
 import { useCart } from "@/context/CartContext";
 import { Badge } from "@/components/common/Badge";
 import { QuickViewModal } from "@/components/common/QuickViewModal";
@@ -25,11 +25,16 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const defaultVariant = product.variants[0];
   const price = defaultVariant ? defaultVariant.priceLKR : product.basePriceLKR;
   const originalPrice = defaultVariant?.originalPriceLKR || product.originalPriceLKR;
+  const onRequest = isPriceOnRequest(price);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!defaultVariant || !product.inStock) return;
+    if (onRequest) {
+      window.location.href = "/business-scenting/request-quote";
+      return;
+    }
 
     setIsAdding(true);
     addItem(product, defaultVariant, 1);
@@ -137,7 +142,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
                   ? "bg-[#151412] text-[#B49A70] hover:bg-black"
                   : "bg-stone-300 text-stone-500 cursor-not-allowed"
               }`}
-              aria-label={`Add ${product.name} to shopping bag`}
+              aria-label={onRequest ? `Request a quote for ${product.name}` : `Add ${product.name} to shopping bag`}
             >
               {isAdding ? (
                 <>
@@ -147,7 +152,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
               ) : (
                 <>
                   <ShoppingBag className="w-3.5 h-3.5" />
-                  <span>Add to Bag</span>
+                  <span>{onRequest ? "Enquire" : "Add to Bag"}</span>
                 </>
               )}
             </button>
@@ -179,9 +184,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <div className="pt-2 border-t border-[#EFEAE1] flex items-center justify-between">
             <div className="flex items-baseline gap-2">
               <span className="font-semibold text-sm sm:text-base text-[#151412]">
-                {formatLKR(price)}
+                {formatProductPrice(price)}
               </span>
-              {originalPrice && originalPrice > price && (
+              {!onRequest && originalPrice && originalPrice > price && (
                 <span className="text-xs text-[#8A8275] line-through">
                   {formatLKR(originalPrice)}
                 </span>

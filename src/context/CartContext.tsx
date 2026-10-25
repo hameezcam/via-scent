@@ -60,6 +60,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items]);
 
   const addItem = (product: Product, variant: ProductVariant, quantity: number = 1) => {
+    // Price-on-request items are quoted, not sold online
+    if (!variant.priceLKR || variant.priceLKR <= 0) return;
     const validQty = Math.max(1, Math.min(quantity, MAX_QUANTITY_PER_ITEM));
     const compositeId = `${product.id}-${variant.id}`;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Truck, ShieldCheck, CreditCard, RotateCcw } from "lucide-react";
+import { Truck, ShieldCheck, Banknote, RotateCcw } from "lucide-react";
 import { motion } from "motion/react";
 import { LUXURY_EASE } from "@/config/motion.config";
 
@@ -15,11 +15,11 @@ export function TrustSection() {
         "Prompt, transparent delivery rates across Greater Colombo, Kandy, Galle, and all 9 provinces of Sri Lanka. Real-time courier tracking provided.",
     },
     {
-      icon: CreditCard,
+      icon: Banknote,
       eyebrow: "Flexible Settlement",
-      title: "Digital Payments & COD",
+      title: "Cash on Delivery",
       description:
-        "Seamless card checkout via secure gateway alongside convenient Cash on Delivery across verified postal zones islandwide.",
+        "Pay the courier in cash when your order arrives, anywhere in Sri Lanka. Secure card checkout is coming soon.",
     },
     {
       icon: ShieldCheck,

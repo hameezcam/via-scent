@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, ShoppingBag, User, Menu, ChevronDown, Sparkles, X, ArrowRight, ShieldCheck } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { BRAND_CONFIG } from "@/config/brand.config";
+import { BRAND_CONFIG, formatLKR } from "@/config/brand.config";
 import { MobileNav } from "./MobileNav";
 import { Product } from "@/types/product";
 import { Category } from "@/types/category";
@@ -496,7 +496,7 @@ export function Header({ initialCategories }: HeaderProps = {}) {
                               </div>
                             </div>
                             <div className="text-xs font-serif font-medium text-[#151412] shrink-0">
-                              LKR {product.basePriceLKR.toLocaleString()}
+                              {formatLKR(product.basePriceLKR)}
                             </div>
                           </Link>
                         ))}

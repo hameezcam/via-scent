@@ -9,6 +9,7 @@ import { CartDrawer } from "@/components/layout/CartDrawer";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { categoryService } from "@/services/category.service";
 import type { Category } from "@/types/category";
+import { getSiteUrl, isIndexingAllowed } from "@/lib/site-url";
 
 const serifFont = Playfair_Display({
   variable: "--font-serif",
@@ -23,7 +24,7 @@ const sansFont = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://example.lk"),
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: `${BRAND_CONFIG.brandName} | Authorized Franchisee Partner for Dr. Scent Sri Lanka`,
     template: `%s | ${BRAND_CONFIG.brandName} Sri Lanka`,
@@ -45,9 +46,10 @@ export const metadata: Metadata = {
     locale: "en_LK",
     siteName: BRAND_CONFIG.brandName,
   },
+  // Previews stay out of search results until NEXT_PUBLIC_ALLOW_INDEXING=true
   robots: {
-    index: false, // Phase 1 preview, preventing indexing of staging demo
-    follow: false,
+    index: isIndexingAllowed(),
+    follow: isIndexingAllowed(),
   },
 };
 

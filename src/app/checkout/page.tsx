@@ -438,37 +438,39 @@ export default function CheckoutPage() {
                   </div>
                 </label>
 
-                {/* Online Payment Gateway */}
-                <label
-                  className={`flex items-start gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
-                    paymentMethod === "online_gateway"
-                      ? "border-amber-800 bg-amber-50/40 shadow-xs"
-                      : "border-stone-200 hover:border-stone-300 bg-stone-50/30"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="online_gateway"
-                    checked={paymentMethod === "online_gateway"}
-                    onChange={() => setPaymentMethod("online_gateway")}
-                    className="mt-1 text-amber-800 focus:ring-amber-800"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 font-medium text-stone-900 text-sm">
-                        <CreditCard className="w-4 h-4 text-amber-800" />
-                        <span>Online Digital Payment (Visa / Mastercard / PayHere)</span>
+                {/* Online Payment Gateway (hidden until a live gateway is enabled) */}
+                {settings?.payments?.onlineGatewayEnabled && (
+                  <label
+                    className={`flex items-start gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
+                      paymentMethod === "online_gateway"
+                        ? "border-amber-800 bg-amber-50/40 shadow-xs"
+                        : "border-stone-200 hover:border-stone-300 bg-stone-50/30"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="online_gateway"
+                      checked={paymentMethod === "online_gateway"}
+                      onChange={() => setPaymentMethod("online_gateway")}
+                      className="mt-1 text-amber-800 focus:ring-amber-800"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 font-medium text-stone-900 text-sm">
+                          <CreditCard className="w-4 h-4 text-amber-800" />
+                          <span>Online Digital Payment (Visa / Mastercard / PayHere)</span>
+                        </div>
+                        <span className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded">
+                          Instant Confirmation
+                        </span>
                       </div>
-                      <span className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded">
-                        Instant Confirmation
-                      </span>
+                      <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+                        Pay securely using Sri Lankan or international credit/debit cards. Verified server-side with digital cryptographic signatures.
+                      </p>
                     </div>
-                    <p className="text-xs text-stone-600 mt-1 leading-relaxed">
-                      Pay securely using Sri Lankan or international credit/debit cards. Verified server-side with digital cryptographic signatures.
-                    </p>
-                  </div>
-                </label>
+                  </label>
+                )}
               </div>
             </div>
           </div>
@@ -554,7 +556,7 @@ export default function CheckoutPage() {
               <div className="bg-amber-50/60 p-3.5 rounded border border-amber-200/70 text-[11px] text-amber-950 space-y-1">
                 <p className="font-semibold flex items-center gap-1">
                   <Truck className="w-3.5 h-3.5 text-amber-800" />
-                  <span>Configured Islandwide Courier: LKR {deliveryFeeLKR}</span>
+                  <span>Configured Islandwide Courier: {formatLKR(deliveryFeeLKR)}</span>
                 </p>
                 <p className="text-amber-900/80 leading-relaxed">
                   {settings?.delivery.policyText ||
