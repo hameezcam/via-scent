@@ -21,6 +21,7 @@ import {
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { BRAND_CONFIG, formatLKR } from "@/config/brand.config";
 import { productService } from "@/services/product.service";
+import { withServedImagesAll } from "@/lib/product-images";
 import { ProductCard } from "@/components/product/ProductCard";
 import { HomeConsultationForm } from "@/components/home-fragrance/HomeConsultationForm";
 
@@ -37,9 +38,9 @@ export default async function HomeFragranceMarketingPage() {
   const breadcrumbs = [{ label: "Home Fragrance Architecture" }];
 
   // Fetch residential products from database / catalogue
-  const allOils = await productService.getByCategory("fragrance-oils");
-  const homeInstruments = await productService.getByCategory("home-fragrance");
-  const aromaDiffusers = await productService.getByCategory("aroma-diffusers");
+  const allOils = await productService.getByCategory("fragrance-oils").then(withServedImagesAll);
+  const homeInstruments = await productService.getByCategory("home-fragrance").then(withServedImagesAll);
+  const aromaDiffusers = await productService.getByCategory("aroma-diffusers").then(withServedImagesAll);
 
   // Combine all diffusers and hardware products from catalogue
   const liveHardware = [

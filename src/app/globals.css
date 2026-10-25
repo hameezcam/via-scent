@@ -37,6 +37,15 @@
   --accent-gold: var(--color-champagne);
   --border-subtle: var(--color-warm-stone);
   --border-strong: #D8D0C4;
+
+  /* Short names used across components (e.g. bg-[var(--near-black)]).
+     These were referenced but never defined, so those colors silently fell back to nothing. */
+  --near-black: var(--color-deep-charcoal);
+  --porcelain: var(--color-porcelain);
+  --deep-espresso: var(--color-espresso);
+  --champagne: var(--color-champagne);
+  --ivory: var(--color-warm-ivory);
+  --warm-stone: var(--color-warm-stone);
 }
 
 @layer base {
