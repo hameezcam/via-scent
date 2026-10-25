@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { warrantyService } from "@/services/warranty.service";
 
 export async function GET() {
-  const claims = warrantyService.getAllClaims();
+  const claims = await warrantyService.getAllClaims();
   return NextResponse.json(claims);
 }
 
@@ -16,7 +16,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "claimId and status are required." }, { status: 400 });
     }
 
-    const updated = warrantyService.updateClaimStatus(claimId, status, adminUser, resolutionNotes);
+    const updated = await warrantyService.updateClaimStatus(claimId, status, adminUser, resolutionNotes);
     return NextResponse.json({ success: true, claim: updated });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to update warranty claim.";

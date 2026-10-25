@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { settingsService } from "@/services/settings.service";
 
 export async function GET() {
-  const settings = settingsService.getSettings();
+  const settings = await settingsService.getSettings();
   return NextResponse.json(settings);
 }
 
@@ -20,16 +20,16 @@ export async function PUT(req: NextRequest) {
 
     switch (section) {
       case "delivery":
-        updatedSettings = settingsService.updateDeliverySettings(data, adminUser);
+        updatedSettings = await settingsService.updateDeliverySettings(data, adminUser);
         break;
       case "payments":
-        updatedSettings = settingsService.updatePaymentSettings(data, adminUser);
+        updatedSettings = await settingsService.updatePaymentSettings(data, adminUser);
         break;
       case "returns":
-        updatedSettings = settingsService.updateReturnSettings(data, adminUser);
+        updatedSettings = await settingsService.updateReturnSettings(data, adminUser);
         break;
       case "warranty":
-        updatedSettings = settingsService.updateWarrantySettings(data, adminUser);
+        updatedSettings = await settingsService.updateWarrantySettings(data, adminUser);
         break;
       default:
         return NextResponse.json({ error: `Unknown settings section: ${section}` }, { status: 400 });

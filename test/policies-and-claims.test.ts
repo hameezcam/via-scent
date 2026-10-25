@@ -4,12 +4,15 @@ import { returnsService } from "../src/services/returns.service";
 import { warrantyService } from "../src/services/warranty.service";
 import { settingsService } from "../src/services/settings.service";
 import { orderService } from "../src/services/order.service";
-import { PRODUCTS } from "../src/data/products";
+import { productService } from "../src/services/product.service";
 
-test("Policies & Claims: 7-Day return policy marks recent orders as eligible", () => {
+// Orders are priced from the live catalogue, so tests buy from it too
+const catalogue = () => productService.getAll();
+
+test("Policies & Claims: 7-Day return policy marks recent orders as eligible", async () => {
   // Create an order
-  const product = PRODUCTS[0];
-  const order = orderService.createOrder({
+  const product = (await catalogue())[0];
+  const order = await orderService.createOrder({
     customer: {
       fullName: "Chamari Atapattu",
       email: "chamari@example.com",
@@ -30,7 +33,7 @@ test("Policies & Claims: 7-Day return policy marks recent orders as eligible", (
   });
 
   // Submit return immediately
-  const returnRes = returnsService.submitReturn({
+  const returnRes = await returnsService.submitReturn({
     orderNumber: order.orderNumber,
     customerName: "Chamari Atapattu",
     customerEmail: "chamari@example.com",
@@ -48,9 +51,9 @@ test("Policies & Claims: 7-Day return policy marks recent orders as eligible", (
   assert.ok(returnRes.returnRequest?.returnNumber.startsWith("RET-"));
 });
 
-test("Policies & Claims: 8-Stage return workflow administrative status transitions", () => {
-  const product = PRODUCTS[0];
-  const order = orderService.createOrder({
+test("Policies & Claims: 8-Stage return workflow administrative status transitions", async () => {
+  const product = (await catalogue())[0];
+  const order = await orderService.createOrder({
     customer: {
       fullName: "Kusal Mendis",
       email: "kusal@example.com",
@@ -70,7 +73,7 @@ test("Policies & Claims: 8-Stage return workflow administrative status transitio
     paymentMethod: "cod",
   });
 
-  const returnRes = returnsService.submitReturn({
+  const returnRes = await returnsService.submitReturn({
     orderNumber: order.orderNumber,
     customerName: "Kusal Mendis",
     customerEmail: "kusal@example.com",
@@ -85,7 +88,7 @@ test("Policies & Claims: 8-Stage return workflow administrative status transitio
   const returnId = returnRes.returnRequest!.id;
 
   // Transition through required statuses
-  const underReview = returnsService.updateReturnStatus(
+  const underReview = await returnsService.updateReturnStatus(
     returnId,
     "UNDER_REVIEW",
     "admin@viascent.lk",
@@ -93,7 +96,7 @@ test("Policies & Claims: 8-Stage return workflow administrative status transitio
   );
   assert.equal(underReview.status, "UNDER_REVIEW");
 
-  const approved = returnsService.updateReturnStatus(
+  const approved = await returnsService.updateReturnStatus(
     returnId,
     "APPROVED",
     "admin@viascent.lk",
@@ -101,7 +104,7 @@ test("Policies & Claims: 8-Stage return workflow administrative status transitio
   );
   assert.equal(approved.status, "APPROVED");
 
-  const received = returnsService.updateReturnStatus(
+  const received = await returnsService.updateReturnStatus(
     returnId,
     "RECEIVED",
     "warehouse@viascent.lk",
@@ -109,7 +112,7 @@ test("Policies & Claims: 8-Stage return workflow administrative status transitio
   );
   assert.equal(received.status, "RECEIVED");
 
-  const refunded = returnsService.updateReturnStatus(
+  const refunded = await returnsService.updateReturnStatus(
     returnId,
     "REFUNDED",
     "finance@viascent.lk",
@@ -120,8 +123,8 @@ test("Policies & Claims: 8-Stage return workflow administrative status transitio
   assert.equal(refunded.refundAmountLKR, 35000);
 });
 
-test("Policies & Claims: Hardware warranty defaults to 6 months for diffusers", () => {
-  const claim = warrantyService.submitClaim({
+test("Policies & Claims: Hardware warranty defaults to 6 months for diffusers", async () => {
+  const claim = await warrantyService.submitClaim({
     orderNumber: "VIA-20261014-9988",
     productSku: "DRS-DIFF-01",
     customerName: "Mahela Jayawardene",
@@ -142,7 +145,7 @@ test("Policies & Claims: Hardware warranty defaults to 6 months for diffusers", 
   assert.equal(claim.status, "SUBMITTED");
 
   // Technician update
-  const updatedClaim = warrantyService.updateClaimStatus(
+  const updatedClaim = await warrantyService.updateClaimStatus(
     claim.id,
     "APPROVED_REPAIR",
     "technician@viascent.lk",
@@ -151,15 +154,15 @@ test("Policies & Claims: Hardware warranty defaults to 6 months for diffusers", 
   assert.equal(updatedClaim.status, "APPROVED_REPAIR");
 });
 
-test("Policies & Claims: Sensitive settings updates are recorded in audit trail", () => {
-  const prevLogsCount = settingsService.getAuditLogs().length;
+test("Policies & Claims: Sensitive settings updates are recorded in audit trail", async () => {
+  const prevLogsCount = (await settingsService.getAuditLogs()).length;
 
-  settingsService.updateReturnSettings(
+  await settingsService.updateReturnSettings(
     { returnWindowDays: 7, refundWindowDays: 7 },
     "compliance_officer@viascent.lk"
   );
 
-  const newLogs = settingsService.getAuditLogs();
+  const newLogs = await settingsService.getAuditLogs();
   assert.ok(newLogs.length > prevLogsCount, "An audit log entry must be appended");
 
   const latestLog = newLogs[0];

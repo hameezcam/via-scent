@@ -1,9 +1,5 @@
-import fs from "fs";
-import path from "path";
 import { StoreSettings, DeliverySettings, PaymentSettings, ReturnSettings, WarrantySettings, AuditLogEntry } from "../types/settings";
-
-const SETTINGS_FILE_PATH = path.join(process.cwd(), "src/data/store-settings.json");
-const AUDIT_FILE_PATH = path.join(process.cwd(), "src/data/audit-log.json");
+import { createDocumentStore } from "@/lib/document-store";
 
 export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   brand: {
@@ -26,7 +22,7 @@ export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   },
   payments: {
     codEnabled: true, // Enabled by default
-    onlineGatewayEnabled: true, // Enabled by default
+    onlineGatewayEnabled: false, // Off until a live PayHere integration is connected
     defaultMethod: "cod",
     activeGateway: "payhere",
     merchantIdPlaceholder: "VIA_SCENT_MERCHANT_10928",
@@ -58,39 +54,62 @@ export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   },
 };
 
+const SETTINGS_DOC_ID = "store";
+
+type StoredSettings = StoreSettings & { id: string };
+
+const settingsStore = createDocumentStore<StoredSettings>({
+  collection: "settings",
+  fileName: "settings.json",
+  getId: (doc) => doc.id,
+});
+
+const auditStore = createDocumentStore<AuditLogEntry>({
+  collection: "audit",
+  fileName: "audit-log.json",
+  getId: (entry) => entry.id,
+});
+
+/**
+ * Online card payments currently run through a simulated gateway page.
+ * They stay unavailable to customers unless ENABLE_SIMULATED_PAYMENTS=true
+ * (local testing only) until a real PayHere integration replaces the mock.
+ */
+export function isSimulatedPaymentAllowed(): boolean {
+  return process.env.ENABLE_SIMULATED_PAYMENTS === "true";
+}
+
 class SettingsService {
-  private inMemorySettings: StoreSettings | null = null;
-  private inMemoryAuditLogs: AuditLogEntry[] | null = null;
-
-  public getSettings(): StoreSettings {
-    if (this.inMemorySettings) {
-      return this.inMemorySettings;
+  public async getSettings(): Promise<StoreSettings> {
+    const stored = await settingsStore.get(SETTINGS_DOC_ID);
+    if (!stored) {
+      return { ...DEFAULT_STORE_SETTINGS };
     }
 
-    try {
-      if (fs.existsSync(SETTINGS_FILE_PATH)) {
-        const raw = fs.readFileSync(SETTINGS_FILE_PATH, "utf-8");
-        const parsed = JSON.parse(raw);
-        this.inMemorySettings = {
-          ...DEFAULT_STORE_SETTINGS,
-          ...parsed,
-          delivery: { ...DEFAULT_STORE_SETTINGS.delivery, ...parsed.delivery },
-          payments: { ...DEFAULT_STORE_SETTINGS.payments, ...parsed.payments },
-          returns: { ...DEFAULT_STORE_SETTINGS.returns, ...parsed.returns },
-          warranty: { ...DEFAULT_STORE_SETTINGS.warranty, ...parsed.warranty },
-        };
-        return this.inMemorySettings!;
-      }
-    } catch {
-      // Fallback to default
-    }
-
-    this.inMemorySettings = { ...DEFAULT_STORE_SETTINGS };
-    return this.inMemorySettings;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...parsed } = stored;
+    return {
+      ...DEFAULT_STORE_SETTINGS,
+      ...parsed,
+      brand: { ...DEFAULT_STORE_SETTINGS.brand, ...parsed.brand },
+      delivery: { ...DEFAULT_STORE_SETTINGS.delivery, ...parsed.delivery },
+      payments: { ...DEFAULT_STORE_SETTINGS.payments, ...parsed.payments },
+      returns: { ...DEFAULT_STORE_SETTINGS.returns, ...parsed.returns },
+      warranty: { ...DEFAULT_STORE_SETTINGS.warranty, ...parsed.warranty },
+    };
   }
 
-  public getDeliveryFee(district?: string): number {
-    const settings = this.getSettings().delivery;
+  /** Payment settings as customers actually experience them. */
+  public async getEffectivePaymentSettings(): Promise<PaymentSettings> {
+    const payments = (await this.getSettings()).payments;
+    return {
+      ...payments,
+      onlineGatewayEnabled: payments.onlineGatewayEnabled && isSimulatedPaymentAllowed(),
+    };
+  }
+
+  public async getDeliveryFee(district?: string): Promise<number> {
+    const settings = (await this.getSettings()).delivery;
     if (!settings.islandwideEnabled) {
       return settings.defaultCourierFeeLKR;
     }
@@ -100,8 +119,8 @@ class SettingsService {
     return settings.defaultCourierFeeLKR; // Default LKR 500
   }
 
-  public updateDeliverySettings(updates: Partial<DeliverySettings>, adminUser: string = "system_admin"): StoreSettings {
-    const current = this.getSettings();
+  public async updateDeliverySettings(updates: Partial<DeliverySettings>, adminUser: string = "system_admin"): Promise<StoreSettings> {
+    const current = await this.getSettings();
     const prevDelivery = { ...current.delivery };
 
     const newDelivery: DeliverySettings = {
@@ -118,8 +137,8 @@ class SettingsService {
       delivery: newDelivery,
     };
 
-    this.saveSettings(newSettings);
-    this.addAuditLog({
+    await this.saveSettings(newSettings);
+    await this.addAuditLog({
       category: "DELIVERY",
       action: "UPDATE_DELIVERY_SETTINGS",
       performedBy: adminUser,
@@ -131,8 +150,8 @@ class SettingsService {
     return newSettings;
   }
 
-  public updatePaymentSettings(updates: Partial<PaymentSettings>, adminUser: string = "system_admin"): StoreSettings {
-    const current = this.getSettings();
+  public async updatePaymentSettings(updates: Partial<PaymentSettings>, adminUser: string = "system_admin"): Promise<StoreSettings> {
+    const current = await this.getSettings();
     const prevPayments = { ...current.payments };
 
     const newPayments: PaymentSettings = {
@@ -147,8 +166,8 @@ class SettingsService {
       payments: newPayments,
     };
 
-    this.saveSettings(newSettings);
-    this.addAuditLog({
+    await this.saveSettings(newSettings);
+    await this.addAuditLog({
       category: "PAYMENTS",
       action: "UPDATE_PAYMENT_SETTINGS",
       performedBy: adminUser,
@@ -160,8 +179,8 @@ class SettingsService {
     return newSettings;
   }
 
-  public updateReturnSettings(updates: Partial<ReturnSettings>, adminUser: string = "system_admin"): StoreSettings {
-    const current = this.getSettings();
+  public async updateReturnSettings(updates: Partial<ReturnSettings>, adminUser: string = "system_admin"): Promise<StoreSettings> {
+    const current = await this.getSettings();
     const prevReturns = { ...current.returns };
 
     const newReturns: ReturnSettings = {
@@ -176,8 +195,8 @@ class SettingsService {
       returns: newReturns,
     };
 
-    this.saveSettings(newSettings);
-    this.addAuditLog({
+    await this.saveSettings(newSettings);
+    await this.addAuditLog({
       category: "RETURNS",
       action: "UPDATE_RETURN_SETTINGS",
       performedBy: adminUser,
@@ -189,8 +208,8 @@ class SettingsService {
     return newSettings;
   }
 
-  public updateWarrantySettings(updates: Partial<WarrantySettings>, adminUser: string = "system_admin"): StoreSettings {
-    const current = this.getSettings();
+  public async updateWarrantySettings(updates: Partial<WarrantySettings>, adminUser: string = "system_admin"): Promise<StoreSettings> {
+    const current = await this.getSettings();
     const prevWarranty = { ...current.warranty };
 
     const newWarranty: WarrantySettings = {
@@ -204,8 +223,8 @@ class SettingsService {
       warranty: newWarranty,
     };
 
-    this.saveSettings(newSettings);
-    this.addAuditLog({
+    await this.saveSettings(newSettings);
+    await this.addAuditLog({
       category: "WARRANTY",
       action: "UPDATE_WARRANTY_SETTINGS",
       performedBy: adminUser,
@@ -217,54 +236,27 @@ class SettingsService {
     return newSettings;
   }
 
-  public getAuditLogs(): AuditLogEntry[] {
-    if (this.inMemoryAuditLogs) {
-      return this.inMemoryAuditLogs;
-    }
-
-    try {
-      if (fs.existsSync(AUDIT_FILE_PATH)) {
-        const raw = fs.readFileSync(AUDIT_FILE_PATH, "utf-8");
-        this.inMemoryAuditLogs = JSON.parse(raw);
-        return this.inMemoryAuditLogs!;
-      }
-    } catch {
-      // Ignore
-    }
-
-    this.inMemoryAuditLogs = [];
-    return this.inMemoryAuditLogs;
+  public async getAuditLogs(): Promise<AuditLogEntry[]> {
+    return auditStore.list({ limit: 500 }); // Latest 500 logs
   }
 
-  public addAuditLog(entry: Omit<AuditLogEntry, "id" | "timestamp">) {
-    const logs = this.getAuditLogs();
+  public async addAuditLog(entry: Omit<AuditLogEntry, "id" | "timestamp">): Promise<void> {
     const newEntry: AuditLogEntry = {
       id: `audit-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       timestamp: new Date().toISOString(),
       ...entry,
     };
 
-    logs.unshift(newEntry);
-    this.inMemoryAuditLogs = logs.slice(0, 500); // Retain latest 500 logs
-
     try {
-      const dir = path.dirname(AUDIT_FILE_PATH);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(AUDIT_FILE_PATH, JSON.stringify(this.inMemoryAuditLogs, null, 2), "utf-8");
-    } catch {
-      // In-memory fallback
+      await auditStore.put(newEntry.id, newEntry);
+    } catch (err) {
+      // Audit logging must never block the primary admin action
+      console.error("[Audit] Failed to record audit entry:", err);
     }
   }
 
-  private saveSettings(settings: StoreSettings) {
-    this.inMemorySettings = settings;
-    try {
-      const dir = path.dirname(SETTINGS_FILE_PATH);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(settings, null, 2), "utf-8");
-    } catch {
-      // In-memory fallback
-    }
+  private async saveSettings(settings: StoreSettings): Promise<void> {
+    await settingsStore.put(SETTINGS_DOC_ID, { ...settings, id: SETTINGS_DOC_ID });
   }
 }
 

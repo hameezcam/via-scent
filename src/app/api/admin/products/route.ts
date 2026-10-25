@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     if (body.action === "import" && Array.isArray(body.products)) {
       const count = await productService.importCatalogue(body.products, adminUser);
-      settingsService.addAuditLog({
+      await settingsService.addAuditLog({
         category: "CATALOGUE",
         action: "IMPORT_CATALOGUE",
         performedBy: adminUser,
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     const newProduct = await productService.createProduct(body, adminUser);
-    settingsService.addAuditLog({
+    await settingsService.addAuditLog({
       category: "CATALOGUE",
       action: "CREATE_PRODUCT",
       performedBy: adminUser,
@@ -71,7 +71,7 @@ export async function PUT(req: NextRequest) {
 
     if (action === "toggle_publish") {
       const updated = await productService.togglePublishStatus(id, adminUser);
-      settingsService.addAuditLog({
+      await settingsService.addAuditLog({
         category: "CATALOGUE",
         action: updated.isPublished ? "PUBLISH_PRODUCT" : "UNPUBLISH_PRODUCT",
         performedBy: adminUser,
@@ -84,7 +84,7 @@ export async function PUT(req: NextRequest) {
 
     if (action === "archive") {
       const updated = await productService.archiveProduct(id, adminUser);
-      settingsService.addAuditLog({
+      await settingsService.addAuditLog({
         category: "CATALOGUE",
         action: "ARCHIVE_PRODUCT",
         performedBy: adminUser,
@@ -98,7 +98,7 @@ export async function PUT(req: NextRequest) {
     if (action === "delete") {
       const existing = await productService.getById(id);
       await productService.deleteProduct(id, adminUser);
-      settingsService.addAuditLog({
+      await settingsService.addAuditLog({
         category: "CATALOGUE",
         action: "DELETE_PRODUCT",
         performedBy: adminUser,
@@ -110,7 +110,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const updated = await productService.updateProduct(id, updates, adminUser);
-    settingsService.addAuditLog({
+    await settingsService.addAuditLog({
       category: "CATALOGUE",
       action: "UPDATE_PRODUCT",
       performedBy: adminUser,
@@ -147,7 +147,7 @@ export async function DELETE(req: NextRequest) {
     const existing = await productService.getById(id);
     await productService.deleteProduct(id, adminUser);
 
-    settingsService.addAuditLog({
+    await settingsService.addAuditLog({
       category: "CATALOGUE",
       action: "DELETE_PRODUCT",
       performedBy: adminUser,

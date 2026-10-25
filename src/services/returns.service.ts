@@ -1,10 +1,7 @@
-import fs from "fs";
-import path from "path";
 import { ReturnRequest, ReturnStatus } from "../types/order";
 import { settingsService } from "./settings.service";
 import { orderService } from "./order.service";
-
-const RETURNS_FILE_PATH = path.join(process.cwd(), "src/data/returns.json");
+import { createDocumentStore } from "@/lib/document-store";
 
 export interface SubmitReturnInput {
   orderNumber: string;
@@ -18,12 +15,50 @@ export interface SubmitReturnInput {
   refundMethod: "original_gateway" | "bank_transfer_cod";
 }
 
-class ReturnsService {
-  private inMemoryReturns: ReturnRequest[] | null = null;
+// Demo return shown only in local file mode (never seeded into Postgres)
+const DEMO_RETURN: ReturnRequest = {
+    id: "ret-demo-01",
+    returnNumber: "RET-20261014-401",
+    orderNumber: "VIA-20261014-1001",
+    customerName: "Malik Fernando",
+    customerEmail: "malik.f@example.lk",
+    customerPhone: "+94 77 123 4567",
+    itemSku: "DSC-PORT-GLD",
+    itemName: "Dr. Scent Portable Ambient Diffuser (Champagne Gold)",
+    reason: "Unopened - Exchange for Obsidian Black Finish",
+    details: "Arrived in perfect condition with seals intact. Client requests exchange for black color.",
+    submittedAt: new Date("2026-10-14T11:00:00Z").toISOString(),
+    orderDate: new Date("2026-10-14T09:30:00Z").toISOString(),
+    isWithin7Days: true,
+    status: "UNDER_REVIEW",
+    refundMethod: "bank_transfer_cod",
+    history: [
+      {
+        timestamp: new Date("2026-10-14T11:00:00Z").toISOString(),
+        status: "REQUESTED",
+        note: "Customer initiated return within 7-day policy window.",
+        updatedBy: "malik.f@example.lk",
+      },
+      {
+        timestamp: new Date("2026-10-14T11:30:00Z").toISOString(),
+        status: "UNDER_REVIEW",
+        note: "Concierge verified proof of purchase. Reviewing courier collection.",
+        updatedBy: "admin@viascent.lk",
+      },
+    ],
+  };
 
-  public submitReturn(input: SubmitReturnInput): { success: boolean; returnRequest?: ReturnRequest; error?: string } {
-    const order = orderService.getOrderByNumber(input.orderNumber);
-    const returnSettings = settingsService.getSettings().returns;
+const returnsStore = createDocumentStore<ReturnRequest>({
+  collection: "returns",
+  fileName: "returns.json",
+  getId: (item) => item.id,
+  seed: () => [DEMO_RETURN],
+});
+
+class ReturnsService {
+  public async submitReturn(input: SubmitReturnInput): Promise<{ success: boolean; returnRequest?: ReturnRequest; error?: string }> {
+    const order = await orderService.getOrderByNumber(input.orderNumber);
+    const returnSettings = (await settingsService.getSettings()).returns;
 
     let isWithin7Days = true;
     let orderDate = new Date().toISOString();
@@ -67,22 +102,19 @@ class ReturnsService {
       ],
     };
 
-    const allReturns = this.getAllReturns();
-    allReturns.unshift(newReturn);
-    this.saveReturns(allReturns);
+    await returnsStore.put(newReturn.id, newReturn);
 
     return { success: true, returnRequest: newReturn };
   }
 
-  public updateReturnStatus(
+  public async updateReturnStatus(
     returnId: string,
     newStatus: ReturnStatus,
     adminUser: string,
     notes?: string,
     refundAmountLKR?: number
-  ): ReturnRequest {
-    const allReturns = this.getAllReturns();
-    const item = allReturns.find((r) => r.id === returnId);
+  ): Promise<ReturnRequest> {
+    const item = await returnsStore.get(returnId);
     if (!item) {
       throw new Error("Return request not found.");
     }
@@ -99,77 +131,16 @@ class ReturnsService {
       updatedBy: adminUser,
     });
 
-    this.saveReturns(allReturns);
+    await returnsStore.put(item.id, item);
     return item;
   }
 
-  public getAllReturns(): ReturnRequest[] {
-    if (this.inMemoryReturns) {
-      return this.inMemoryReturns;
-    }
-
-    try {
-      if (fs.existsSync(RETURNS_FILE_PATH)) {
-        const raw = fs.readFileSync(RETURNS_FILE_PATH, "utf-8");
-        this.inMemoryReturns = JSON.parse(raw);
-        return this.inMemoryReturns!;
-      }
-    } catch {
-      // Fallback
-    }
-
-    // Seed initial demo return request
-    this.inMemoryReturns = [
-      {
-        id: "ret-demo-01",
-        returnNumber: "RET-20261014-401",
-        orderNumber: "VIA-20261014-1001",
-        customerName: "Malik Fernando",
-        customerEmail: "malik.f@example.lk",
-        customerPhone: "+94 77 123 4567",
-        itemSku: "DSC-PORT-GLD",
-        itemName: "Dr. Scent Portable Ambient Diffuser (Champagne Gold)",
-        reason: "Unopened - Exchange for Obsidian Black Finish",
-        details: "Arrived in perfect condition with seals intact. Client requests exchange for black color.",
-        submittedAt: new Date("2026-10-14T11:00:00Z").toISOString(),
-        orderDate: new Date("2026-10-14T09:30:00Z").toISOString(),
-        isWithin7Days: true,
-        status: "UNDER_REVIEW",
-        refundMethod: "bank_transfer_cod",
-        history: [
-          {
-            timestamp: new Date("2026-10-14T11:00:00Z").toISOString(),
-            status: "REQUESTED",
-            note: "Customer initiated return within 7-day policy window.",
-            updatedBy: "malik.f@example.lk",
-          },
-          {
-            timestamp: new Date("2026-10-14T11:30:00Z").toISOString(),
-            status: "UNDER_REVIEW",
-            note: "Concierge verified proof of purchase. Reviewing courier collection.",
-            updatedBy: "admin@viascent.lk",
-          },
-        ],
-      },
-    ];
-
-    return this.inMemoryReturns;
+  public async getAllReturns(): Promise<ReturnRequest[]> {
+    return returnsStore.list();
   }
 
-  public getReturnById(id: string): ReturnRequest | null {
-    const returns = this.getAllReturns();
-    return returns.find((r) => r.id === id) || null;
-  }
-
-  private saveReturns(returns: ReturnRequest[]) {
-    this.inMemoryReturns = returns;
-    try {
-      const dir = path.dirname(RETURNS_FILE_PATH);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(RETURNS_FILE_PATH, JSON.stringify(returns, null, 2), "utf-8");
-    } catch {
-      // In-memory fallback
-    }
+  public async getReturnById(id: string): Promise<ReturnRequest | null> {
+    return returnsStore.get(id);
   }
 }
 

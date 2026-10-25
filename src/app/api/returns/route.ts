@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = returnsService.submitReturn(body);
+    const result = await returnsService.submitReturn(body);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error || "Failed to submit return." }, { status: 400 });

@@ -183,6 +183,19 @@ export async function ensureDbInitialized(): Promise<void> {
         );
       `;
 
+      // 7. Generic JSON documents (orders, returns, warranty claims, settings,
+      //    audit logs, newsletter subscribers). See src/lib/document-store.ts.
+      await sql`
+        CREATE TABLE IF NOT EXISTS app_documents (
+          collection VARCHAR(50) NOT NULL,
+          id VARCHAR(150) NOT NULL,
+          data TEXT NOT NULL,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          PRIMARY KEY (collection, id)
+        );
+      `;
+
       // Migration: convert any existing JSONB columns to TEXT to prevent driver type mismatch
       try {
         await sql`
@@ -235,7 +248,7 @@ export async function ensureDbInitialized(): Promise<void> {
         console.warn("[Database] Non-critical migration notice:", migErr);
       }
 
-      // 7. Seed Initial Master Catalogue if table is empty
+      // 8. Seed Initial Master Catalogue if table is empty
       const rows = await sql`SELECT COUNT(*)::int as count FROM products;`;
       const count = Number(rows[0]?.count ?? 0);
 

@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify payment method availability against active settings
-    const settings = settingsService.getSettings().payments;
+    const settings = await settingsService.getEffectivePaymentSettings();
     if (paymentMethod === "cod" && !settings.codEnabled) {
       return NextResponse.json(
         { error: "Cash on Delivery is currently disabled in store settings." },
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       notes: customer.notes,
     };
 
-    const newOrder = orderService.createOrder(orderInput);
+    const newOrder = await orderService.createOrder(orderInput);
 
     // Prepare response based on payment method
     if (newOrder.payment.method === "online_gateway") {

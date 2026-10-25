@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const orderId = searchParams.get("orderId");
 
   if (orderNumber) {
-    const order = orderService.getOrderByNumber(orderNumber);
+    const order = await orderService.getOrderByNumber(orderNumber);
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
@@ -15,14 +15,14 @@ export async function GET(req: NextRequest) {
   }
 
   if (orderId) {
-    const order = orderService.getOrderById(orderId);
+    const order = await orderService.getOrderById(orderId);
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
     return NextResponse.json(order);
   }
 
-  const orders = orderService.getAllOrders();
+  const orders = await orderService.getAllOrders();
   return NextResponse.json(orders);
 }
 
@@ -37,12 +37,12 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (action === "record_payment") {
-      const updated = orderService.recordPaymentCollection(orderId, adminUser, { receiptNumber, notes: note });
+      const updated = await orderService.recordPaymentCollection(orderId, adminUser, { receiptNumber, notes: note });
       return NextResponse.json({ success: true, order: updated, message: "Payment collection recorded." });
     }
 
     if (status) {
-      const updated = orderService.updateOrderStatus(orderId, status, adminUser, note);
+      const updated = await orderService.updateOrderStatus(orderId, status, adminUser, note);
       return NextResponse.json({ success: true, order: updated, message: `Status updated to ${status}.` });
     }
 

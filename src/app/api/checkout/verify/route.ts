@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const verificationResult = orderService.verifyOnlinePayment(orderId, transactionId, signature);
+    const verificationResult = await orderService.verifyOnlinePayment(orderId, transactionId, signature);
 
     if (!verificationResult.success) {
       return NextResponse.json(

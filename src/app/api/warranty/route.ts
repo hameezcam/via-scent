@@ -12,12 +12,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const claim = warrantyService.submitClaim(body);
+    const claim = await warrantyService.submitClaim(body);
 
     return NextResponse.json({
       success: true,
       claim,
-      message: `Warranty claim ${claim.claimNumber} logged under VIA Scent 6-month official franchisee coverage.`,
+      message: `Warranty claim ${claim.claimNumber} logged under VIA Scent ${claim.warrantyDurationMonths}-month official franchisee coverage.`,
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Error submitting warranty claim.";
