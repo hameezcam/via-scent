@@ -26,7 +26,6 @@ export default async function Image() {
           gap: 40,
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={logoSrc} width={541} height={145} alt="" />
         <div style={{ fontSize: 34, letterSpacing: 6, textTransform: "uppercase", color: "#B49A70" }}>
           Luxury Home Fragrance · Sri Lanka

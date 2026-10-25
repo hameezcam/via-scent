@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Eye, ShoppingBag, Check, ShieldCheck, Sparkles } from "lucide-react";
 import { Product } from "@/types/product";
 import { formatLKR, formatProductPrice, isPriceOnRequest } from "@/config/brand.config";
@@ -17,6 +18,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   const { addItem } = useCart();
+  const router = useRouter();
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -32,7 +34,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     e.stopPropagation();
     if (!defaultVariant || !product.inStock) return;
     if (onRequest) {
-      window.location.href = "/business-scenting/request-quote";
+      router.push("/business-scenting/request-quote");
       return;
     }
 

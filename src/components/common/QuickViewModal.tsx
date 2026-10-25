@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { X, ShoppingBag, ArrowRight, Check, ShieldCheck, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { Product } from "@/types/product";
 import { formatLKR, formatProductPrice, isPriceOnRequest } from "@/config/brand.config";
@@ -17,6 +18,7 @@ interface QuickViewModalProps {
 
 export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps) {
   const { addItem } = useCart();
+  const router = useRouter();
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -35,7 +37,7 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
   const handleAddToCart = () => {
     if (!currentVariant) return;
     if (onRequest) {
-      window.location.href = "/business-scenting/request-quote";
+      router.push("/business-scenting/request-quote");
       return;
     }
     addItem(product, currentVariant, quantity);
