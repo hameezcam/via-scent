@@ -138,7 +138,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             ref={tabsRef}
             className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            <div className="max-w-7xl mx-auto px-10 sm:px-12 lg:px-14 flex space-x-1 w-max min-w-full justify-center">
+            <div className="flex space-x-1 w-max min-w-full justify-center px-12">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
