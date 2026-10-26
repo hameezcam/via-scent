@@ -6,7 +6,7 @@ import { ShieldCheck, Building2, Droplets, Wind } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 
 export const metadata = {
-  title: "About Our Brand & Franchise Partnership | Dr. Scent Sri Lanka",
+  title: "About us",
   description:
     "Learn about our partnership as an authorized franchisee for Dr. Scent in Sri Lanka, introducing architectural cold-air nebulization and artisanal fragrance oils.",
 };

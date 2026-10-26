@@ -13,7 +13,7 @@ import { coverageSqft } from "@/lib/scent-finder";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Scenting for Businesses in Sri Lanka | Hotels, Offices, Retail & Spas | VIA Scent",
+  title: "Scenting for hotels, offices, shops and spas",
   description:
     "Dr. Scent diffusers for hotels, offices, shops and spas across Sri Lanka. Free site visit, professional installation and monthly oil refills.",
 };

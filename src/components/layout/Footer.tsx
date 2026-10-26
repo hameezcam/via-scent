@@ -360,15 +360,15 @@ export function Footer({ initialCategories }: FooterProps = {}) {
             </ul>
           </div>
 
-          {/* Column 3: Client Care & B2B (2 cols) */}
+          {/* Column 3: Help & business (2 cols) */}
           <div className="lg:col-span-2 space-y-4">
             <h3 className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#B49A70]">
-              Client Care & B2B
+              Help & business
             </h3>
             <ul className="space-y-2.5 text-xs text-[#A8A196] font-light">
               <li>
                 <Link href="/business-scenting" className="hover:text-[#F8F6F1] transition-colors">
-                  Business Scent Architecture
+                  Scenting for business
                 </Link>
               </li>
               <li>
@@ -376,32 +376,42 @@ export function Footer({ initialCategories }: FooterProps = {}) {
                   href="/business-scenting/request-quote"
                   className="hover:text-[#B49A70] transition-colors text-[#B49A70] font-medium"
                 >
-                  Request Commercial Quote
+                  Book a free site visit
                 </Link>
               </li>
               <li>
                 <Link href="/shipping" className="hover:text-[#F8F6F1] transition-colors">
-                  Islandwide Delivery Info
+                  Delivery info
                 </Link>
               </li>
               <li>
                 <Link href="/returns" className="hover:text-[#F8F6F1] transition-colors">
-                  Warranty & Returns Policy
+                  Returns policy
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="hover:text-[#F8F6F1] transition-colors">
-                  About VIA Scent Franchise
+                  About us
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-[#F8F6F1] transition-colors">
-                  Colombo Showroom Concierge
+                  Contact us
                 </Link>
               </li>
               <li>
                 <Link href="/warranty" className="hover:text-[#F8F6F1] transition-colors">
-                  Warranty Claims
+                  Warranty claims
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="hover:text-[#F8F6F1] transition-colors">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href="/track-order" className="hover:text-[#F8F6F1] transition-colors">
+                  Track your order
                 </Link>
               </li>
             </ul>
@@ -443,7 +453,7 @@ export function Footer({ initialCategories }: FooterProps = {}) {
               </span>
               <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-[#A8A196]">
                 <span className="px-2 py-1 bg-[#1C1A17] border border-[#2D2924] rounded-xs">Cash on Delivery</span>
-                <span className="px-2 py-1 text-[#736B60]">Card payments coming soon</span>
+                
               </div>
             </div>
           </div>

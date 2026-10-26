@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { X, Sparkles, ShieldCheck } from "lucide-react";
+import { X, ShieldCheck } from "lucide-react";
 import { useReducedMotion } from "motion/react";
 import { BRAND_CONFIG, formatLKR } from "@/config/brand.config";
 
@@ -44,16 +44,16 @@ export function AnnouncementBar() {
 
   const shippingAnnouncement = deliverySettings.freeDeliveryThresholdLKR
     ? {
-        prefix: "Complimentary Delivery",
+        prefix: "Free delivery",
         highlight: `Islandwide shipping on orders over ${formatLKR(deliverySettings.freeDeliveryThresholdLKR)}`,
         href: "/shipping",
-        linkText: "Delivery Terms",
+        linkText: "Delivery info",
       }
     : {
         prefix: "Islandwide Delivery",
         highlight: `Standard courier rate of ${formatLKR(deliverySettings.defaultCourierFeeLKR)} across all 9 provinces`,
         href: "/shipping",
-        linkText: "Delivery Terms",
+        linkText: "Delivery info",
       };
 
   const announcements = [
@@ -65,10 +65,10 @@ export function AnnouncementBar() {
     },
     shippingAnnouncement,
     {
-      prefix: "Architectural Scenting",
-      highlight: "Private B2B Olfactory Consultations for Hotels, Spas & Retail",
+      prefix: "For businesses",
+      highlight: "Free site visits for hotels, spas and shops",
       href: "/business-scenting/request-quote",
-      linkText: "Request Quote",
+      linkText: "Book a visit",
     },
   ];
 
@@ -91,7 +91,7 @@ export function AnnouncementBar() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         <div className="flex-1 flex items-center justify-center gap-2 text-center flex-wrap min-h-[20px]">
-          <span className="inline-flex items-center gap-1.5 text-[#B49A70] font-semibold bg-[#211C19] border border-[#B49A70]/30 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] tracking-wider">
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-[#B49A70] font-semibold bg-[#211C19] border border-[#B49A70]/30 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] tracking-wider">
             <ShieldCheck className="w-3 h-3 text-[#B49A70]" />
             Franchise Certified
           </span>
@@ -107,7 +107,7 @@ export function AnnouncementBar() {
             className="text-[#B49A70] hover:text-[#CBB694] underline underline-offset-4 ml-1 transition-colors font-semibold inline-flex items-center gap-1 lowercase first-letter:uppercase tracking-wider"
           >
             <span>{current.linkText}</span>
-            <Sparkles className="w-2.5 h-2.5 text-[#B49A70]" />
+            
           </Link>
         </div>
         <button

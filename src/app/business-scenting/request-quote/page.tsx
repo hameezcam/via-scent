@@ -17,7 +17,7 @@ const INDUSTRY_VALUES: IndustryType[] = [
 ];
 
 export const metadata = {
-  title: "Request a Commercial Scenting Quote | Dr. Scent Franchisee Sri Lanka",
+  title: "Book a free site visit",
   description:
     "Request a bespoke commercial fragrance quotation for your hotel, office, retail store, or wellness space in Sri Lanka. Tailored HVAC ducting and monthly maintenance.",
 };

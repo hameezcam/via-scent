@@ -33,10 +33,10 @@ export default function CartPage() {
           </div>
           <div className="space-y-2">
             <h1 className="font-serif text-3xl sm:text-4xl font-normal text-[var(--near-black)]">
-              Your shopping bag is unoccupied
+              Your bag is empty
             </h1>
             <p className="text-xs sm:text-sm text-[var(--deep-espresso)]/70 max-w-md mx-auto leading-relaxed font-light">
-              Begin your journey into architectural scenting with authorized Dr. Scent aroma diffusers, room nebulizers, and pure fragrance oils.
+              Browse Dr. Scent diffusers, fragrance oils and sprays.
             </p>
           </div>
           <div className="pt-4">
@@ -44,7 +44,7 @@ export default function CartPage() {
               href="/shop"
               className="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--champagne)] text-xs font-medium tracking-[0.2em] uppercase rounded-sm transition-all duration-300 shadow-sm"
             >
-              <span>Explore The Catalogue</span>
+              <span>Shop now</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -66,7 +66,7 @@ export default function CartPage() {
               Curated Selections
             </span>
             <h1 className="font-serif text-3xl sm:text-4xl text-[var(--near-black)] font-normal">
-              Your Shopping Bag ({itemCount} {itemCount === 1 ? "instrument" : "instruments"})
+              Your bag ({itemCount} {itemCount === 1 ? "item" : "items"})
             </h1>
           </div>
 

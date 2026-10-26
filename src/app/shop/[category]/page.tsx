@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   }
 
   return {
-    title: `${categoryInfo.name} | Authorized Dr. Scent Franchisee Sri Lanka`,
+    title: `${categoryInfo.name} in Sri Lanka`,
     description: categoryInfo.description,
   };
 }

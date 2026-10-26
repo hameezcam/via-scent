@@ -4,7 +4,7 @@ import { AlertCircle } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 
 export const metadata = {
-  title: "Islandwide Shipping & Delivery Policy | Dr. Scent Franchisee Sri Lanka",
+  title: "Delivery across Sri Lanka",
   description:
     "Delivery timelines, rates, and handling information for luxury aroma diffusers and fragrance oils across Sri Lanka.",
 };
@@ -33,10 +33,10 @@ export default function ShippingPage() {
             Logistics & Delivery
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-stone-900 font-normal">
-            Shipping & Islandwide Delivery Framework
+            Delivery across Sri Lanka
           </h1>
           <p className="text-xs text-stone-500">
-            Last updated: October 2026 • Franchise Supply Operations
+            Last updated: October 2026
           </p>
         </div>
 

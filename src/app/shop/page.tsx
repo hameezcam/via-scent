@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export const metadata = {
-  title: "Shop All Fragrances & Diffusers | Authorized Dr. Scent Franchisee",
+  title: "Shop fragrances, diffusers and sprays",
   description:
     "Explore Dr. Scent aroma diffusers, cold-air nebulizers, and pure botanical fragrance oils in Sri Lanka. Fast islandwide delivery.",
 };

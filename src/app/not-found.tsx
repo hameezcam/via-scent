@@ -15,10 +15,10 @@ export default function NotFound() {
             Error 404
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-stone-900 font-medium">
-            Fragrance or Page Not Located
+            We can&apos;t find that page
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-            The fragrance flacon, diffuser instrument, or page you are attempting to view is unavailable or may have been relocated.
+            The page or product you are looking for may have moved or is no longer available.
           </p>
         </div>
 
@@ -27,7 +27,7 @@ export default function NotFound() {
             href="/shop"
             className="w-full sm:w-auto px-6 py-3 bg-stone-900 text-amber-100 text-xs uppercase tracking-wider font-semibold rounded hover:bg-stone-800 transition-colors flex items-center justify-center gap-2"
           >
-            <span>Browse Fragrance Collections</span>
+            <span>Browse the shop</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
 

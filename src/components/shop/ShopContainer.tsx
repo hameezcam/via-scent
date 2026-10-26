@@ -454,7 +454,7 @@ export function ShopContainer({
     sort !== "featured";
 
   const sortOptions: { label: string; value: SortOption }[] = [
-    { label: "Curated / Featured", value: "featured" },
+    { label: "Featured", value: "featured" },
     { label: "Price: Low to High", value: "price-asc" },
     { label: "Price: High to Low", value: "price-desc" },
     { label: "Name: A to Z", value: "name-asc" },
@@ -480,7 +480,7 @@ export function ShopContainer({
               Official Sri Lanka Franchise Catalogue
             </span>
             <h1 className="font-serif text-3xl sm:text-5xl text-[var(--near-black)] font-normal tracking-tight">
-              {categoryName || "Fragrance & Diffusion Architecture"}
+              {categoryName || "Shop all fragrances & diffusers"}
             </h1>
             <p className="text-xs sm:text-sm text-[var(--deep-espresso)]/70 font-light leading-relaxed">
               {categoryDescription ||
@@ -579,7 +579,7 @@ export function ShopContainer({
 
                 <span className="text-xs text-[var(--deep-espresso)]/70 font-light">
                   Showing <strong className="text-[var(--near-black)] font-medium">{filteredProducts.length}</strong>{" "}
-                  {filteredProducts.length === 1 ? "instrument / oil" : "instruments & oils"}
+                  {filteredProducts.length === 1 ? "product" : "products"}
                 </span>
               </div>
 
@@ -610,7 +610,7 @@ export function ShopContainer({
               emptyMessage={
                 searchValue.trim()
                   ? `No creations found matching "${searchValue}". Try searching for diffuse, candle, car, or fragrance notes like amber or oud.`
-                  : "No instruments or oils match the selected criteria."
+                  : "No products match your filters."
               }
             />
           </div>
