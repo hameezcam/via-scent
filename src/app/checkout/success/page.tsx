@@ -17,12 +17,14 @@ import {
 } from "lucide-react";
 import { formatLKR } from "@/config/brand.config";
 import { Order } from "@/types/order";
+import { useCart } from "@/context/CartContext";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("orderNumber");
   const token = searchParams.get("token") || "";
 
+  const { clearCart } = useCart();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(() => Boolean(orderNumber));
 
@@ -31,24 +33,40 @@ function SuccessContent() {
       return;
     }
 
+    let cancelled = false;
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
     async function fetchOrder() {
       try {
         const res = await fetch(
           `/api/orders/confirmation?orderNumber=${encodeURIComponent(orderNumber!)}&token=${encodeURIComponent(token)}`
         );
-        if (res.ok) {
-          const data = await res.json();
+        if (res.ok && !cancelled) {
+          const data: Order = await res.json();
           setOrder(data);
+          if (data.payment.method === "online_gateway" && data.payment.status === "paid") {
+            // Card payment confirmed, so the cart can finally be emptied
+            clearCart();
+          } else if (data.payment.method === "online_gateway" && data.payment.status !== "failed" && attempts < 10) {
+            // PayHere confirms in the background, usually within a few seconds
+            attempts += 1;
+            timer = setTimeout(fetchOrder, 3000);
+          }
         }
       } catch (err) {
         console.error("Failed to load order", err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
     fetchOrder();
-  }, [orderNumber, token]);
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [orderNumber, token, clearCart]);
 
   if (loading) {
     return (
@@ -93,7 +111,11 @@ function SuccessContent() {
           </div>
           <div>
             <span className="text-xs uppercase tracking-widest font-semibold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 inline-block mb-2">
-              {isCOD ? "Order Placed • Cash on Delivery" : "Payment Confirmed • Order Processing"}
+              {isCOD
+                ? "Order Placed • Cash on Delivery"
+                : order.payment.status === "paid"
+                  ? "Payment Confirmed • Order Processing"
+                  : "Order Received • Awaiting Payment"}
             </span>
             <h1 className="font-serif text-3xl sm:text-4xl font-medium text-stone-900">
               Thank You for Your Order
@@ -139,14 +161,33 @@ function SuccessContent() {
               <span>Courier riders call ahead on {order.customer.phone} prior to dispatch.</span>
             </div>
           </div>
+        ) : order.payment.status !== "paid" ? (
+          <div className="bg-amber-50/80 border border-amber-200 p-6 rounded-lg text-amber-950 space-y-2">
+            <div className="flex items-center gap-2 font-medium text-amber-900 text-base">
+              <Clock className="w-5 h-5 text-amber-800" />
+              <span>{order.payment.status === "failed" ? "Payment not completed" : "Confirming your payment"}</span>
+            </div>
+            <p className="text-xs leading-relaxed text-amber-900/90">
+              {order.payment.status === "failed"
+                ? "We haven't received your card payment, so you haven't been charged for this order. You can place the order again, or message us on WhatsApp and we'll help."
+                : "We're waiting for PayHere to confirm your card payment. This usually takes a few seconds. If it doesn't update, message us on WhatsApp and we'll check for you."}
+            </p>
+            <Link
+              href={order.payment.status === "failed" ? "/checkout" : "/shop"}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 underline underline-offset-4"
+            >
+              {order.payment.status === "failed" ? "Back to checkout" : "Continue shopping"}
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         ) : (
           <div className="bg-emerald-50/80 border border-emerald-200 p-6 rounded-lg text-emerald-950 space-y-2">
             <div className="flex items-center gap-2 font-medium text-emerald-900 text-base">
               <CheckCircle2 className="w-5 h-5 text-emerald-700" />
-              <span>Digital Payment Verified</span>
+              <span>Card payment received</span>
             </div>
             <p className="text-xs leading-relaxed text-emerald-900/90">
-              Transaction ID: <code>{order.payment.transactionId || "TXN_VERIFIED"}</code>. Your payment has been authorized and cleared through our Sri Lankan gateway.
+              Payment ID: <code>{order.payment.transactionId || "Confirmed"}</code>. Your card payment was received through PayHere.
             </p>
           </div>
         )}

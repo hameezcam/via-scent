@@ -91,7 +91,7 @@ function OnlineSimulationContent() {
     return (
       <div className="py-24 text-center">
         <div className="w-10 h-10 border-2 border-stone-300 border-t-amber-800 rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-sm text-stone-600">Connecting to Sri Lankan Payment Gateway...</p>
+        <p className="text-sm text-stone-600">Loading your order...</p>
       </div>
     );
   }
@@ -122,9 +122,9 @@ function OnlineSimulationContent() {
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-mono tracking-widest text-amber-300 uppercase">
-                  Secure Sandbox IPG
+                  Demo payment page
                 </span>
-                <h1 className="font-serif text-2xl font-medium mt-0.5">PayHere Sri Lanka Gateway</h1>
+                <h1 className="font-serif text-2xl font-medium mt-0.5">Card Payment (Demo)</h1>
               </div>
               <Lock className="w-6 h-6 text-amber-400" />
             </div>
@@ -148,7 +148,7 @@ function OnlineSimulationContent() {
             <div className="bg-amber-50/70 border border-amber-200 rounded p-3 text-xs text-amber-900 flex items-start gap-2.5">
               <ShieldCheck className="w-4 h-4 text-amber-800 shrink-0 mt-0.5" />
               <p>
-                This simulated gateway demonstrates secure server-side callback verification, cryptographic HMAC signature validation, and idempotent order state transition.
+                This is a demo. No real card is charged and no money moves. Press the button to mark this order as paid.
               </p>
             </div>
 

@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: IndustryPageProps): Promise<M
   const industry = getIndustry((await params).industry);
   if (!industry) return {};
   return {
-    title: `Scenting for ${industry.title} in Sri Lanka | VIA Scent`,
+    title: `Scenting for ${industry.title}`,
     description: `${industry.intro.split(". ")[0]}. Dr. Scent diffusers installed and refilled monthly across Sri Lanka.`,
   };
 }

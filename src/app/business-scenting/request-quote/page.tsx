@@ -17,7 +17,7 @@ const INDUSTRY_VALUES: IndustryType[] = [
 ];
 
 export const metadata = {
-  title: "Book a Free Site Visit | Business Scenting | VIA Scent",
+  title: "Book a free site visit",
   description:
     "Tell us about your hotel, office, shop or spa and we'll visit for free, recommend the right Dr. Scent diffusers and bring scents to try.",
 };

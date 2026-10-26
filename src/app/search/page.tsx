@@ -4,7 +4,7 @@ import { withServedImagesAll } from "@/lib/product-images";
 import { SearchContainer } from "@/components/search/SearchContainer";
 
 export const metadata = {
-  title: "Search Fragrances & Diffusers | Dr. Scent Sri Lanka Franchise",
+  title: "Search",
   description: "Search Dr. Scent cold-air aroma diffusers, room nebulizers, and pure fragrance oils.",
 };
 

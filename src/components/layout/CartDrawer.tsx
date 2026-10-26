@@ -87,10 +87,10 @@ export function CartDrawer() {
                   </div>
                   <div className="space-y-1.5">
                     <h3 className="font-serif text-lg font-normal text-[var(--near-black)]">
-                      Your bag is unoccupied
+                      Your bag is empty
                     </h3>
                     <p className="text-xs text-[var(--deep-espresso)]/70 max-w-xs mx-auto font-light leading-relaxed">
-                      Discover our collection of authorized Dr. Scent cold-air diffusion instruments and pure fragrance oils.
+                      Browse Dr. Scent diffusers, fragrance oils and sprays.
                     </p>
                   </div>
                   <div className="pt-2">
@@ -182,7 +182,7 @@ export function CartDrawer() {
               <div className="p-6 border-t border-[var(--warm-stone)]/40 bg-[var(--ivory)]/70 space-y-4">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-xs text-[var(--deep-espresso)]/80">
-                    <span className="font-light">Subtotal ({itemCount} {itemCount === 1 ? "instrument" : "instruments"})</span>
+                    <span className="font-light">Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})</span>
                     <span className="font-medium text-[var(--near-black)] text-sm font-mono">
                       {formatLKR(subtotalLKR)}
                     </span>

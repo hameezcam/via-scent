@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export const metadata = {
-  title: "Home Fragrance Diffusers & Oils in Sri Lanka | Dr. Scent | VIA Scent",
+  title: "Home fragrance and diffusers for your home",
   description:
     "Fill your home with scent using Dr. Scent cold-air diffusers and pure fragrance oils. No water, no heat, no residue. Islandwide delivery across Sri Lanka.",
 };
