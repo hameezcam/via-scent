@@ -19,7 +19,7 @@ const INDUSTRY_VALUES: IndustryType[] = [
 export const metadata = {
   title: "Book a free site visit",
   description:
-    "Request a bespoke commercial fragrance quotation for your hotel, office, retail store, or wellness space in Sri Lanka. Tailored HVAC ducting and monthly maintenance.",
+    "Tell us about your hotel, office, shop or spa and we'll visit for free, recommend the right Dr. Scent diffusers and bring scents to try.",
 };
 
 export default async function RequestQuotePage({
@@ -31,7 +31,7 @@ export default async function RequestQuotePage({
   const initialIndustry = INDUSTRY_VALUES.find((v) => v === industry) ?? "";
   const breadcrumbs = [
     { label: "Business Scenting", href: "/business-scenting" },
-    { label: "Request a Quote" },
+    { label: "Book a Site Visit" },
   ];
 
   return (
@@ -42,13 +42,13 @@ export default async function RequestQuotePage({
         <div className="pt-2 pb-10 max-w-3xl">
           <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase text-amber-800 mb-2">
             <Building2 className="w-3.5 h-3.5" />
-            <span>Commercial Inquiries</span>
+            <span>Free site visit</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-stone-900 font-normal tracking-tight">
-            Request an Architectural Scenting Consultation
+            Tell us about your space
           </h1>
           <p className="text-xs sm:text-base text-stone-600 mt-3 leading-relaxed">
-            Please furnish the key parameters of your property or development below. Our Colombo engineering team will analyze your space requirements and prepare an equipment proposal with customized fragrance options.
+            Fill in a few details and we&apos;ll arrange a free visit. We&apos;ll measure your space, recommend the right machines and bring scents for you to try, then send you a quote.
           </p>
         </div>
 
@@ -62,10 +62,10 @@ export default async function RequestQuotePage({
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white rounded-xl border border-stone-200 p-6 shadow-xs space-y-4">
               <h2 className="font-serif text-lg font-semibold text-stone-900 pb-3 border-b border-stone-200">
-                Direct Commercial Desk
+                Prefer to talk?
               </h2>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Prefer an immediate phone discussion or priority on-site demonstration in Colombo?
+                Call, email or WhatsApp us and we&apos;ll help you straight away.
               </p>
 
               <div className="space-y-3 pt-2 text-xs text-stone-700">
@@ -87,20 +87,20 @@ export default async function RequestQuotePage({
             <div className="bg-amber-50/60 rounded-xl border border-amber-200/80 p-6 space-y-3 text-xs text-stone-700">
               <div className="flex items-center gap-2 text-amber-950 font-semibold uppercase tracking-wider text-[11px]">
                 <ShieldCheck className="w-4 h-4 text-amber-700" />
-                <span>What to Expect</span>
+                <span>What happens next</span>
               </div>
               <ul className="space-y-2 leading-relaxed">
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-700 mt-1.5 shrink-0" />
-                  <span>Initial review by certified Dr. Scent hardware specialists.</span>
+                  <span>We call you within one business day to arrange a visit.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-700 mt-1.5 shrink-0" />
-                  <span>Complimentary on-site scent flight demonstration.</span>
+                  <span>We visit for free and bring scents for you to try in your space.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-700 mt-1.5 shrink-0" />
-                  <span>Comprehensive quotation covering hardware, installation, and monthly oil service.</span>
+                  <span>You get a quote covering the machines, installation and monthly refills.</span>
                 </li>
               </ul>
             </div>

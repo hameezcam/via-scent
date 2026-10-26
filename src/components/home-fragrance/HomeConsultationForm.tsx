@@ -22,9 +22,9 @@ export function HomeConsultationForm() {
     phone: "",
     email: "",
     cityDistrict: "Colombo (Districts 1-15)",
-    residenceType: "Luxury Apartment / Penthouse",
-    targetSpaces: ["Master Suite", "Living Lounge & Foyer"],
-    preferredScentFamilies: ["Woody & Noble Oud", "Fresh Mountain Tea & Bergamot"],
+    residenceType: "Apartment",
+    targetSpaces: [],
+    preferredScentFamilies: [],
     consultationType: "whatsapp",
     notes: "",
   });
@@ -33,20 +33,20 @@ export function HomeConsultationForm() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const spaceOptions = [
-    "Living Lounge & Foyer",
-    "Master Suite & Dressing Room",
-    "Dining Room & Open Kitchen",
-    "Executive Study / Library",
-    "Guest Bedroom Suite",
-    "Full Residence Scent Architecture",
+    "Living room & entrance",
+    "Bedroom",
+    "Dining room & kitchen",
+    "Study or home office",
+    "Guest room",
+    "The whole home",
   ];
 
   const scentOptions = [
-    "Woody & Noble Oud (Royal Oud & Amber Noir)",
-    "Fresh Mountain Tea & Bergamot (White Tea & Thyme)",
-    "Warm Spiced Sandalwood (Santal & Black Cardamom)",
-    "Coastal Marine & Fig Leaf (Coastal Fig & Cypress)",
-    "Velvety Floral & Cashmere (Damask Rose & Veil)",
+    "Warm & woody (oud, sandalwood, amber)",
+    "Fresh & clean (citrus, white tea)",
+    "Floral (jasmine, rose, lily)",
+    "Fruity & sweet (berries, fig)",
+    "Not sure yet, help me choose",
   ];
 
   const toggleSpace = (space: string) => {
@@ -71,7 +71,7 @@ export function HomeConsultationForm() {
     e.preventDefault();
     if (!formData.fullName.trim() || !formData.phone.trim()) {
       setStatus("error");
-      setErrorMessage("Please provide your full name and contact number.");
+      setErrorMessage("Please enter your name and phone number.");
       return;
     }
 
@@ -93,7 +93,7 @@ export function HomeConsultationForm() {
       setStatus("success");
     } catch {
       setStatus("error");
-      setErrorMessage("Unable to submit your request at this moment. Please reach out via WhatsApp.");
+      setErrorMessage("We couldn't send your request just now. Please message us on WhatsApp instead.");
     }
   };
 
@@ -105,38 +105,38 @@ export function HomeConsultationForm() {
         </div>
         <div className="space-y-2">
           <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#B49A70] block">
-            REQUEST RECEIVED
+            Request received
           </span>
           <h3 className="font-serif text-2xl sm:text-3xl text-[#151412] font-normal">
             Thank you, {formData.fullName}
           </h3>
           <p className="text-sm text-[#57534E] max-w-md mx-auto leading-relaxed font-light">
-            Our Senior Fragrance Stylist will contact you via{" "}
+            We&apos;ll contact you on{" "}
             <span className="font-semibold text-[#151412]">
               {formData.consultationType === "whatsapp" ? "WhatsApp" : "Phone"} ({formData.phone})
             </span>{" "}
-            within 4 business hours to curate your residential fragrance profile.
+            within one business day to help you choose.
           </p>
         </div>
 
         <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href={`https://wa.me/${BRAND_CONFIG.contact.whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
-              `Hello VIA Scent, I just requested an In-Home Scent Consultation for my residence (${formData.residenceType} in ${formData.cityDistrict}). My name is ${formData.fullName}.`
+              `Hi VIA Scent, I just asked for help choosing a scent for my home (${formData.residenceType} in ${formData.cityDistrict}). My name is ${formData.fullName}.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-xl text-xs uppercase tracking-[0.16em] font-semibold hover:bg-[#20ba5a] transition-colors shadow-sm"
           >
             <MessageCircle className="w-4 h-4" />
-            <span>Chat on WhatsApp Directly</span>
+            <span>Chat on WhatsApp</span>
           </a>
           <button
             type="button"
             onClick={() => setStatus("idle")}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-[#E7E2D8] text-[#151412] rounded-xl text-xs uppercase tracking-[0.16em] font-medium hover:border-[#B49A70] transition-colors"
           >
-            <span>Submit Another Inquiry</span>
+            <span>Send another request</span>
           </button>
         </div>
       </div>
@@ -151,13 +151,13 @@ export function HomeConsultationForm() {
       <div className="space-y-1.5 border-b border-[#E7E2D8] pb-5">
         <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#B49A70]">
           <Home className="w-3.5 h-3.5" />
-          <span>BESPOKE RESIDENTIAL CONSULTATION</span>
+          <span>Free advice</span>
         </div>
         <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#151412]">
-          Request Private Home Scent Styling
+          Get help choosing
         </h3>
         <p className="text-xs sm:text-sm text-[#78716C] font-light">
-          Complimentary olfactory mapping and private fragrance flight demonstration for luxury residences across Sri Lanka.
+          Tell us about your home and we&apos;ll recommend the right diffuser and scents. It&apos;s free.
         </p>
       </div>
 
@@ -172,14 +172,14 @@ export function HomeConsultationForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#292524] mb-2">
-            Your Full Name *
+            Your name *
           </label>
           <input
             type="text"
             required
             value={formData.fullName}
             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-            placeholder="e.g. Dr. Priyantha Jayawardena"
+            placeholder="e.g. Priyantha Jayawardena"
             className="w-full px-4 py-3 rounded-xl border border-[#E7E2D8] bg-[#FAF8F5] text-sm text-[#151412] focus:outline-none focus:border-[#B49A70] focus:bg-white transition-colors"
           />
         </div>
@@ -199,11 +199,11 @@ export function HomeConsultationForm() {
         </div>
       </div>
 
-      {/* Row 2: Location & Residence Type */}
+      {/* Row 2: Location & Type of home */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#292524] mb-2">
-            City / District *
+            Area *
           </label>
           <select
             value={formData.cityDistrict}
@@ -222,18 +222,18 @@ export function HomeConsultationForm() {
 
         <div>
           <label className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#292524] mb-2">
-            Residence Type
+            Type of home
           </label>
           <select
             value={formData.residenceType}
             onChange={(e) => setFormData({ ...formData, residenceType: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-[#E7E2D8] bg-[#FAF8F5] text-sm text-[#151412] focus:outline-none focus:border-[#B49A70] focus:bg-white transition-colors"
           >
-            <option value="Luxury Apartment / Penthouse">Luxury Apartment / Penthouse</option>
-            <option value="Private Detached Villa">Private Detached Villa</option>
-            <option value="Multi-Story Modern Residence">Multi-Story Modern Residence</option>
-            <option value="Coastal Vacation Villa / Estate">Coastal Vacation Villa / Estate</option>
-            <option value="Heritage Bungalow">Heritage Bungalow</option>
+            <option value="Apartment">Apartment</option>
+            <option value="House">House</option>
+            <option value="Villa">Villa</option>
+            <option value="Holiday home">Holiday home</option>
+            <option value="Other">Other</option>
           </select>
         </div>
       </div>
@@ -241,7 +241,7 @@ export function HomeConsultationForm() {
       {/* Target Spaces */}
       <div>
         <label className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#292524] mb-2">
-          Target Living Spaces to Scent
+          Which rooms?
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {spaceOptions.map((space) => {
@@ -274,7 +274,7 @@ export function HomeConsultationForm() {
       {/* Preferred Scent Families */}
       <div>
         <label className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#292524] mb-2">
-          Fragrance Profiles of Interest
+          Which scents do you like?
         </label>
         <div className="space-y-2">
           {scentOptions.map((scent) => {
@@ -307,13 +307,13 @@ export function HomeConsultationForm() {
       {/* Consultation Delivery Type */}
       <div>
         <label className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#292524] mb-2">
-          Preferred Consultation Method
+          How should we help?
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { id: "whatsapp", label: "WhatsApp Concierge", desc: "Instant scent notes & photos" },
-            { id: "phone", label: "Phone Advisory", desc: "15-min specialist call" },
-            { id: "onsite-flight", label: "In-Home Scent Flight", desc: "Private on-site sample flight" },
+            { id: "whatsapp", label: "WhatsApp", desc: "Chat with us and get suggestions" },
+            { id: "phone", label: "Phone call", desc: "A quick call to talk it through" },
+            { id: "onsite-flight", label: "Home visit", desc: "We bring scents for you to try" },
           ].map((item) => (
             <button
               key={item.id}
@@ -335,13 +335,13 @@ export function HomeConsultationForm() {
       {/* Additional Notes */}
       <div>
         <label className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#292524] mb-2">
-          Special Notes or Aesthetic Preferences (Optional)
+          Anything else? (optional)
         </label>
         <textarea
           rows={3}
           value={formData.notes}
           onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-          placeholder="e.g. Seeking discreet diffusers that match walnut wood and travertine finishes in our Colombo 07 penthouse."
+          placeholder="e.g. we have a cat, or we'd like something that fits a wooden interior"
           className="w-full px-4 py-3 rounded-xl border border-[#E7E2D8] bg-[#FAF8F5] text-sm text-[#151412] focus:outline-none focus:border-[#B49A70] focus:bg-white transition-colors resize-none"
         />
       </div>
@@ -353,12 +353,12 @@ export function HomeConsultationForm() {
         className="w-full py-4 bg-[#151412] text-[#F8F6F1] hover:bg-[#B49A70] hover:text-[#151412] rounded-xl text-xs uppercase tracking-[0.22em] font-semibold transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-50"
       >
         <Sparkles className="w-4 h-4 text-[#B49A70] group-hover:text-[#151412] transition-colors" />
-        <span>{status === "submitting" ? "Sending Request..." : "Request In-Home Scent Consultation"}</span>
+        <span>{status === "submitting" ? "Sending..." : "Get free advice"}</span>
         <Send className="w-3.5 h-3.5" />
       </button>
 
       <p className="text-[11px] text-center text-[#78716C] font-light">
-        Strict privacy guaranteed. We never share residential client details with third parties.
+        We keep your details private and never share them.
       </p>
     </form>
   );
