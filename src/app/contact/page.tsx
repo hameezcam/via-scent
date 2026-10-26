@@ -45,19 +45,23 @@ export default function ContactPage() {
     }
 
     setStatus("submitting");
-    setTimeout(() => {
-      setStatus("success");
-      setFeedback(
-        "Thank you! Your message has been validated locally in Phase 1 Preview Mode. Production email routing will be configured in Phase 2."
-      );
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "Retail Inquiry",
-        message: "",
+    fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Could not send your message.");
+        setStatus("success");
+        setFeedback("Thank you! We've received your message and will reply within one working day.");
+        setFormData({ name: "", email: "", phone: "", subject: "Retail Inquiry", message: "" });
+      })
+      .catch((err: unknown) => {
+        setStatus("error");
+        setFeedback(
+          err instanceof Error ? err.message : "Could not send your message. Please call us instead."
+        );
       });
-    }, 700);
   };
 
   return (

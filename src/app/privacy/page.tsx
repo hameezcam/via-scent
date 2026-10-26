@@ -4,7 +4,7 @@ import { AlertCircle } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 
 export const metadata = {
-  title: "Privacy Notice & Data Protection Policy | Dr. Scent Franchisee Sri Lanka",
+  title: "Privacy policy",
   description:
     "Privacy and data protection notice regarding commercial inquiries and client records.",
 };

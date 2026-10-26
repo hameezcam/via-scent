@@ -29,7 +29,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export const metadata = {
-  title: "Luxury Home Fragrance & Residential Scent Architecture | Dr. Scent Sri Lanka | VIA Scent",
+  title: "Home fragrance and diffusers for your home",
   description:
     "Curate your private residence into an atmosphere of quiet luxury. Waterless, heatless cold-air diffusers, artisanal fragrance oils, and bespoke in-home scent styling across Sri Lanka.",
 };

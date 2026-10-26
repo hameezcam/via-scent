@@ -10,3 +10,4 @@ import "./admin-auth-and-payments.test";
 import "./order-emails.test";
 import "./scent-finder-and-reviews.test";
 import "./payhere.test";
+import "./contact-and-tracking.test";

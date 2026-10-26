@@ -4,7 +4,7 @@ import { AlertCircle } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 
 export const metadata = {
-  title: "Terms of Service & Franchise Conditions | Dr. Scent Franchisee Sri Lanka",
+  title: "Terms of service",
   description:
     "Terms and conditions governing the retail and commercial supply of authorized Dr. Scent products in Sri Lanka.",
 };
