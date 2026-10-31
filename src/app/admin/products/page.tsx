@@ -96,6 +96,34 @@ async function parseApiResponse<T = any>(
  * preventing HTTP 413 errors and dramatically accelerating uploads.
  */
 /** Photo strip for one variant: shows its photos and lets the admin add or remove them. */
+/** Editable fields of a variant row, kept as text until saved. */
+type VariantDraft = {
+  name: string;
+  sku: string;
+  price: string;
+  quantity: string;
+  size: string;
+  color: string;
+  coverage: string;
+  capacity: string;
+};
+
+/** Blank means no quantity tracked; otherwise a whole number, never negative. */
+function parseVariantQuantity(value: string): number | undefined {
+  if (value.trim() === "") return undefined;
+  const n = Math.floor(Number(value));
+  return Number.isFinite(n) ? Math.max(0, n) : undefined;
+}
+
+function buildVariantAttributes(v: { size: string; color: string; coverage: string; capacity: string }) {
+  return {
+    ...(v.size ? { size: v.size } : {}),
+    ...(v.color ? { color: v.color } : {}),
+    ...(v.coverage ? { coverage: v.coverage } : {}),
+    ...(v.capacity ? { capacity: v.capacity } : {}),
+  };
+}
+
 function VariantPhotos({
   photos,
   busy,
@@ -322,6 +350,9 @@ export default function AdminProductsPage() {
   const [newVarColor, setNewVarColor] = useState("");
   const [newVarCoverage, setNewVarCoverage] = useState("");
   const [newVarCapacity, setNewVarCapacity] = useState("");
+  const [newVarQuantity, setNewVarQuantity] = useState("");
+  const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
+  const [variantDraft, setVariantDraft] = useState<VariantDraft | null>(null);
   const [newVarImages, setNewVarImages] = useState<string[]>([]);
   const [variantPhotoBusy, setVariantPhotoBusy] = useState<string | null>(null);
   const [variantPhotoError, setVariantPhotoError] = useState<string | null>(null);
@@ -580,6 +611,49 @@ export default function AdminProductsPage() {
   };
 
   // Variant helpers
+  const startEditVariant = (v: ProductVariant) => {
+    setEditingVariantId(v.id);
+    setVariantDraft({
+      name: v.name,
+      sku: v.sku,
+      price: String(v.priceLKR),
+      quantity: v.quantity === undefined ? "" : String(v.quantity),
+      size: v.attributes?.size ?? "",
+      color: v.attributes?.color ?? "",
+      coverage: v.attributes?.coverage ?? "",
+      capacity: v.attributes?.capacity ?? "",
+    });
+  };
+
+  const saveVariantEdit = (id: string) => {
+    if (!variantDraft) return;
+    const d = variantDraft;
+    setVariants((prev) =>
+      prev.map((v) => {
+        if (v.id !== id) return v;
+        const quantity = parseVariantQuantity(d.quantity);
+        const { quantity: _old, ...rest } = v;
+        void _old;
+        return {
+          ...rest,
+          name: d.name.trim() || v.name,
+          sku: d.sku.trim() || v.sku,
+          priceLKR: Number(d.price) || v.priceLKR,
+          inStock: quantity === undefined ? v.inStock : quantity > 0,
+          ...(quantity === undefined ? {} : { quantity }),
+          attributes: buildVariantAttributes({
+            size: d.size.trim(),
+            color: d.color.trim(),
+            coverage: d.coverage.trim(),
+            capacity: d.capacity.trim(),
+          }),
+        };
+      })
+    );
+    setEditingVariantId(null);
+    setVariantDraft(null);
+  };
+
   const handleAddVariant = () => {
     const size = newVarSize.trim();
     const color = newVarColor.trim();
@@ -588,21 +662,19 @@ export default function AdminProductsPage() {
     const name = newVarName.trim() || [size, color].filter(Boolean).join(" / ");
     if (!name) return;
     const variantId = `var-${Date.now()}-${variants.length + 1}`;
+    const quantity = parseVariantQuantity(newVarQuantity);
     const newVariant: ProductVariant = {
       id: variantId,
       sku: newVarSku.trim() || `${sku}-VAR${variants.length + 1}`,
       name,
       priceLKR: Number(newVarPrice) || basePriceLKR,
-      inStock: true,
+      inStock: quantity === undefined ? true : quantity > 0,
+      ...(quantity === undefined ? {} : { quantity }),
       images: newVarImages.length > 0 ? newVarImages : undefined,
-      attributes: {
-        ...(size ? { size } : {}),
-        ...(color ? { color } : {}),
-        ...(coverage ? { coverage } : {}),
-        ...(capacity ? { capacity } : {}),
-      },
+      attributes: buildVariantAttributes({ size, color, coverage, capacity }),
     };
     setVariants((prev) => [...prev, newVariant]);
+    setNewVarQuantity("");
     setNewVarName("");
     setNewVarSku("");
     setNewVarSize("");
@@ -2144,6 +2216,14 @@ export default function AdminProductsPage() {
                         onChange={(e) => setNewVarCapacity(e.target.value)}
                         className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
                       />
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="Quantity in stock"
+                        value={newVarQuantity}
+                        onChange={(e) => setNewVarQuantity(e.target.value)}
+                        className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
+                      />
                     </div>
                     <div className="space-y-2">
                       <span className="text-[11px] text-stone-500">
@@ -2200,11 +2280,31 @@ export default function AdminProductsPage() {
                               </span>
                               <span
                                 className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                                  v.inStock ? "bg-emerald-50 text-emerald-800" : "bg-stone-100 text-stone-500"
+                                  v.quantity !== undefined
+                                    ? v.quantity > 0
+                                      ? "bg-emerald-50 text-emerald-800"
+                                      : "bg-stone-100 text-stone-500"
+                                    : v.inStock
+                                      ? "bg-emerald-50 text-emerald-800"
+                                      : "bg-stone-100 text-stone-500"
                                 }`}
                               >
-                                {v.inStock ? "In Stock" : "Sold Out"}
+                                {v.quantity !== undefined
+                                  ? v.quantity > 0
+                                    ? `${v.quantity} in stock`
+                                    : "Sold Out"
+                                  : v.inStock
+                                    ? "In Stock"
+                                    : "Sold Out"}
                               </span>
+                              <button
+                                type="button"
+                                onClick={() => (editingVariantId === v.id ? setEditingVariantId(null) : startEditVariant(v))}
+                                className="text-stone-400 hover:text-stone-900 p-1"
+                                title="Edit variant"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
                               <button
                                 type="button"
                                 onClick={() => handleRemoveVariant(v.id)}
@@ -2221,6 +2321,56 @@ export default function AdminProductsPage() {
                               onAdd={(files) => handleVariantPhotos(v.id, files)}
                               onRemove={(index) => handleRemoveVariantPhoto(v.id, index)}
                             />
+                            {editingVariantId === v.id && variantDraft && (
+                              <div className="p-3 bg-stone-50 rounded-lg border border-stone-200 space-y-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                  {(
+                                    [
+                                      ["name", "Variant name"],
+                                      ["sku", "SKU"],
+                                      ["price", "Price (LKR)"],
+                                      ["quantity", "Quantity in stock"],
+                                      ["size", "Size"],
+                                      ["color", "Colour"],
+                                      ["coverage", "Coverage"],
+                                      ["capacity", "Capacity"],
+                                    ] as [keyof VariantDraft, string][]
+                                  ).map(([field, label]) => (
+                                    <label key={field} className="block">
+                                      <span className="block text-[10px] uppercase tracking-wider text-stone-500 mb-1">
+                                        {label}
+                                      </span>
+                                      <input
+                                        type={field === "price" || field === "quantity" ? "number" : "text"}
+                                        min={field === "quantity" ? "0" : undefined}
+                                        value={variantDraft[field]}
+                                        onChange={(e) => setVariantDraft({ ...variantDraft, [field]: e.target.value })}
+                                        className="w-full px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
+                                      />
+                                    </label>
+                                  ))}
+                                </div>
+                                <div className="flex justify-end gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setEditingVariantId(null);
+                                      setVariantDraft(null);
+                                    }}
+                                    className="px-3 py-2 border border-stone-300 text-stone-700 hover:bg-stone-100 text-xs font-semibold rounded uppercase tracking-wider"
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => saveVariantEdit(v.id)}
+                                    className="px-3 py-2 bg-stone-900 text-amber-100 hover:bg-stone-800 text-xs font-semibold rounded uppercase tracking-wider"
+                                  >
+                                    Save Variant
+                                  </button>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>

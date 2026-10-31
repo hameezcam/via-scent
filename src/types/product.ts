@@ -46,6 +46,8 @@ export interface ProductVariant {
   priceLKR: number;
   originalPriceLKR?: number;
   inStock: boolean;
+  /** Units left for this variant. At 0 the option shows as sold out. Unset means use inStock. */
+  quantity?: number;
   /** Photos for this variant only. The product page shows these when the variant is chosen. */
   images?: string[];
   attributes: {

@@ -35,6 +35,9 @@ interface ProductDetailClientProps {
 }
 
 /** One collapsible section of the product details, open or closed independently. */
+// A variant is buyable when it has stock left; quantity wins over the plain inStock flag when set
+const variantInStock = (v: ProductVariant) => (v.quantity !== undefined ? v.quantity > 0 : v.inStock);
+
 // Colours shown as round swatches; any other colour name falls back to a text button
 const COLOUR_SWATCHES: Record<string, string> = {
   black: "#111111",
@@ -99,7 +102,7 @@ export function ProductDetailClient({
   const price = selectedVariant.priceLKR;
   const originalPrice = selectedVariant.originalPriceLKR || product.originalPriceLKR;
   const onRequest = isPriceOnRequest(price);
-  const available = product.inStock && selectedVariant.inStock;
+  const available = product.inStock && variantInStock(selectedVariant);
   const warrantyLabel = formatWarranty(product.warrantyDurationMonths);
   const variantPricesDiffer = new Set(product.variants.map((v) => v.priceLKR)).size > 1;
 
@@ -222,7 +225,7 @@ export function ProductDetailClient({
                     <div className="flex flex-wrap gap-2">
                       {dimensionValues(key).map((value) => {
                         const isSelected = selectedVariant.attributes?.[key] === value;
-                        const inStock = product.variants.some((v) => v.attributes?.[key] === value && v.inStock);
+                        const inStock = product.variants.some((v) => v.attributes?.[key] === value && variantInStock(v));
                         const swatch = key === "color" ? COLOUR_SWATCHES[value.toLowerCase()] : undefined;
                         if (swatch) {
                           return (
@@ -231,15 +234,22 @@ export function ProductDetailClient({
                               type="button"
                               onClick={() => pickByDimension(key, value)}
                               aria-pressed={isSelected}
-                              aria-label={value}
-                              title={value}
-                              className={`w-9 h-9 rounded-full border transition-shadow cursor-pointer ${
+                              aria-label={inStock ? value : `${value} (sold out)`}
+                              title={inStock ? value : `${value} (sold out)`}
+                              className={`relative w-9 h-9 rounded-full border overflow-hidden transition-shadow cursor-pointer ${
                                 isSelected
                                   ? "ring-2 ring-offset-2 ring-[var(--near-black)] border-transparent"
                                   : "border-[var(--warm-stone)]/60 hover:ring-1 hover:ring-[var(--near-black)]"
                               } ${inStock ? "" : "opacity-40"}`}
                               style={{ backgroundColor: swatch }}
-                            />
+                            >
+                              {!inStock && (
+                                <span
+                                  aria-hidden="true"
+                                  className="absolute inset-x-[-20%] top-1/2 h-px bg-[var(--near-black)] -rotate-45"
+                                />
+                              )}
+                            </button>
                           );
                         }
                         return (
@@ -282,7 +292,7 @@ export function ProductDetailClient({
                           isSelected
                             ? "bg-[var(--near-black)] text-[var(--porcelain)] border-[var(--near-black)]"
                             : "bg-white border-[var(--warm-stone)]/60 text-[var(--deep-espresso)] hover:border-[var(--near-black)]"
-                        } ${v.inStock ? "" : "line-through opacity-50"}`}
+                        } ${variantInStock(v) ? "" : "line-through opacity-50"}`}
                       >
                         {v.name}
                         {variantPricesDiffer && !isPriceOnRequest(v.priceLKR) && (
