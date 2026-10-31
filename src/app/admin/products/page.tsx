@@ -318,7 +318,8 @@ export default function AdminProductsPage() {
   const [newVarName, setNewVarName] = useState("");
   const [newVarSku, setNewVarSku] = useState("");
   const [newVarPrice, setNewVarPrice] = useState<number>(0);
-  const [newVarAttr, setNewVarAttr] = useState("");
+  const [newVarSize, setNewVarSize] = useState("");
+  const [newVarColor, setNewVarColor] = useState("");
   const [newVarImages, setNewVarImages] = useState<string[]>([]);
   const [variantPhotoBusy, setVariantPhotoBusy] = useState<string | null>(null);
   const [variantPhotoError, setVariantPhotoError] = useState<string | null>(null);
@@ -482,7 +483,8 @@ export default function AdminProductsPage() {
     setNewVarName("");
     setNewVarSku("");
     setNewVarPrice(p.basePriceLKR);
-    setNewVarAttr("");
+    setNewVarSize("");
+    setNewVarColor("");
 
     setIsModalOpen(true);
   };
@@ -575,21 +577,28 @@ export default function AdminProductsPage() {
 
   // Variant helpers
   const handleAddVariant = () => {
-    if (!newVarName.trim()) return;
+    const size = newVarSize.trim();
+    const color = newVarColor.trim();
+    const name = newVarName.trim() || [size, color].filter(Boolean).join(" / ");
+    if (!name) return;
     const variantId = `var-${Date.now()}-${variants.length + 1}`;
     const newVariant: ProductVariant = {
       id: variantId,
       sku: newVarSku.trim() || `${sku}-VAR${variants.length + 1}`,
-      name: newVarName.trim(),
+      name,
       priceLKR: Number(newVarPrice) || basePriceLKR,
       inStock: true,
       images: newVarImages.length > 0 ? newVarImages : undefined,
-      attributes: newVarAttr.trim() ? { option: newVarAttr.trim() } : {},
+      attributes: {
+        ...(size ? { size } : {}),
+        ...(color ? { color } : {}),
+      },
     };
     setVariants((prev) => [...prev, newVariant]);
     setNewVarName("");
     setNewVarSku("");
-    setNewVarAttr("");
+    setNewVarSize("");
+    setNewVarColor("");
     setNewVarImages([]);
   };
 
@@ -2075,10 +2084,10 @@ export default function AdminProductsPage() {
                     <span className="font-semibold text-stone-900 uppercase tracking-wider block text-[11px]">
                       Add Product Variant / Finish / Size
                     </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <input
                         type="text"
-                        placeholder="Variant Name (e.g. 100ml Bottle)"
+                        placeholder="Variant Name (optional, e.g. Small / White)"
                         value={newVarName}
                         onChange={(e) => setNewVarName(e.target.value)}
                         className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
@@ -2099,9 +2108,16 @@ export default function AdminProductsPage() {
                       />
                       <input
                         type="text"
-                        placeholder="Attribute (e.g. 100ml / Black)"
-                        value={newVarAttr}
-                        onChange={(e) => setNewVarAttr(e.target.value)}
+                        placeholder="Size (e.g. Small, Medium)"
+                        value={newVarSize}
+                        onChange={(e) => setNewVarSize(e.target.value)}
+                        className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Colour (e.g. White, Black)"
+                        value={newVarColor}
+                        onChange={(e) => setNewVarColor(e.target.value)}
                         className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
                       />
                     </div>
@@ -2149,7 +2165,9 @@ export default function AdminProductsPage() {
                             <div className="space-y-0.5">
                               <p className="font-semibold text-stone-900">{v.name}</p>
                               <p className="text-[10px] text-stone-400 font-mono">
-                                SKU: {v.sku} {v.attributes?.option ? `• ${v.attributes.option}` : ""}
+                                SKU: {v.sku}
+                                {[v.attributes?.size, v.attributes?.color].filter(Boolean).length > 0 &&
+                                  ` • ${[v.attributes?.size, v.attributes?.color].filter(Boolean).join(" / ")}`}
                               </p>
                             </div>
                             <div className="flex items-center gap-4">
