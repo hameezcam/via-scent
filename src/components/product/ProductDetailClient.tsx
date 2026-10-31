@@ -121,9 +121,12 @@ export function ProductDetailClient({
     `Hi, I have a question about ${product.name.trim()}.`
   )}`;
 
+  // Coverage and capacity follow the chosen variant, falling back to the product-wide values
+  const coverageValue = selectedVariant.attributes?.coverage || product.coverageArea;
+  const capacityValue = selectedVariant.attributes?.capacity || product.bottleVolume;
   const quickFacts = [
-    product.coverageArea && { icon: Maximize, label: "Coverage", value: product.coverageArea },
-    product.bottleVolume && { icon: Droplet, label: "Size", value: product.bottleVolume },
+    coverageValue && { icon: Maximize, label: "Coverage", value: coverageValue },
+    capacityValue && { icon: Droplet, label: "Size", value: capacityValue },
     warrantyLabel && { icon: Award, label: "Warranty", value: warrantyLabel },
   ].filter(Boolean) as { icon: typeof Award; label: string; value: string }[];
 

@@ -320,6 +320,8 @@ export default function AdminProductsPage() {
   const [newVarPrice, setNewVarPrice] = useState<number>(0);
   const [newVarSize, setNewVarSize] = useState("");
   const [newVarColor, setNewVarColor] = useState("");
+  const [newVarCoverage, setNewVarCoverage] = useState("");
+  const [newVarCapacity, setNewVarCapacity] = useState("");
   const [newVarImages, setNewVarImages] = useState<string[]>([]);
   const [variantPhotoBusy, setVariantPhotoBusy] = useState<string | null>(null);
   const [variantPhotoError, setVariantPhotoError] = useState<string | null>(null);
@@ -485,6 +487,8 @@ export default function AdminProductsPage() {
     setNewVarPrice(p.basePriceLKR);
     setNewVarSize("");
     setNewVarColor("");
+    setNewVarCoverage("");
+    setNewVarCapacity("");
 
     setIsModalOpen(true);
   };
@@ -579,6 +583,8 @@ export default function AdminProductsPage() {
   const handleAddVariant = () => {
     const size = newVarSize.trim();
     const color = newVarColor.trim();
+    const coverage = newVarCoverage.trim();
+    const capacity = newVarCapacity.trim();
     const name = newVarName.trim() || [size, color].filter(Boolean).join(" / ");
     if (!name) return;
     const variantId = `var-${Date.now()}-${variants.length + 1}`;
@@ -592,6 +598,8 @@ export default function AdminProductsPage() {
       attributes: {
         ...(size ? { size } : {}),
         ...(color ? { color } : {}),
+        ...(coverage ? { coverage } : {}),
+        ...(capacity ? { capacity } : {}),
       },
     };
     setVariants((prev) => [...prev, newVariant]);
@@ -599,6 +607,8 @@ export default function AdminProductsPage() {
     setNewVarSku("");
     setNewVarSize("");
     setNewVarColor("");
+    setNewVarCoverage("");
+    setNewVarCapacity("");
     setNewVarImages([]);
   };
 
@@ -2118,6 +2128,20 @@ export default function AdminProductsPage() {
                         placeholder="Colour (e.g. White, Black)"
                         value={newVarColor}
                         onChange={(e) => setNewVarColor(e.target.value)}
+                        className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Coverage (e.g. Up to 300 sq.ft)"
+                        value={newVarCoverage}
+                        onChange={(e) => setNewVarCoverage(e.target.value)}
+                        className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Capacity (e.g. 170ml)"
+                        value={newVarCapacity}
+                        onChange={(e) => setNewVarCapacity(e.target.value)}
                         className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
                       />
                     </div>
