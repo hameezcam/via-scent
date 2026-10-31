@@ -11,3 +11,4 @@ import "./order-emails.test";
 import "./scent-finder-and-reviews.test";
 import "./payhere.test";
 import "./contact-and-tracking.test";
+import "./variant-photos.test";

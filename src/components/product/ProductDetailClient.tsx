@@ -77,6 +77,8 @@ export function ProductDetailClient({
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
+  // A variant with its own photos shows only those; otherwise the product gallery is shown
+  const galleryImages = selectedVariant.images?.length ? selectedVariant.images : product.images;
   const price = selectedVariant.priceLKR;
   const originalPrice = selectedVariant.originalPriceLKR || product.originalPriceLKR;
   const onRequest = isPriceOnRequest(price);
@@ -130,7 +132,7 @@ export function ProductDetailClient({
           <div className="lg:col-span-7">
             <div className="lg:sticky lg:top-28">
               <ProductGallery
-                images={product.images}
+                images={galleryImages}
                 productName={product.name}
                 isBestseller={product.isBestseller}
                 isNew={product.isNew}
