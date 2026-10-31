@@ -35,6 +35,23 @@ interface ProductDetailClientProps {
 }
 
 /** One collapsible section of the product details, open or closed independently. */
+// Colours shown as round swatches; any other colour name falls back to a text button
+const COLOUR_SWATCHES: Record<string, string> = {
+  black: "#111111",
+  white: "#ffffff",
+  silver: "#c0c0c0",
+  gold: "#d4af37",
+  grey: "#8a8a8a",
+  gray: "#8a8a8a",
+  brown: "#6b4423",
+  beige: "#d8c3a5",
+  red: "#b22222",
+  blue: "#1f3a68",
+  navy: "#1f2a44",
+  green: "#3d6b4f",
+  pink: "#e8b4bc",
+};
+
 function DetailSection({
   title,
   defaultOpen = false,
@@ -203,6 +220,25 @@ export function ProductDetailClient({
                       {dimensionValues(key).map((value) => {
                         const isSelected = selectedVariant.attributes?.[key] === value;
                         const inStock = product.variants.some((v) => v.attributes?.[key] === value && v.inStock);
+                        const swatch = key === "color" ? COLOUR_SWATCHES[value.toLowerCase()] : undefined;
+                        if (swatch) {
+                          return (
+                            <button
+                              key={value}
+                              type="button"
+                              onClick={() => pickByDimension(key, value)}
+                              aria-pressed={isSelected}
+                              aria-label={value}
+                              title={value}
+                              className={`w-9 h-9 rounded-full border transition-shadow cursor-pointer ${
+                                isSelected
+                                  ? "ring-2 ring-offset-2 ring-[var(--near-black)] border-transparent"
+                                  : "border-[var(--warm-stone)]/60 hover:ring-1 hover:ring-[var(--near-black)]"
+                              } ${inStock ? "" : "opacity-40"}`}
+                              style={{ backgroundColor: swatch }}
+                            />
+                          );
+                        }
                         return (
                           <button
                             key={value}
