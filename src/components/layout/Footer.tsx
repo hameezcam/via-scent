@@ -216,7 +216,7 @@ export function Footer({ initialCategories }: FooterProps = {}) {
             </div>
 
             <p className="text-[#A8A196] text-xs leading-relaxed max-w-md font-light">
-              Official Sri Lankan franchise partner offering certified Dr. Scent cold-air diffusion instruments, pure fragrance oils, and architectural scent installations across residential spaces, private villas, and commercial properties.
+              Official Dr. Scent franchise partner in Sri Lanka. We sell genuine Dr. Scent diffusers and fragrance oils for homes and businesses, with island-wide delivery.
             </p>
 
             {/* Concierge Contact Details */}
@@ -428,7 +428,7 @@ export function Footer({ initialCategories }: FooterProps = {}) {
                 <span className="font-medium tracking-wide">Dr. Scent Sri Lanka</span>
               </div>
               <p className="text-[11px] text-[#A8A196] leading-relaxed font-light">
-                All cold-air diffusers and pure fragrance oils supplied by VIA Scent originate through authorized international franchise channels with serialized authenticity.
+                Every diffuser and oil we sell comes through the official Dr. Scent franchise, so you know it&apos;s genuine.
               </p>
               <div className="space-y-1.5 pt-2 border-t border-[#2A251F] text-[10px] text-[#B49A70]">
                 <div className="flex items-center gap-1.5">
