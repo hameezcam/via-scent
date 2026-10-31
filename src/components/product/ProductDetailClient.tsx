@@ -85,6 +85,21 @@ export function ProductDetailClient({
   const available = product.inStock && selectedVariant.inStock;
   const warrantyLabel = formatWarranty(product.warrantyDurationMonths);
   const variantPricesDiffer = new Set(product.variants.map((v) => v.priceLKR)).size > 1;
+
+  // Variants that carry a size and/or colour are chosen by one row per attribute
+  const dimensionKeys = (["size", "color"] as const).filter((key) =>
+    product.variants.some((v) => v.attributes?.[key])
+  );
+  const dimensionValues = (key: (typeof dimensionKeys)[number]) =>
+    Array.from(new Set(product.variants.map((v) => v.attributes?.[key]).filter(Boolean) as string[]));
+  const pickByDimension = (key: (typeof dimensionKeys)[number], value: string) => {
+    const matches = product.variants.filter((v) => v.attributes?.[key] === value);
+    // Keep the other dimension (e.g. colour) when that combination exists
+    const sameOthers = matches.find((v) =>
+      dimensionKeys.every((k) => k === key || v.attributes?.[k] === selectedVariant.attributes?.[k])
+    );
+    setSelectedVariant(sameOthers || matches[0]);
+  };
   const whatsappHref = `https://wa.me/${BRAND_CONFIG.contact.whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
     `Hi, I have a question about ${product.name.trim()}.`
   )}`;
@@ -174,7 +189,43 @@ export function ProductDetailClient({
             </div>
 
             {/* Options */}
-            {product.variants.length > 1 && (
+            {product.variants.length > 1 && dimensionKeys.length > 0 && (
+              <div className="mt-7 space-y-5">
+                {dimensionKeys.map((key) => (
+                  <div key={key}>
+                    <p className="text-xs text-[var(--deep-espresso)]/70 mb-2.5">
+                      {key === "size" ? "Size" : "Colour"}:{" "}
+                      <span className="text-[var(--near-black)] font-medium">
+                        {selectedVariant.attributes?.[key] ?? "Choose"}
+                      </span>
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {dimensionValues(key).map((value) => {
+                        const isSelected = selectedVariant.attributes?.[key] === value;
+                        const inStock = product.variants.some((v) => v.attributes?.[key] === value && v.inStock);
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() => pickByDimension(key, value)}
+                            aria-pressed={isSelected}
+                            className={`min-w-16 px-4 py-2.5 text-xs border transition-colors cursor-pointer ${
+                              isSelected
+                                ? "bg-[var(--near-black)] text-[var(--porcelain)] border-[var(--near-black)]"
+                                : "bg-white border-[var(--warm-stone)]/60 text-[var(--deep-espresso)] hover:border-[var(--near-black)]"
+                            } ${inStock ? "" : "line-through opacity-50"}`}
+                          >
+                            {value}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {product.variants.length > 1 && dimensionKeys.length === 0 && (
               <div className="mt-7">
                 <p className="text-xs text-[var(--deep-espresso)]/70 mb-2.5">
                   Option: <span className="text-[var(--near-black)] font-medium">{selectedVariant.name}</span>
