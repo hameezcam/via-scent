@@ -23,15 +23,7 @@
       "Plug and play"
     ],
     "specifications": [],
-    "variants": [
-      {
-        "id": "var-photo-test",
-        "name": "Test",
-        "images": [
-          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-        ]
-      }
-    ],
+    "variants": [],
     "id": "prod-1792242015190",
     "isArchived": false,
     "warrantyDurationMonths": 6
