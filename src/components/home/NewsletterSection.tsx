@@ -69,15 +69,15 @@ export function NewsletterSection() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--champagne)]/30 bg-[var(--champagne)]/5 text-[var(--champagne)] text-[10px] uppercase tracking-[0.3em]">
             <Sparkles className="w-3 h-3 text-[var(--champagne)]" />
-            <span>The Olfactory Conclusion</span>
+            <span>Stay in touch</span>
           </div>
 
           <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-[var(--porcelain)] font-normal tracking-tight leading-[1.15]">
-            Your space. <span className="italic font-light text-[var(--champagne)]">Your signature.</span>
+            Your space. <span className="italic font-light text-[var(--champagne)]">Your scent.</span>
           </h2>
 
           <p className="max-w-xl mx-auto text-xs sm:text-sm text-[var(--warm-stone)] font-light leading-relaxed">
-            From intimate residences to grand architectural hospitality suites, discover the precise scenting instrument to define your environment.
+            From a bedroom to a hotel lobby, we&apos;ll help you find the diffuser and scent that suit the space.
           </p>
 
           {/* Quick Route to Catalogue */}
@@ -93,17 +93,17 @@ export function NewsletterSection() {
               href="/business-scenting/request-quote"
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-transparent text-[var(--ivory)] border border-[var(--warm-stone)]/40 text-xs uppercase tracking-[0.2em] font-light rounded-sm hover:border-[var(--champagne)] hover:text-[var(--champagne)] transition-all duration-300"
             >
-              <span>Request B2B Architecture</span>
+              <span>Business scenting</span>
             </Link>
           </div>
 
           {/* Integrated Gazette Newsletter Subscription */}
           <div className="pt-10 border-t border-[var(--warm-stone)]/20 max-w-md mx-auto">
             <span className="text-[10px] uppercase tracking-[0.25em] text-[var(--champagne)] font-medium block mb-2">
-              The Olfactory Gazette
+              Our newsletter
             </span>
             <p className="text-[11px] text-[var(--warm-stone)]/80 mb-5 font-light">
-              Receive private invitations to limited franchise releases and spatial design guides.
+              Be the first to hear about new scents and offers.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-3">
