@@ -95,6 +95,84 @@ async function parseApiResponse<T = any>(
  * Reduces 5MB-12MB camera/phone photos to ~150KB-250KB WebP/JPEG,
  * preventing HTTP 413 errors and dramatically accelerating uploads.
  */
+/** Photo strip for one variant: shows its photos and lets the admin add or remove them. */
+function VariantPhotos({
+  photos,
+  busy,
+  onAdd,
+  onRemove,
+}: {
+  photos: string[];
+  busy: boolean;
+  onAdd: (files: FileList | null) => void;
+  onRemove: (index: number) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {photos.map((src, index) => (
+        <div key={`${index}-${src.slice(-24)}`} className="relative w-14 h-14 rounded overflow-hidden border border-stone-200 bg-stone-100">
+          <Image
+            src={src}
+            alt={`Variant photo ${index + 1}`}
+            fill
+            unoptimized={src.startsWith("data:")}
+            className="object-cover"
+            sizes="56px"
+          />
+          <button
+            type="button"
+            onClick={() => onRemove(index)}
+            className="absolute top-0.5 right-0.5 bg-white/90 rounded p-0.5 text-stone-600 hover:text-red-700"
+            title="Remove photo"
+            aria-label={`Remove photo ${index + 1}`}
+          >
+            <Trash2 className="w-3 h-3" />
+          </button>
+        </div>
+      ))}
+      <label
+        className={`inline-flex items-center gap-1.5 px-3 py-2 border border-dashed border-stone-300 rounded text-[11px] font-semibold uppercase tracking-wider text-stone-700 cursor-pointer hover:bg-white ${
+          busy ? "opacity-60 pointer-events-none" : ""
+        }`}
+      >
+        {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ImageIcon className="w-3.5 h-3.5" />}
+        <span>{busy ? "Uploading..." : photos.length === 0 ? "Add photos" : "Add more"}</span>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          className="sr-only"
+          onChange={(e) => {
+            onAdd(e.target.files);
+            e.target.value = "";
+          }}
+        />
+      </label>
+    </div>
+  );
+}
+
+/** Compresses and uploads photos, returning the stored URL for each one. */
+async function uploadPhotos(files: File[]): Promise<string[]> {
+  const compressed = await Promise.all(files.map((f) => compressImageFile(f)));
+  const urls: string[] = [];
+  for (const file of compressed) {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+    const parsed = await parseApiResponse<{ url?: string; urls?: string[]; error?: string }>(res);
+    if (!parsed.ok || !parsed.data) {
+      throw new Error(parsed.error || `Failed to upload "${file.name}".`);
+    }
+    if (parsed.data.url) {
+      urls.push(parsed.data.url);
+    } else if (parsed.data.urls && parsed.data.urls.length > 0) {
+      urls.push(...parsed.data.urls);
+    }
+  }
+  return urls;
+}
+
 async function compressImageFile(file: File, maxDimension = 1600, quality = 0.85): Promise<File> {
   if (typeof window === "undefined") return file;
   if (!file.type.startsWith("image/") || file.type === "image/svg+xml" || file.type === "image/gif") {
@@ -241,6 +319,9 @@ export default function AdminProductsPage() {
   const [newVarSku, setNewVarSku] = useState("");
   const [newVarPrice, setNewVarPrice] = useState<number>(0);
   const [newVarAttr, setNewVarAttr] = useState("");
+  const [newVarImages, setNewVarImages] = useState<string[]>([]);
+  const [variantPhotoBusy, setVariantPhotoBusy] = useState<string | null>(null);
+  const [variantPhotoError, setVariantPhotoError] = useState<string | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -396,6 +477,8 @@ export default function AdminProductsPage() {
     setWarrantyMonths(p.warrantyDurationMonths ?? 6);
 
     setVariants(p.variants ? [...p.variants] : []);
+    setVariantPhotoError(null);
+    setNewVarImages([]);
     setNewVarName("");
     setNewVarSku("");
     setNewVarPrice(p.basePriceLKR);
@@ -441,38 +524,7 @@ export default function AdminProductsPage() {
     setIsUploading(true);
 
     try {
-      const rawFileList = Array.from(files);
-
-      // 1. Client-side compression for every image to guarantee tiny payloads
-      const compressedFiles = await Promise.all(
-        rawFileList.map((f) => compressImageFile(f))
-      );
-
-      // 2. Upload files in individual requests to guarantee safe body limits
-      const uploadedUrls: string[] = [];
-
-      for (const file of compressedFiles) {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const res = await fetch("/api/admin/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        const parsed = await parseApiResponse<{ url?: string; urls?: string[]; error?: string }>(res);
-
-        if (!parsed.ok || !parsed.data) {
-          throw new Error(parsed.error || `Failed to upload "${file.name}".`);
-        }
-
-        if (parsed.data.url) {
-          uploadedUrls.push(parsed.data.url);
-        } else if (parsed.data.urls && parsed.data.urls.length > 0) {
-          uploadedUrls.push(...parsed.data.urls);
-        }
-      }
-
+      const uploadedUrls = await uploadPhotos(Array.from(files));
       if (uploadedUrls.length > 0) {
         setImages((prev) => [...prev, ...uploadedUrls]);
       }
@@ -531,16 +583,62 @@ export default function AdminProductsPage() {
       name: newVarName.trim(),
       priceLKR: Number(newVarPrice) || basePriceLKR,
       inStock: true,
+      images: newVarImages.length > 0 ? newVarImages : undefined,
       attributes: newVarAttr.trim() ? { option: newVarAttr.trim() } : {},
     };
     setVariants((prev) => [...prev, newVariant]);
     setNewVarName("");
     setNewVarSku("");
     setNewVarAttr("");
+    setNewVarImages([]);
   };
 
   const handleRemoveVariant = (id: string) => {
     setVariants((prev) => prev.filter((v) => v.id !== id));
+  };
+
+  /** Uploads photos for a variant that is still being added. */
+  const handleNewVariantPhotos = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setVariantPhotoError(null);
+    setVariantPhotoBusy("new");
+    try {
+      const urls = await uploadPhotos(Array.from(files));
+      setNewVarImages((prev) => [...prev, ...urls]);
+    } catch (err: unknown) {
+      setVariantPhotoError(err instanceof Error ? err.message : "Could not upload the photo.");
+    } finally {
+      setVariantPhotoBusy(null);
+    }
+  };
+
+  /** Uploads photos for a variant already in the list. */
+  const handleVariantPhotos = async (variantId: string, files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setVariantPhotoError(null);
+    setVariantPhotoBusy(variantId);
+    try {
+      const urls = await uploadPhotos(Array.from(files));
+      setVariants((prev) =>
+        prev.map((v) => (v.id === variantId ? { ...v, images: [...(v.images ?? []), ...urls] } : v))
+      );
+    } catch (err: unknown) {
+      setVariantPhotoError(err instanceof Error ? err.message : "Could not upload the photo.");
+    } finally {
+      setVariantPhotoBusy(null);
+    }
+  };
+
+  const handleRemoveVariantPhoto = (variantId: string, photoIndex: number) => {
+    setVariants((prev) =>
+      prev.map((v) =>
+        v.id === variantId ? { ...v, images: (v.images ?? []).filter((_, i) => i !== photoIndex) } : v
+      )
+    );
+  };
+
+  const handleRemoveNewVariantPhoto = (photoIndex: number) => {
+    setNewVarImages((prev) => prev.filter((_, i) => i !== photoIndex));
   };
 
   const handleTogglePublish = async (id: string) => {
@@ -2007,6 +2105,18 @@ export default function AdminProductsPage() {
                         className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
                       />
                     </div>
+                    <div className="space-y-2">
+                      <span className="text-[11px] text-stone-500">
+                        Photos for this variant. Shoppers see these when they choose it.
+                      </span>
+                      <VariantPhotos
+                        photos={newVarImages}
+                        busy={variantPhotoBusy === "new"}
+                        onAdd={handleNewVariantPhotos}
+                        onRemove={handleRemoveNewVariantPhoto}
+                      />
+                    </div>
+                    {variantPhotoError && <p className="text-[11px] text-red-700">{variantPhotoError}</p>}
                     <div className="flex justify-end">
                       <button
                         type="button"
@@ -2034,7 +2144,8 @@ export default function AdminProductsPage() {
                     ) : (
                       <div className="border border-stone-200 rounded-xl overflow-hidden divide-y divide-stone-100 bg-white">
                         {variants.map((v, i) => (
-                          <div key={v.id || i} className="flex items-center justify-between p-3 text-xs">
+                          <div key={v.id || i} className="flex flex-col gap-3 p-3 text-xs">
+                            <div className="flex items-center justify-between">
                             <div className="space-y-0.5">
                               <p className="font-semibold text-stone-900">{v.name}</p>
                               <p className="text-[10px] text-stone-400 font-mono">
@@ -2061,6 +2172,13 @@ export default function AdminProductsPage() {
                                 <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
+                            </div>
+                            <VariantPhotos
+                              photos={v.images ?? []}
+                              busy={variantPhotoBusy === v.id}
+                              onAdd={(files) => handleVariantPhotos(v.id, files)}
+                              onRemove={(index) => handleRemoveVariantPhoto(v.id, index)}
+                            />
                           </div>
                         ))}
                       </div>

@@ -46,6 +46,8 @@ export interface ProductVariant {
   priceLKR: number;
   originalPriceLKR?: number;
   inStock: boolean;
+  /** Photos for this variant only. The product page shows these when the variant is chosen. */
+  images?: string[];
   attributes: {
     volume?: string;
     color?: string;

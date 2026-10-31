@@ -18,12 +18,32 @@ export function productImageUrl(slug: string, index: number, dataUrl: string): s
   return `/api/products/${encodeURIComponent(slug)}/images/${index}/${imageVersion(dataUrl)}`;
 }
 
+export function variantImageUrl(slug: string, variantId: string, index: number, dataUrl: string): string {
+  const base = `/api/products/${encodeURIComponent(slug)}/variants/${encodeURIComponent(variantId)}`;
+  return `${base}/images/${index}/${imageVersion(dataUrl)}`;
+}
+
+const hasInlineImage = (list?: string[]) => Boolean(list?.some((src) => src?.startsWith("data:")));
+
 export function withServedImages(product: Product): Product {
-  if (!product.images?.some((src) => src?.startsWith("data:"))) return product;
+  const productNeedsServing = hasInlineImage(product.images);
+  const variantNeedsServing = (product.variants ?? []).some((v) => hasInlineImage(v.images));
+  if (!productNeedsServing && !variantNeedsServing) return product;
+
   return {
     ...product,
-    images: product.images.map((src, idx) =>
-      src?.startsWith("data:") ? productImageUrl(product.slug, idx, src) : src
+    images: productNeedsServing
+      ? product.images.map((src, idx) => (src?.startsWith("data:") ? productImageUrl(product.slug, idx, src) : src))
+      : product.images,
+    variants: (product.variants ?? []).map((variant) =>
+      hasInlineImage(variant.images)
+        ? {
+            ...variant,
+            images: variant.images!.map((src, idx) =>
+              src?.startsWith("data:") ? variantImageUrl(product.slug, variant.id, idx, src) : src
+            ),
+          }
+        : variant
     ),
   };
 }
