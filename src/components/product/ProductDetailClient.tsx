@@ -102,7 +102,11 @@ export function ProductDetailClient({
   const price = selectedVariant.priceLKR;
   const originalPrice = selectedVariant.originalPriceLKR || product.originalPriceLKR;
   const onRequest = isPriceOnRequest(price);
-  const available = product.inStock && variantInStock(selectedVariant);
+  const inStockNow = product.inStock && variantInStock(selectedVariant);
+  // Pre-order lets shoppers buy when sold out, unless the price is on request
+  const preorderOpen = !!product.preorder && !onRequest;
+  const available = inStockNow || preorderOpen;
+  const buyLabel = !inStockNow && preorderOpen ? "Pre-order" : "Add to cart";
   const warrantyLabel = formatWarranty(product.warrantyDurationMonths);
   const variantPricesDiffer = new Set(product.variants.map((v) => v.priceLKR)).size > 1;
 
@@ -207,7 +211,7 @@ export function ProductDetailClient({
                 }`}
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${available ? "bg-emerald-600" : "bg-stone-400"}`} />
-                {available ? product.stockStatus : "Out of stock"}
+                {inStockNow ? product.stockStatus : preorderOpen ? "Pre-order" : "Out of stock"}
               </span>
             </div>
 
@@ -347,7 +351,7 @@ export function ProductDetailClient({
                       className="flex-1 py-4 px-5 bg-[var(--near-black)] text-[var(--porcelain)] hover:bg-[var(--deep-espresso)] disabled:opacity-40 text-xs font-medium tracking-[0.18em] uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {added ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
-                      {added ? "Added to cart" : "Add to cart"}
+                      {added ? "Added to cart" : buyLabel}
                     </motion.button>
                   </div>
                   <button
@@ -553,7 +557,7 @@ export function ProductDetailClient({
             disabled={!available}
             className="px-5 py-3 bg-[var(--near-black)] text-[var(--porcelain)] disabled:opacity-40 text-[11px] font-medium tracking-[0.16em] uppercase cursor-pointer"
           >
-            {added ? "Added" : "Add to cart"}
+            {added ? "Added" : buyLabel}
           </button>
         )}
       </div>
