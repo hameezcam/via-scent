@@ -124,6 +124,197 @@ function buildVariantAttributes(v: { size: string; color: string; coverage: stri
   };
 }
 
+/** Key for one stock line: a variant, or the product itself when it has no variants. */
+const stockKey = (productId: string, variantId?: string) => `${productId}::${variantId ?? "base"}`;
+
+/**
+ * Edit stock for every live product and variant in one place. Only changed lines are saved,
+ * one update per product.
+ */
+function BulkInventoryModal({
+  products,
+  onClose,
+  onSaved,
+}: {
+  products: Product[];
+  onClose: () => void;
+  onSaved: (updated: Product[]) => void;
+}) {
+  const live = products.filter((p) => !p.isArchived);
+  const initial: Record<string, string> = {};
+  for (const p of live) {
+    if (p.variants?.length) {
+      for (const v of p.variants) initial[stockKey(p.id, v.id)] = v.quantity !== undefined ? String(v.quantity) : "";
+    } else {
+      initial[stockKey(p.id)] = p.inventoryCount !== undefined ? String(p.inventoryCount) : "";
+    }
+  }
+  const [draft, setDraft] = useState<Record<string, string>>(initial);
+  const [search, setSearch] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const changedKeys = Object.keys(draft).filter((k) => draft[k] !== initial[k]);
+  const visible = live.filter(
+    (p) =>
+      !search.trim() ||
+      p.name.toLowerCase().includes(search.trim().toLowerCase()) ||
+      p.sku.toLowerCase().includes(search.trim().toLowerCase())
+  );
+
+  const save = async () => {
+    setSaving(true);
+    setError(null);
+    const changedProducts = live.filter((p) => changedKeys.some((k) => k.startsWith(`${p.id}::`)));
+    const updatedById: Record<string, Product> = {};
+    const failures: string[] = [];
+
+    for (const p of changedProducts) {
+      let updates: Partial<Product>;
+      if (p.variants?.length) {
+        const variants = p.variants.map((v) => {
+          const key = stockKey(p.id, v.id);
+          if (draft[key] === initial[key]) return v;
+          const quantity = parseVariantQuantity(draft[key]);
+          const { quantity: _old, ...rest } = v;
+          void _old;
+          return {
+            ...rest,
+            inStock: quantity === undefined ? v.inStock : quantity > 0,
+            ...(quantity === undefined ? {} : { quantity }),
+          };
+        });
+        updates = { variants };
+      } else {
+        const count = parseVariantQuantity(draft[stockKey(p.id)]) ?? 0;
+        updates = { inventoryCount: count, inStock: count > 0 };
+      }
+
+      try {
+        const res = await fetch("/api/admin/products", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: p.id, updates }),
+        });
+        const json = await res.json().catch(() => null);
+        if (res.ok && json?.product) {
+          updatedById[p.id] = json.product as Product;
+        } else {
+          failures.push(`${p.name}: ${json?.error || "save failed"}`);
+        }
+      } catch {
+        failures.push(`${p.name}: network error`);
+      }
+    }
+
+    setSaving(false);
+    if (failures.length > 0) {
+      setError(`Some products were not saved: ${failures.join("; ")}`);
+    }
+    if (Object.keys(updatedById).length > 0) {
+      onSaved(products.map((p) => updatedById[p.id] ?? p));
+    }
+    if (failures.length === 0) onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-stone-900/40 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[85vh] flex flex-col text-xs">
+        <div className="p-4 border-b border-stone-200 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="font-serif text-xl text-stone-900">Bulk inventory</h2>
+            <p className="text-[11px] text-stone-500 mt-1">
+              Set the quantity in stock for each option. Leave blank to not track it. 0 marks it sold out.
+            </p>
+          </div>
+          <button type="button" onClick={onClose} className="text-stone-400 hover:text-stone-900 p-1" title="Close">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="p-4 border-b border-stone-200">
+          <input
+            type="text"
+            placeholder="Filter by name or SKU..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 text-xs"
+          />
+        </div>
+
+        <div className="flex-1 overflow-y-auto divide-y divide-stone-100">
+          {visible.length === 0 && <p className="p-6 text-center text-stone-400">No products match.</p>}
+          {visible.map((p) => (
+            <div key={p.id} className="p-4 space-y-2">
+              <p className="font-semibold text-stone-900">
+                {p.name} <span className="font-mono text-[10px] text-stone-400">{p.sku}</span>
+              </p>
+              {p.variants?.length ? (
+                p.variants.map((v) => {
+                  const key = stockKey(p.id, v.id);
+                  return (
+                    <div key={v.id} className="flex items-center justify-between gap-3 pl-3">
+                      <span className="text-stone-700">{v.name}</span>
+                      <input
+                        type="number"
+                        min="0"
+                        aria-label={`Stock for ${p.name} ${v.name}`}
+                        value={draft[key] ?? ""}
+                        onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
+                        className={`w-28 px-3 py-1.5 bg-white border rounded text-stone-900 text-xs ${
+                          draft[key] !== initial[key] ? "border-amber-700" : "border-stone-300"
+                        }`}
+                      />
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="flex items-center justify-between gap-3 pl-3">
+                  <span className="text-stone-700">Stock</span>
+                  <input
+                    type="number"
+                    min="0"
+                    aria-label={`Stock for ${p.name}`}
+                    value={draft[stockKey(p.id)] ?? ""}
+                    onChange={(e) => setDraft({ ...draft, [stockKey(p.id)]: e.target.value })}
+                    className={`w-28 px-3 py-1.5 bg-white border rounded text-stone-900 text-xs ${
+                      draft[stockKey(p.id)] !== initial[stockKey(p.id)] ? "border-amber-700" : "border-stone-300"
+                    }`}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="p-4 border-t border-stone-200 flex items-center justify-between gap-3">
+          <div className="text-[11px] text-stone-500">
+            {changedKeys.length > 0 ? `${changedKeys.length} line${changedKeys.length === 1 ? "" : "s"} changed` : "No changes"}
+            {error && <p className="text-red-700 mt-1">{error}</p>}
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3 py-2 border border-stone-300 text-stone-700 hover:bg-stone-100 text-xs font-semibold rounded uppercase tracking-wider"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving || changedKeys.length === 0}
+              className="px-4 py-2 bg-stone-900 text-amber-100 hover:bg-stone-800 disabled:opacity-50 text-xs font-semibold rounded uppercase tracking-wider"
+            >
+              {saving ? "Saving..." : "Save Stock"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function VariantPhotos({
   photos,
   busy,
@@ -278,6 +469,7 @@ async function compressImageFile(file: File, maxDimension = 1600, quality = 0.85
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [showBulkInventory, setShowBulkInventory] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Search & Filter
@@ -967,14 +1159,32 @@ export default function AdminProductsPage() {
           </p>
         </div>
 
-        <button
-          onClick={openCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-stone-900 hover:bg-stone-800 text-amber-100 text-xs font-semibold uppercase tracking-wider rounded transition-colors shadow-xs"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add New Product</span>
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setShowBulkInventory(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 border border-stone-300 hover:bg-stone-100 text-stone-900 text-xs font-semibold uppercase tracking-wider rounded transition-colors"
+          >
+            <Layers className="w-4 h-4" />
+            <span>Bulk Inventory</span>
+          </button>
+          <button
+            onClick={openCreateModal}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-stone-900 hover:bg-stone-800 text-amber-100 text-xs font-semibold uppercase tracking-wider rounded transition-colors shadow-xs"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add New Product</span>
+          </button>
+        </div>
       </div>
+
+      {showBulkInventory && (
+        <BulkInventoryModal
+          products={products}
+          onClose={() => setShowBulkInventory(false)}
+          onSaved={(updated) => setProducts(updated)}
+        />
+      )}
 
       {/* Filter Bar */}
       <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-xs flex flex-col md:flex-row gap-4 justify-between items-center text-xs">
