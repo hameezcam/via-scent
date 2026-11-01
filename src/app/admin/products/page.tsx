@@ -500,6 +500,7 @@ export default function AdminProductsPage() {
   const [originalPriceLKR, setOriginalPriceLKR] = useState<number | undefined>(undefined);
   const [inventoryCount, setInventoryCount] = useState<number>(15);
   const [stockStatus, setStockStatus] = useState<"In Stock" | "Low Stock" | "Made to Order" | "Backorder">("In Stock");
+  const [preorder, setPreorder] = useState(false);
   const [isPublished, setIsPublished] = useState(true);
   const [featured, setFeatured] = useState(false);
   const [isBestseller, setIsBestseller] = useState(false);
@@ -601,6 +602,7 @@ export default function AdminProductsPage() {
     setOriginalPriceLKR(undefined);
     setInventoryCount(20);
     setStockStatus("In Stock");
+    setPreorder(false);
     setIsPublished(true);
     setFeatured(false);
     setIsBestseller(false);
@@ -674,6 +676,7 @@ export default function AdminProductsPage() {
     setOriginalPriceLKR(p.originalPriceLKR);
     setInventoryCount(p.inventoryCount ?? 15);
     setStockStatus(p.stockStatus || (p.inStock ? "In Stock" : "Backorder"));
+    setPreorder(!!p.preorder);
     setIsPublished(p.isPublished !== false);
     setFeatured(Boolean(p.featured));
     setIsBestseller(Boolean(p.isBestseller));
@@ -1060,6 +1063,7 @@ export default function AdminProductsPage() {
       isNew,
       inStock: stockStatus === "In Stock" || stockStatus === "Low Stock",
       stockStatus,
+      preorder,
       inventoryCount: Number(inventoryCount),
       drScentAuthorized,
       scentFamily: scentFamily ? (scentFamily as ScentFamily) : undefined,
@@ -1768,6 +1772,10 @@ export default function AdminProductsPage() {
                         <option value="Made to Order">Made to Order</option>
                         <option value="Backorder">Backorder</option>
                       </select>
+                      <label className="mt-2 flex items-center gap-2 text-[11px] text-stone-600 normal-case tracking-normal font-normal">
+                        <input type="checkbox" checked={preorder} onChange={(e) => setPreorder(e.target.checked)} />
+                        Accept pre-orders when sold out
+                      </label>
                     </div>
                   </div>
 

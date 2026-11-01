@@ -79,6 +79,8 @@ export interface Product {
   isNew?: boolean;
   inStock: boolean;
   stockStatus: "In Stock" | "Low Stock" | "Made to Order" | "Backorder";
+  /** Shoppers can order when sold out; the product ships when stock arrives. */
+  preorder?: boolean;
   scentFamily?: ScentFamily;
   scentNotes?: ScentNotes;
   coverageArea?: string;
