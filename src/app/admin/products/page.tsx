@@ -302,6 +302,9 @@ export default function AdminProductsPage() {
   const [category, setCategory] = useState<ProductCategory>("aroma-diffusers");
   const [subCategory, setSubCategory] = useState<string>("");
   const [basePriceLKR, setBasePriceLKR] = useState<number>(30000);
+  const [basePriceOnRequest, setBasePriceOnRequest] = useState(false);
+  const [newVarOnRequest, setNewVarOnRequest] = useState(false);
+  const [variantEditOnRequest, setVariantEditOnRequest] = useState(false);
   const [originalPriceLKR, setOriginalPriceLKR] = useState<number | undefined>(undefined);
   const [inventoryCount, setInventoryCount] = useState<number>(15);
   const [stockStatus, setStockStatus] = useState<"In Stock" | "Low Stock" | "Made to Order" | "Backorder">("In Stock");
@@ -475,6 +478,7 @@ export default function AdminProductsPage() {
     setCategory(p.category);
     setSubCategory(p.subCategory || (p.category === "fragrance-oils" ? p.scentFamily || "" : ""));
     setBasePriceLKR(p.basePriceLKR);
+    setBasePriceOnRequest(!p.basePriceLKR);
     setOriginalPriceLKR(p.originalPriceLKR);
     setInventoryCount(p.inventoryCount ?? 15);
     setStockStatus(p.stockStatus || (p.inStock ? "In Stock" : "Backorder"));
@@ -613,6 +617,7 @@ export default function AdminProductsPage() {
   // Variant helpers
   const startEditVariant = (v: ProductVariant) => {
     setEditingVariantId(v.id);
+    setVariantEditOnRequest(!v.priceLKR);
     setVariantDraft({
       name: v.name,
       sku: v.sku,
@@ -638,7 +643,7 @@ export default function AdminProductsPage() {
           ...rest,
           name: d.name.trim() || v.name,
           sku: d.sku.trim() || v.sku,
-          priceLKR: Number(d.price) || v.priceLKR,
+          priceLKR: variantEditOnRequest ? 0 : Number(d.price) || v.priceLKR,
           inStock: quantity === undefined ? v.inStock : quantity > 0,
           ...(quantity === undefined ? {} : { quantity }),
           attributes: buildVariantAttributes({
@@ -667,7 +672,7 @@ export default function AdminProductsPage() {
       id: variantId,
       sku: newVarSku.trim() || `${sku}-VAR${variants.length + 1}`,
       name,
-      priceLKR: Number(newVarPrice) || basePriceLKR,
+      priceLKR: newVarOnRequest ? 0 : Number(newVarPrice) || basePriceLKR,
       inStock: quantity === undefined ? true : quantity > 0,
       ...(quantity === undefined ? {} : { quantity }),
       images: newVarImages.length > 0 ? newVarImages : undefined,
@@ -675,6 +680,7 @@ export default function AdminProductsPage() {
     };
     setVariants((prev) => [...prev, newVariant]);
     setNewVarQuantity("");
+    setNewVarOnRequest(false);
     setNewVarName("");
     setNewVarSku("");
     setNewVarSize("");
@@ -852,7 +858,7 @@ export default function AdminProductsPage() {
       category,
       categoryName: categoryNamesMap[category] || "Fragrance Creations",
       subCategory: subCategory.trim() || undefined,
-      basePriceLKR: Number(basePriceLKR),
+      basePriceLKR: basePriceOnRequest ? 0 : Number(basePriceLKR),
       originalPriceLKR: originalPriceLKR ? Number(originalPriceLKR) : undefined,
       images: images.length > 0 ? images : [
         "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
@@ -1485,10 +1491,20 @@ export default function AdminProductsPage() {
                         min="0"
                         step="100"
                         required
-                        value={basePriceLKR}
+                        value={basePriceOnRequest ? "" : basePriceLKR}
+                        disabled={basePriceOnRequest}
+                        placeholder={basePriceOnRequest ? "On request" : ""}
                         onChange={(e) => setBasePriceLKR(Number(e.target.value))}
-                        className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 font-bold text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-800"
+                        className="w-full px-3 py-2 bg-stone-50 border border-stone-300 rounded text-stone-900 font-bold text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-800 disabled:opacity-50"
                       />
+                      <label className="mt-2 flex items-center gap-2 text-[11px] text-stone-600 normal-case tracking-normal font-normal">
+                        <input
+                          type="checkbox"
+                          checked={basePriceOnRequest}
+                          onChange={(e) => setBasePriceOnRequest(e.target.checked)}
+                        />
+                        Price on request (shoppers ask for a quote instead of seeing a price)
+                      </label>
                     </div>
 
                     <div>
@@ -2183,11 +2199,20 @@ export default function AdminProductsPage() {
                       />
                       <input
                         type="number"
-                        placeholder="Price (LKR)"
-                        value={newVarPrice || ""}
+                        placeholder={newVarOnRequest ? "On request" : "Price (LKR)"}
+                        disabled={newVarOnRequest}
+                        value={newVarOnRequest ? "" : newVarPrice || ""}
                         onChange={(e) => setNewVarPrice(Number(e.target.value))}
-                        className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs font-semibold"
+                        className="px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs font-semibold disabled:opacity-50"
                       />
+                      <label className="flex items-center gap-2 text-[11px] text-stone-600 sm:col-span-3">
+                        <input
+                          type="checkbox"
+                          checked={newVarOnRequest}
+                          onChange={(e) => setNewVarOnRequest(e.target.checked)}
+                        />
+                        Price on request for this variant
+                      </label>
                       <input
                         type="text"
                         placeholder="Size (e.g. Small, Medium)"
@@ -2343,13 +2368,22 @@ export default function AdminProductsPage() {
                                       <input
                                         type={field === "price" || field === "quantity" ? "number" : "text"}
                                         min={field === "quantity" ? "0" : undefined}
-                                        value={variantDraft[field]}
+                                        disabled={field === "price" && variantEditOnRequest}
+                                        value={field === "price" && variantEditOnRequest ? "" : variantDraft[field]}
                                         onChange={(e) => setVariantDraft({ ...variantDraft, [field]: e.target.value })}
                                         className="w-full px-3 py-2 bg-white border border-stone-300 rounded text-stone-900 text-xs"
                                       />
                                     </label>
                                   ))}
                                 </div>
+                                <label className="flex items-center gap-2 text-[11px] text-stone-600">
+                                  <input
+                                    type="checkbox"
+                                    checked={variantEditOnRequest}
+                                    onChange={(e) => setVariantEditOnRequest(e.target.checked)}
+                                  />
+                                  Price on request for this variant
+                                </label>
                                 <div className="flex justify-end gap-2">
                                   <button
                                     type="button"
