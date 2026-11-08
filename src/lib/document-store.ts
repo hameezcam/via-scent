@@ -42,13 +42,14 @@ export function createDocumentStore<T>(options: {
   const { collection, fileName, getId, seed } = options;
   let fileCache: T[] | null = null;
 
-  const filePath = () => path.join(getDataDir(), fileName);
+  // Only used for local file mode. The comments stop Next from tracing the whole project into the build.
+  const filePath = () => path.join(/* turbopackIgnore: true */ getDataDir(), fileName);
 
   function readFile(): T[] {
     if (fileCache) return fileCache;
     try {
-      if (fs.existsSync(filePath())) {
-        fileCache = JSON.parse(fs.readFileSync(filePath(), "utf-8"));
+      if (fs.existsSync(/* turbopackIgnore: true */ filePath())) {
+        fileCache = JSON.parse(fs.readFileSync(/* turbopackIgnore: true */ filePath(), "utf-8"));
         return fileCache!;
       }
     } catch {
@@ -63,7 +64,7 @@ export function createDocumentStore<T>(options: {
     try {
       const dir = path.dirname(filePath());
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(filePath(), JSON.stringify(docs, null, 2), "utf-8");
+      fs.writeFileSync(/* turbopackIgnore: true */ filePath(), JSON.stringify(docs, null, 2), "utf-8");
     } catch {
       // In-memory fallback for local development only
     }
