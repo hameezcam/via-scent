@@ -1,4 +1,4 @@
-import { createSign, createVerify } from "node:crypto";
+import { createPrivateKey, createPublicKey, createSign, createVerify, type KeyObject } from "node:crypto";
 
 /**
  * Koko (Sri Lanka) buy now, pay later: customers pay in 3 interest-free instalments.
@@ -32,8 +32,44 @@ export const KOKO_STATUS = {
   FAILURE: "FAILURE",
 } as const;
 
-/** Keys pasted into env vars often arrive with "\n" typed out instead of real new lines. */
-const normalisePem = (value: string) => value.trim().replace(/\\n/g, "\n");
+/**
+ * Keys pasted into env vars come in many shapes: with "\n" typed out instead of real new
+ * lines, wrapped in quotes, or just the base64 body with no BEGIN/END lines. Tidy all of it.
+ */
+const normalisePem = (value: string) =>
+  value
+    .trim()
+    .replace(/^["']|["']$/g, "")
+    .replace(/\\n/g, "\n")
+    .replace(/\r/g, "")
+    .trim();
+
+/** The base64 body of a key, whatever lines or header it came with. */
+const keyBody = (pem: string) => pem.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
+
+/** Reads a private key given as PEM (PKCS#8 or PKCS#1) or as bare base64. */
+export function readPrivateKey(value: string): KeyObject {
+  const pem = normalisePem(value);
+  if (pem.includes("-----BEGIN")) return createPrivateKey(pem);
+  const der = Buffer.from(keyBody(pem), "base64");
+  try {
+    return createPrivateKey({ key: der, format: "der", type: "pkcs8" });
+  } catch {
+    return createPrivateKey({ key: der, format: "der", type: "pkcs1" });
+  }
+}
+
+/** Reads a public key given as PEM (SPKI or PKCS#1) or as bare base64. */
+export function readPublicKey(value: string): KeyObject {
+  const pem = normalisePem(value);
+  if (pem.includes("-----BEGIN")) return createPublicKey(pem);
+  const der = Buffer.from(keyBody(pem), "base64");
+  try {
+    return createPublicKey({ key: der, format: "der", type: "spki" });
+  } catch {
+    return createPublicKey({ key: der, format: "der", type: "pkcs1" });
+  }
+}
 
 export function getKokoConfig(): KokoConfig | null {
   const merchantId = process.env.KOKO_MERCHANT_ID?.trim();
@@ -44,8 +80,8 @@ export function getKokoConfig(): KokoConfig | null {
   return {
     merchantId,
     apiKey,
-    privateKey: normalisePem(privateKey),
-    publicKey: normalisePem(publicKey),
+    privateKey,
+    publicKey,
     mode: process.env.KOKO_MODE?.trim() === "live" ? "live" : "qa",
   };
 }
@@ -66,7 +102,7 @@ export function formatKokoAmount(amountLKR: number): string {
 }
 
 const signText = (privateKey: string, text: string) =>
-  createSign("RSA-SHA256").update(text).sign(privateKey, "base64");
+  createSign("RSA-SHA256").update(text).sign(readPrivateKey(privateKey), "base64");
 
 export interface KokoCheckoutOrder {
   orderNumber: string;
@@ -183,7 +219,7 @@ export function verifyKokoResponse(config: KokoConfig, response: KokoResponse): 
   try {
     return createVerify("RSA-SHA256")
       .update(`${response.orderId}${response.trnId}${response.status}`)
-      .verify(config.publicKey, response.signature.trim(), "base64");
+      .verify(readPublicKey(config.publicKey), response.signature.trim(), "base64");
   } catch {
     return false;
   }

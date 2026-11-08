@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { createSign, createVerify, generateKeyPairSync } from "node:crypto";
 import { NextRequest } from "next/server";
 import { POST as kokoResponse } from "../src/app/api/koko/response/route";
-import { buildKokoCheckoutForm, buildOrderDataString, getKokoConfig, verifyKokoResponse } from "../src/lib/koko";
+import { buildKokoCheckoutForm, buildOrderDataString, getKokoConfig, readPrivateKey, readPublicKey, verifyKokoResponse } from "../src/lib/koko";
 import { orderService } from "../src/services/order.service";
 import { productService } from "../src/services/product.service";
 
@@ -124,4 +124,25 @@ test("A forged Koko result is rejected", async () => {
     assert.equal(res.status, 400);
     assert.notEqual((await orderService.getOrderByNumber(order.orderNumber))?.payment.status, "paid");
   });
+});
+
+test("Koko keys are accepted as PEM, quoted, one-line with \\n, or bare base64", () => {
+  const privPem = pem("pkcs8", ours.privateKey);
+  const pubPem = pem("spki", kokos.publicKey);
+  const bare = (p: string) => p.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
+  const forms = [
+    privPem,
+    `"${privPem}"`,
+    privPem.trim().replace(/\n/g, "\\n"),
+    bare(privPem),
+    (ours.privateKey.export({ type: "pkcs1", format: "pem" }) as string),
+  ];
+  for (const form of forms) {
+    const sig = createSign("RSA-SHA256").update("x").sign(readPrivateKey(form), "base64");
+    assert.ok(createVerify("RSA-SHA256").update("x").verify(ours.publicKey, sig, "base64"));
+  }
+  for (const form of [pubPem, bare(pubPem), pubPem.trim().replace(/\n/g, "\\n")]) {
+    const sig = kokoSign("y");
+    assert.ok(createVerify("RSA-SHA256").update("y").verify(readPublicKey(form), sig, "base64"));
+  }
 });
