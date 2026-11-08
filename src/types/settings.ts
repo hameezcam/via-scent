@@ -14,6 +14,7 @@ export interface DeliverySettings {
 export interface PaymentSettings {
   codEnabled: boolean; // Cash on delivery (enabled by default)
   onlineGatewayEnabled: boolean; // Digital card payments
+  kokoEnabled?: boolean; // Koko instalments. Set from the environment, not stored
   defaultMethod: "cod" | "online_gateway";
   activeGateway: "payhere" | "commercial_bank" | "mock_gateway";
   merchantIdPlaceholder: string;

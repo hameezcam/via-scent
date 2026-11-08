@@ -3,6 +3,7 @@ import { orderService, CreateOrderInput } from "@/services/order.service";
 import { settingsService } from "@/services/settings.service";
 import { notifyOrderPlaced } from "@/services/order-email.service";
 import { buildCheckoutForm, getPayHereConfig } from "@/lib/payhere";
+import { buildKokoCheckoutForm, getKokoConfig } from "@/lib/koko";
 import { getSiteUrl } from "@/lib/site-url";
 
 export async function POST(req: NextRequest) {
@@ -41,10 +42,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (paymentMethod === "koko" && !settings.kokoEnabled) {
+      return NextResponse.json(
+        { error: "Koko instalments are not available right now." },
+        { status: 400 }
+      );
+    }
+
+    const isOnline = paymentMethod === "online_gateway" || paymentMethod === "koko";
     const orderInput: CreateOrderInput = {
       customer,
       items,
-      paymentMethod: paymentMethod === "online_gateway" ? "online_gateway" : "cod",
+      paymentMethod: isOnline ? "online_gateway" : "cod",
+      onlineGateway: paymentMethod === "koko" ? "koko" : "payhere",
       notes: customer.notes,
     };
 
@@ -58,6 +68,32 @@ export async function POST(req: NextRequest) {
     };
 
     // Prepare response based on payment method
+    if (newOrder.payment.gateway === "koko") {
+      const koko = getKokoConfig();
+      if (!koko) {
+        return NextResponse.json({ error: "Koko instalments are not available right now." }, { status: 503 });
+      }
+      // The browser posts this signed form to Koko's hosted page
+      return NextResponse.json({
+        success: true,
+        order: orderRef,
+        orderId: newOrder.id,
+        orderNumber: newOrder.orderNumber,
+        pricingSnapshot: newOrder.pricingSnapshot,
+        paymentType: "koko",
+        koko: buildKokoCheckoutForm(
+          koko,
+          {
+            orderNumber: newOrder.orderNumber,
+            confirmationToken: newOrder.confirmationToken ?? "",
+            totalLKR: newOrder.pricingSnapshot.totalLKR,
+            customer: newOrder.customer,
+          },
+          getSiteUrl()
+        ),
+      });
+    }
+
     if (newOrder.payment.method === "online_gateway") {
       const payhere = getPayHereConfig();
       if (payhere) {

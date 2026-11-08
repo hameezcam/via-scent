@@ -3,6 +3,7 @@ import { settingsService } from "./settings.service";
 import { productService } from "./product.service";
 import { createDocumentStore } from "@/lib/document-store";
 import { PAYHERE_STATUS } from "@/lib/payhere";
+import { KOKO_STATUS } from "@/lib/koko";
 
 export interface CreateOrderInput {
   customer: CustomerDetails;
@@ -12,6 +13,8 @@ export interface CreateOrderInput {
     quantity: number;
   }[];
   paymentMethod: PaymentMethod;
+  /** Which online gateway an online order goes through. Defaults to PayHere. */
+  onlineGateway?: "payhere" | "koko";
   notes?: string;
 }
 
@@ -177,7 +180,7 @@ export class OrderService {
       payment: {
         method: input.paymentMethod,
         status: initialPaymentStatus,
-        gateway: isCOD ? undefined : "payhere_sri_lanka",
+        gateway: isCOD ? undefined : input.onlineGateway === "koko" ? "koko" : "payhere_sri_lanka",
       },
       status: initialStatus,
       history: [
@@ -289,6 +292,59 @@ export class OrderService {
         status: order.status,
         note: `PayHere reported: ${order.payment.failureReason}`,
         updatedBy: "payhere",
+      });
+      await this.updateOrder(order);
+    }
+
+    return { success: true, order, newlyPaid: false };
+  }
+
+  /**
+   * Applies a verified Koko result to an order. Only orders created for Koko can be paid this way.
+   * Safe to call more than once: a paid order never changes again.
+   */
+  public async applyKokoNotification(
+    orderNumber: string,
+    result: { status: string; transactionId?: string }
+  ): Promise<{ success: boolean; order?: Order; newlyPaid?: boolean; message?: string }> {
+    const order = await this.getOrderByNumber(orderNumber);
+    if (!order) {
+      return { success: false, message: "Order not found." };
+    }
+    if (order.payment.method !== "online_gateway" || order.payment.gateway !== "koko") {
+      return { success: false, message: "Order is not a Koko payment order." };
+    }
+    if (order.payment.status === "paid") {
+      return { success: true, order, newlyPaid: false };
+    }
+
+    const now = new Date().toISOString();
+
+    if (result.status === KOKO_STATUS.SUCCESS) {
+      order.payment.status = "paid";
+      order.payment.transactionId = result.transactionId;
+      order.payment.paidAt = now;
+      order.payment.failureReason = undefined;
+      order.status = "confirmed";
+      order.history.push({
+        timestamp: now,
+        status: "confirmed",
+        note: `First Koko instalment received (Koko transaction ${result.transactionId ?? "unknown"}).`,
+        updatedBy: "koko",
+      });
+      await this.updateOrder(order);
+      return { success: true, order, newlyPaid: true };
+    }
+
+    if (result.status === KOKO_STATUS.FAILURE) {
+      // The order stays open: the customer may retry, and a later success still counts
+      order.payment.status = "failed";
+      order.payment.failureReason = "Koko payment was not completed.";
+      order.history.push({
+        timestamp: now,
+        status: order.status,
+        note: `Koko reported: ${order.payment.failureReason}`,
+        updatedBy: "koko",
       });
       await this.updateOrder(order);
     }
