@@ -289,7 +289,7 @@ export function Header({ initialCategories }: HeaderProps = {}) {
               </button>
 
               <Link href="/" className="flex items-center group select-none py-1">
-                <div className="relative h-11 w-44 sm:h-13 sm:w-52 transition-transform duration-200 group-hover:scale-[1.02]">
+                <div className="relative h-14 w-24 sm:h-16 sm:w-28 transition-transform duration-200 group-hover:scale-[1.02]">
                   <Image
                     src="/images/via-scent-logo.png"
                     alt="VIA SCENT Sri Lanka - Fragrances • Aroma • Lifestyle"
@@ -297,7 +297,7 @@ export function Header({ initialCategories }: HeaderProps = {}) {
                     priority
                     unoptimized
                     className="object-contain object-left"
-                    sizes="(max-width: 640px) 176px, 208px"
+                    sizes="(max-width: 640px) 96px, 112px"
                   />
                 </div>
               </Link>

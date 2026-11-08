@@ -60,7 +60,7 @@ export function MobileNav({ isOpen, onClose, navItems }: MobileNavProps) {
         {/* Drawer Header */}
         <div className="p-4 border-b border-[#E7E2D8] flex items-center justify-between bg-[#FFFFFF]">
           <Link href="/" onClick={onClose} className="block py-1">
-            <div className="relative h-10 w-36">
+            <div className="relative h-12 w-20">
               <Image
                 src="/images/via-scent-logo.png"
                 alt="VIA SCENT Sri Lanka"
@@ -68,7 +68,7 @@ export function MobileNav({ isOpen, onClose, navItems }: MobileNavProps) {
                 priority
                 unoptimized
                 className="object-contain object-left"
-                sizes="144px"
+                sizes="80px"
               />
             </div>
           </Link>

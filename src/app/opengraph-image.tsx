@@ -26,7 +26,7 @@ export default async function Image() {
           gap: 40,
         }}
       >
-        <img src={logoSrc} width={541} height={145} alt="" />
+        <img src={logoSrc} width={480} height={277} alt="" />
         <div style={{ fontSize: 34, letterSpacing: 6, textTransform: "uppercase", color: "#B49A70" }}>
           Luxury Home Fragrance · Sri Lanka
         </div>
