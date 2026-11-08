@@ -79,8 +79,14 @@ export default function CheckoutPage() {
         if (res.ok) {
           const data = await res.json();
           setSettings(data);
-          if (data.payments?.defaultMethod) {
-            setPaymentMethod(data.payments.defaultMethod);
+          // Start on a payment method that is actually on offer
+          const offered: Array<"cod" | "online_gateway" | "koko"> = [];
+          if (data.payments?.codEnabled !== false) offered.push("cod");
+          if (data.payments?.onlineGatewayEnabled) offered.push("online_gateway");
+          if (data.payments?.kokoEnabled) offered.push("koko");
+          const preferred = data.payments?.defaultMethod;
+          if (offered.length > 0) {
+            setPaymentMethod(offered.includes(preferred) ? preferred : offered[offered.length - 1]);
           }
         }
       } catch (e) {
@@ -438,12 +444,13 @@ export default function CheckoutPage() {
                   <span>3. Payment Method</span>
                 </h2>
                 <p className="text-xs text-stone-500 mt-1">
-                  Choose between Cash on Delivery across Sri Lanka or Secure Online Gateway payment.
+                  Choose how you would like to pay.
                 </p>
               </div>
 
               <div className="space-y-3">
-                {/* Cash on Delivery (COD) */}
+                {/* Cash on Delivery (COD): hidden when switched off in admin settings */}
+                {(settings ? settings.payments?.codEnabled !== false : true) && (
                 <label
                   className={`flex items-start gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
                     paymentMethod === "cod"
@@ -474,6 +481,7 @@ export default function CheckoutPage() {
                     </p>
                   </div>
                 </label>
+                )}
 
                 {/* Online Payment Gateway (hidden until a live gateway is enabled) */}
                 {settings?.payments?.onlineGatewayEnabled && (
