@@ -198,14 +198,14 @@ export function Footer({ initialCategories }: FooterProps = {}) {
           <div className="lg:col-span-5 space-y-6">
             <div>
               <Link href="/" className="inline-block group py-1">
-                <div className="relative h-12 w-48 sm:h-14 sm:w-56 transition-transform duration-200 group-hover:scale-[1.02]">
+                <div className="relative h-20 w-36 sm:h-24 sm:w-44 transition-transform duration-200 group-hover:scale-[1.02]">
                   <Image
                     src="/images/via-scent-logo-white.png"
                     alt="VIA SCENT Sri Lanka - Fragrances • Aroma • Lifestyle"
                     fill
                     unoptimized
                     className="object-contain object-left"
-                    sizes="(max-width: 640px) 192px, 224px"
+                    sizes="(max-width: 640px) 144px, 176px"
                   />
                 </div>
               </Link>
