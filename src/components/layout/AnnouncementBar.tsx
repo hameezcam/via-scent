@@ -66,7 +66,7 @@ export function AnnouncementBar() {
     shippingAnnouncement,
     {
       prefix: "For businesses",
-      highlight: "Free site visits for hotels, spas and shops",
+      highlight: "Free site visits for hotels, retail outlets and commercial spaces",
       href: "/business-scenting/request-quote",
       linkText: "Book a visit",
     },
