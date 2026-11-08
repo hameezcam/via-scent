@@ -24,7 +24,7 @@ export function getAdminEmail(): string {
 }
 
 export function isAdminAuthConfigured(): boolean {
-  return Boolean(process.env.ADMIN_PASSWORD);
+  return Boolean(process.env.ADMIN_PASSWORD?.trim());
 }
 
 function toBase64Url(bytes: Uint8Array): string {
@@ -62,10 +62,11 @@ export function safeEqual(a: string, b: string): boolean {
 }
 
 export function verifyAdminCredentials(email: string, password: string): boolean {
-  const expectedPassword = process.env.ADMIN_PASSWORD;
+  // Pasting into Vercel or a phone keyboard often adds a stray space or new line, so ignore them
+  const expectedPassword = process.env.ADMIN_PASSWORD?.trim();
   if (!expectedPassword) return false;
   const emailOk = safeEqual(email.trim().toLowerCase(), getAdminEmail());
-  const passwordOk = safeEqual(password, expectedPassword);
+  const passwordOk = safeEqual(password.trim(), expectedPassword);
   return emailOk && passwordOk;
 }
 
