@@ -2,6 +2,7 @@ import { StoreSettings, DeliverySettings, PaymentSettings, ReturnSettings, Warra
 import { createDocumentStore } from "@/lib/document-store";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { isPayHereConfigured } from "@/lib/payhere";
+import { isKokoConfigured } from "@/lib/koko";
 
 export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   brand: {
@@ -107,6 +108,8 @@ class SettingsService {
     return {
       ...payments,
       onlineGatewayEnabled: payments.onlineGatewayEnabled && (isPayHereConfigured() || isSimulatedPaymentAllowed()),
+      // Koko instalments appear as soon as Koko's keys are set, and go away when they are removed
+      kokoEnabled: isKokoConfigured(),
     };
   }
 

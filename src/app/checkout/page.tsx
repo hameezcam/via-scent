@@ -64,7 +64,7 @@ export default function CheckoutPage() {
   const [district, setDistrict] = useState("Colombo");
   const [postalCode, setPostalCode] = useState("00300");
   const [notes, setNotes] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "online_gateway">("cod");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "online_gateway" | "koko">("cod");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -158,13 +158,17 @@ export default function CheckoutPage() {
         throw new Error(data.error || "Order creation failed. Please try again.");
       }
 
-      // Card payment: hand the customer to PayHere's secure page. The cart stays
+      // Card or Koko payment: hand the customer to the gateway's secure page. The cart stays
       // until the payment is confirmed, so cancelling doesn't lose it.
-      if (data.paymentType === "payhere") {
+      if (data.paymentType === "payhere" || data.paymentType === "koko") {
+        const gatewayForm = (data.paymentType === "koko" ? data.koko : data.payhere) as {
+          action: string;
+          fields: Record<string, string>;
+        };
         const form = document.createElement("form");
         form.method = "POST";
-        form.action = data.payhere.action;
-        for (const [name, value] of Object.entries(data.payhere.fields as Record<string, string>)) {
+        form.action = gatewayForm.action;
+        for (const [name, value] of Object.entries(gatewayForm.fields)) {
           const input = document.createElement("input");
           input.type = "hidden";
           input.name = name;
@@ -504,6 +508,39 @@ export default function CheckoutPage() {
                     </div>
                   </label>
                 )}
+                {/* Koko: pay in 3 instalments (shown once Koko's keys are set) */}
+                {settings?.payments?.kokoEnabled && (
+                  <label
+                    className={`flex items-start gap-4 p-4 rounded-lg border cursor-pointer transition-all ${
+                      paymentMethod === "koko"
+                        ? "border-amber-800 bg-amber-50/40 shadow-xs"
+                        : "border-stone-200 hover:border-stone-300 bg-stone-50/30"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="koko"
+                      checked={paymentMethod === "koko"}
+                      onChange={() => setPaymentMethod("koko")}
+                      className="mt-1 text-amber-800 focus:ring-amber-800"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 font-medium text-stone-900 text-sm">
+                          <CreditCard className="w-4 h-4 text-amber-800" />
+                          <span>Pay in 3 instalments with Koko</span>
+                        </div>
+                        <span className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded">
+                          No interest
+                        </span>
+                      </div>
+                      <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+                        Split your order into 3 equal payments with no interest. You&apos;ll finish the first payment on Koko&apos;s secure page.
+                      </p>
+                    </div>
+                  </label>
+                )}
               </div>
             </div>
           </div>
@@ -608,7 +645,11 @@ export default function CheckoutPage() {
                 ) : (
                   <>
                     <span>
-                      {paymentMethod === "cod" ? "Confirm & Place COD Order" : "Continue to secure card payment"}
+                      {paymentMethod === "cod"
+                        ? "Confirm & Place COD Order"
+                        : paymentMethod === "koko"
+                          ? "Continue to Koko"
+                          : "Continue to secure card payment"}
                     </span>
                     <ArrowRight className="w-4 h-4" />
                   </>

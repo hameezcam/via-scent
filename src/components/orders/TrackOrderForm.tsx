@@ -14,7 +14,7 @@ interface TrackResult {
 }
 
 const STATUS_TEXT: Record<string, string> = {
-  pending_payment: "Waiting for your card payment",
+  pending_payment: "Waiting for your online payment",
   placed_cod: "Order received. We'll confirm it with you shortly",
   confirmed: "Confirmed. We're getting it ready",
   processing: "Being packed",
@@ -110,7 +110,7 @@ export function TrackOrderForm() {
           </ul>
           <p className="mt-4 text-sm flex justify-between">
             <span>
-              {result.paymentMethod === "cod" ? "Pay on delivery" : result.paymentStatus === "paid" ? "Paid by card" : "Card payment pending"}
+              {result.paymentMethod === "cod" ? "Pay on delivery" : result.paymentStatus === "paid" ? "Paid online" : "Online payment pending"}
             </span>
             <strong>{formatLKR(result.totalLKR, true)}</strong>
           </p>
