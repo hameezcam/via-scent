@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Truck, ShieldCheck, Banknote, RotateCcw } from "lucide-react";
+import { Truck, ShieldCheck, CreditCard, RotateCcw } from "lucide-react";
 import { motion } from "motion/react";
 import { LUXURY_EASE } from "@/config/motion.config";
 
@@ -13,9 +13,9 @@ export function TrustSection() {
       description: "To every province, with tracking.",
     },
     {
-      icon: Banknote,
-      title: "Cash on delivery",
-      description: "Pay when your order arrives.",
+      icon: CreditCard,
+      title: "Pay in 3 instalments",
+      description: "Split your order with Koko, no interest.",
     },
     {
       icon: ShieldCheck,
