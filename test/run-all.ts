@@ -12,5 +12,6 @@ import "./scent-finder-and-reviews.test";
 import "./payhere.test";
 import "./koko.test";
 import "./admin-login.test";
+import "./menu-categories.test";
 import "./contact-and-tracking.test";
 import "./variant-photos.test";

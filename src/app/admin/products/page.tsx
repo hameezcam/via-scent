@@ -568,7 +568,7 @@ export default function AdminProductsPage() {
         if (catRes.ok) {
           const catJson = await catRes.json();
           if (catJson.success && Array.isArray(catJson.data) && !ignore) {
-            setAvailableCategories(catJson.data);
+            setAvailableCategories(catJson.data.filter((c: { menuOnly?: boolean }) => !c.menuOnly));
           }
         }
       } catch (e) {

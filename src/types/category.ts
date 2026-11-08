@@ -5,6 +5,8 @@
 export interface SubCategoryItem {
   id: string;
   label: string;
+  /** Where the menu entry goes. Leave empty to filter the shop by this sub-category. */
+  href?: string;
 }
 
 export interface Category {
@@ -18,6 +20,8 @@ export interface Category {
   displayOrder: number;
   subCategories?: SubCategoryItem[];
   href?: string;
+  /** Menu-only entries (like Services) show in the menu but are not shop collections. */
+  menuOnly?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

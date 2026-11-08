@@ -99,7 +99,31 @@ const DEFAULT_CATEGORIES: Category[] = [
     createdAt: "2026-10-18T10:00:00.000Z",
     updatedAt: "2026-10-18T10:00:00.000Z",
   },
+  {
+    id: "services",
+    slug: "services",
+    name: "Services",
+    tagline: "Scent finder, business scenting and franchise",
+    description: "Menu-only entry: its links appear in the SERVICES menu.",
+    image: "/images/categories/aroma-diffusers.jpg",
+    featuredInHome: false,
+    displayOrder: 99,
+    menuOnly: true,
+    href: "/business-scenting",
+    subCategories: [
+      { id: "scent-finder", label: "Scent Finder", href: "/scent-finder" },
+      { id: "b2b-sales", label: "B2B Sales", href: "/business-scenting" },
+      { id: "franchise", label: "Franchise", href: "/contact?topic=franchise" },
+      { id: "rental-services", label: "Rental Services", href: "/business-scenting/request-quote" },
+    ],
+    createdAt: "2026-11-08T10:00:00.000Z",
+    updatedAt: "2026-11-08T10:00:00.000Z",
+  },
 ];
+
+/** Entries the menu depends on. They come back if they are ever missing, so the admin can always edit them. */
+const REQUIRED_CATEGORY_IDS = ["best-sellers", "services"];
+let requiredEnsured = false;
 
 let memoryCategories: Category[] | null = null;
 
@@ -163,6 +187,26 @@ export class CategoryService {
           `;
         }
       }
+
+      // Bring back Best Sellers / Services if they are missing (once per server start)
+      if (!requiredEnsured) {
+        requiredEnsured = true;
+        for (const cat of DEFAULT_CATEGORIES.filter((c) => REQUIRED_CATEGORY_IDS.includes(c.id))) {
+          await sql`
+            INSERT INTO categories (
+              id, slug, name, tagline, description, image,
+              featured_in_home, display_order, data, created_at, updated_at
+            ) VALUES (
+              ${cat.id}, ${cat.slug}, ${cat.name}, ${cat.tagline || ""},
+              ${cat.description || ""}, ${cat.image}, ${Boolean(cat.featuredInHome)},
+              ${cat.displayOrder || 0}, ${JSON.stringify(cat)},
+              ${cat.createdAt || new Date().toISOString()},
+              ${cat.updatedAt || new Date().toISOString()}
+            )
+            ON CONFLICT (id) DO NOTHING;
+          `;
+        }
+      }
     } catch (err) {
       console.error("[CategoryService] PostgreSQL ensureCategoryTable error:", err);
     }
@@ -177,8 +221,12 @@ export class CategoryService {
       const raw = fs.readFileSync(CATEGORIES_FILE_PATH, "utf-8");
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        memoryCategories = parsed;
-        return parsed;
+        const missing = DEFAULT_CATEGORIES.filter(
+          (d) => REQUIRED_CATEGORY_IDS.includes(d.id) && !parsed.some((c: Category) => c.id === d.id)
+        );
+        const merged = missing.length > 0 ? [...parsed, ...missing] : parsed;
+        memoryCategories = merged;
+        return merged;
       }
       return [...DEFAULT_CATEGORIES];
     } catch (err) {

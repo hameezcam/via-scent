@@ -121,14 +121,18 @@ export function buildNavItemsFromCategories(categories: Category[]): NavMenuItem
   for (const cat of sorted) {
     const slug = cat.slug || cat.id;
 
-    // Resolve category page href
+    // Resolve category page href. A custom link set in the admin wins (the shop's own links are rebuilt from the slug).
     let catHref = `/shop/${slug}`;
     if (slug === "bestsellers" || slug === "best-sellers") {
       catHref = "/shop?category=bestsellers";
+    } else if (cat.href && !cat.href.startsWith("/shop/")) {
+      catHref = cat.href;
     }
 
     const subItems: NavDropdownItem[] = (cat.subCategories || []).map((sub) => {
-      const subHref = `${catHref}${catHref.includes("?") ? "&" : "?"}sub=${encodeURIComponent(sub.id)}`;
+      const subHref =
+        sub.href?.trim() ||
+        `${catHref}${catHref.includes("?") ? "&" : "?"}sub=${encodeURIComponent(sub.id)}`;
       return {
         label: sub.label,
         href: subHref,
@@ -143,7 +147,10 @@ export function buildNavItemsFromCategories(categories: Category[]): NavMenuItem
     });
   }
 
-  // Always keep SERVICES at the end
+  // Services is editable as a category now; fall back to the built-in one if it is missing
+  if (navItems.some((item) => item.id === "services")) {
+    return navItems;
+  }
   navItems.push({
     id: "services",
     label: "SERVICES",
