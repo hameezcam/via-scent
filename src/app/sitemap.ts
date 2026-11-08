@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     categoryService.getAll().catch(() => []),
   ]);
 
-  const categoryRoutes: MetadataRoute.Sitemap = categories.map((cat) => ({
+  const categoryRoutes: MetadataRoute.Sitemap = categories.filter((cat) => !cat.menuOnly).map((cat) => ({
     url: `${baseUrl}/shop/${cat.id}`,
     lastModified: cat.updatedAt ? new Date(cat.updatedAt) : now,
     changeFrequency: "weekly" as const,

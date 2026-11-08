@@ -48,6 +48,7 @@ export default function AdminCategoriesPage() {
   const [featuredInHome, setFeaturedInHome] = useState(true);
   const [subCategories, setSubCategories] = useState<SubCategoryItem[]>([]);
   const [newSubCategoryInput, setNewSubCategoryInput] = useState("");
+  const [menuLink, setMenuLink] = useState("");
 
   // Delete State
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
@@ -99,6 +100,7 @@ export default function AdminCategoriesPage() {
     setFeaturedInHome(true);
     setSubCategories([]);
     setNewSubCategoryInput("");
+    setMenuLink("");
     setIsModalOpen(true);
   };
 
@@ -112,8 +114,10 @@ export default function AdminCategoriesPage() {
     setImageUrl(cat.image);
     setDisplayOrder(cat.displayOrder || 1);
     setFeaturedInHome(Boolean(cat.featuredInHome));
-    setSubCategories(cat.subCategories ? [...cat.subCategories] : []);
+    setSubCategories(cat.subCategories ? cat.subCategories.map((sc) => ({ ...sc })) : []);
     setNewSubCategoryInput("");
+    // Only show a link when it is not just the automatic shop page
+    setMenuLink(cat.href && !cat.href.startsWith("/shop/") ? cat.href : "");
     setIsModalOpen(true);
   };
 
@@ -140,6 +144,11 @@ export default function AdminCategoriesPage() {
     }
     setSubCategories([...subCategories, { id: subId, label: trimmed }]);
     setNewSubCategoryInput("");
+  };
+
+  // Edit a sub-category's label or link in place
+  const handleEditSubCategory = (idx: number, changes: Partial<SubCategoryItem>) => {
+    setSubCategories((prev) => prev.map((sc, i) => (i === idx ? { ...sc, ...changes } : sc)));
   };
 
   // Remove subcategory item by index or id
@@ -242,7 +251,8 @@ export default function AdminCategoriesPage() {
         displayOrder: Number(displayOrder) || 1,
         featuredInHome,
         subCategories,
-        href: `/shop/${finalSlug}`,
+        href: menuLink.trim() || `/shop/${finalSlug}`,
+        menuOnly: editingCategory?.menuOnly,
       };
 
       if (editingCategory) {
@@ -857,6 +867,20 @@ export default function AdminCategoriesPage() {
                 </div>
               </div>
 
+              {/* Menu link (optional) */}
+              <div className="pt-2 border-t border-stone-100 space-y-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700">
+                  Menu link (optional)
+                </label>
+                <input
+                  type="text"
+                  value={menuLink}
+                  placeholder="Leave empty for the automatic shop page"
+                  onChange={(e) => setMenuLink(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-lg border border-stone-300 text-xs text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-600/20 focus:border-amber-600 transition"
+                />
+              </div>
+
               {/* Sub-Categories Manager */}
               <div className="pt-2 border-t border-stone-100 space-y-2">
                 <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700">
@@ -885,25 +909,40 @@ export default function AdminCategoriesPage() {
                   </button>
                 </div>
 
-                {/* Subcategory Pills */}
+                {/* Editable sub-categories: change the name or give it its own link */}
                 {subCategories.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-2">
+                  <div className="space-y-2 pt-2">
                     {subCategories.map((sub, idx) => (
-                      <span
-                        key={sub.id || idx}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs"
-                      >
-                        <Tag className="w-3 h-3 text-amber-600" />
-                        <span>{sub.label}</span>
+                      <div key={sub.id || idx} className="flex items-center gap-2">
+                        <Tag className="w-3 h-3 text-amber-600 shrink-0" />
+                        <input
+                          type="text"
+                          value={sub.label}
+                          aria-label="Sub-category name"
+                          onChange={(e) => handleEditSubCategory(idx, { label: e.target.value })}
+                          className="w-40 px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-600/20 focus:border-amber-600"
+                        />
+                        <input
+                          type="text"
+                          value={sub.href || ""}
+                          aria-label="Sub-category link"
+                          placeholder="Link (optional, e.g. /contact)"
+                          onChange={(e) => handleEditSubCategory(idx, { href: e.target.value })}
+                          className="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-600/20 focus:border-amber-600"
+                        />
                         <button
                           type="button"
                           onClick={() => handleRemoveSubCategory(idx)}
-                          className="hover:text-red-700 text-amber-700 transition"
+                          aria-label="Remove sub-category"
+                          className="hover:text-red-700 text-stone-500 transition"
                         >
-                          <X className="w-3 h-3" />
+                          <X className="w-4 h-4" />
                         </button>
-                      </span>
+                      </div>
                     ))}
+                    <p className="text-[11px] text-stone-500">
+                      Leave the link empty to filter the shop by this sub-category.
+                    </p>
                   </div>
                 )}
               </div>

@@ -298,7 +298,7 @@ export function Footer({ initialCategories }: FooterProps = {}) {
             </h3>
             <ul className="space-y-2.5 text-xs text-[#A8A196] font-light">
               {categories.length > 0 ? (
-                categories.map((cat) => {
+                categories.filter((cat) => !cat.menuOnly).map((cat) => {
                   let href = cat.href;
                   if (!href) {
                     const slug = cat.slug || cat.id;

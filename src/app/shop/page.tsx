@@ -16,7 +16,7 @@ export const metadata = {
 export default async function ShopPage() {
   const [products, categories] = await Promise.all([
     productService.getAll().then(withServedImagesAll),
-    categoryService.getAll(),
+    categoryService.getAll().then((all) => all.filter((c) => !c.menuOnly)),
   ]);
 
   return (

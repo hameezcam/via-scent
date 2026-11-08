@@ -146,5 +146,41 @@
     "displayOrder": 5,
     "subCategories": [],
     "featuredInHome": true
+  },
+  {
+    "id": "services",
+    "slug": "services",
+    "name": "Services",
+    "tagline": "Scent finder, business scenting and franchise",
+    "description": "Menu-only entry: its links appear in the SERVICES menu.",
+    "image": "/images/categories/aroma-diffusers.jpg",
+    "featuredInHome": false,
+    "displayOrder": 99,
+    "menuOnly": true,
+    "href": "/business-scenting",
+    "subCategories": [
+      {
+        "id": "scent-finder",
+        "label": "Scent Finder",
+        "href": "/scent-finder"
+      },
+      {
+        "id": "b2b-sales",
+        "label": "B2B Sales",
+        "href": "/business-scenting"
+      },
+      {
+        "id": "franchise",
+        "label": "Franchise",
+        "href": "/contact?topic=franchise"
+      },
+      {
+        "id": "rental-services",
+        "label": "Rental Services",
+        "href": "/business-scenting/request-quote"
+      }
+    ],
+    "createdAt": "2026-11-08T10:00:00.000Z",
+    "updatedAt": "2026-11-08T10:00:00.000Z"
   }
 ]

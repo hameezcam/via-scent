@@ -274,7 +274,7 @@ class ProductServiceImpl implements IProductService {
   async getCategories(): Promise<CategoryInfo[]> {
     const { categoryService } = await import("./category.service");
     const categories = await categoryService.getAll();
-    return categories.map((c) => ({
+    return categories.filter((c) => !c.menuOnly).map((c) => ({
       id: c.id as ProductCategory,
       name: c.name,
       tagline: c.tagline,
@@ -287,7 +287,7 @@ class ProductServiceImpl implements IProductService {
   async getCategoryById(id: string): Promise<CategoryInfo | null> {
     const { categoryService } = await import("./category.service");
     const category = await categoryService.getById(id);
-    if (!category) return null;
+    if (!category || category.menuOnly) return null;
     return {
       id: category.id as ProductCategory,
       name: category.name,
