@@ -16,5 +16,5 @@ test("Best Sellers and Services are always editable categories", async () => {
 test("Services is a menu entry, not a shop collection", async () => {
   assert.equal(await productService.getCategoryById("services"), null);
   const shopCategories = await productService.getCategories();
-  assert.ok(!shopCategories.some((c) => c.id === "services"));
+  assert.ok(!shopCategories.some((c) => (c.id as string) === "services"));
 });
