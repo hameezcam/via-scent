@@ -508,7 +508,7 @@ export function ProductDetailClient({
               </li>
               <li className="flex items-center gap-2">
                 <ShoppingBag className="w-4 h-4 text-[var(--champagne)] shrink-0" />
-                Cash on delivery
+                Pay in 3 instalments
               </li>
             </ul>
           </div>
