@@ -1703,7 +1703,7 @@ export default function AdminProductsPage() {
                       <input
                         type="number"
                         min="0"
-                        step="100"
+                        step="any"
                         required
                         value={basePriceOnRequest ? "" : basePriceLKR}
                         disabled={basePriceOnRequest}
@@ -1728,7 +1728,7 @@ export default function AdminProductsPage() {
                       <input
                         type="number"
                         min="0"
-                        step="100"
+                        step="any"
                         value={originalPriceLKR ?? ""}
                         onChange={(e) =>
                           setOriginalPriceLKR(e.target.value ? Number(e.target.value) : undefined)

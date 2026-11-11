@@ -233,7 +233,7 @@ export default function AdminDeliverySettingsPage() {
                   <input
                     type="number"
                     min="0"
-                    step="50"
+                    step="1"
                     required
                     value={defaultCourierFeeLKR}
                     onChange={(e) => setDefaultCourierFeeLKR(Number(e.target.value))}
@@ -256,7 +256,7 @@ export default function AdminDeliverySettingsPage() {
                   <input
                     type="number"
                     min="0"
-                    step="1000"
+                    step="1"
                     value={freeDeliveryThresholdLKR}
                     onChange={(e) => setFreeDeliveryThresholdLKR(e.target.value)}
                     placeholder="e.g. 50000 (Leave empty to disable)"
