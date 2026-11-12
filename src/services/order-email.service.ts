@@ -55,6 +55,7 @@ function totalsText(order: Order): string {
     `Subtotal: ${formatLKR(p.merchandiseSubtotalLKR)}`,
     `Delivery: ${p.deliveryFeeLKR > 0 ? formatLKR(p.deliveryFeeLKR) : "Free"}`,
     ...(p.discountLKR > 0 ? [`Discount: -${formatLKR(p.discountLKR)}`] : []),
+    ...(p.taxLKR > 0 ? [`Tax (10%): ${formatLKR(p.taxLKR)}`] : []),
     `Total: ${formatLKR(p.totalLKR)}`,
   ].join("\n");
 }
@@ -80,6 +81,7 @@ function orderSummaryHtml(order: Order): string {
       ${row("Subtotal", escapeHtml(formatLKR(p.merchandiseSubtotalLKR)))}
       ${row("Delivery", p.deliveryFeeLKR > 0 ? escapeHtml(formatLKR(p.deliveryFeeLKR)) : "Free")}
       ${p.discountLKR > 0 ? row("Discount", `-${escapeHtml(formatLKR(p.discountLKR))}`) : ""}
+      ${p.taxLKR > 0 ? row("Tax (10%)", escapeHtml(formatLKR(p.taxLKR))) : ""}
       ${row("Total", escapeHtml(formatLKR(p.totalLKR)), true)}
     </table>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;margin-top:20px;">

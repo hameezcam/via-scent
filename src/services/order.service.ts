@@ -4,6 +4,7 @@ import { productService } from "./product.service";
 import { createDocumentStore } from "@/lib/document-store";
 import { PAYHERE_STATUS } from "@/lib/payhere";
 import { KOKO_STATUS } from "@/lib/koko";
+import { kokoTaxFor } from "@/lib/koko-tax";
 import type { ValidReceipt } from "@/lib/bank-receipt";
 
 export interface CreateOrderInput {
@@ -96,7 +97,8 @@ const orderStore = createDocumentStore<Order>({
 export class OrderService {
   public async calculateCheckoutTotals(
     items: { productId: string; variantId: string; quantity: number }[],
-    district?: string
+    district?: string,
+    options: { kokoTax?: boolean } = {}
   ): Promise<{
     merchandiseSubtotalLKR: number;
     deliveryFeeLKR: number;
@@ -149,7 +151,8 @@ export class OrderService {
     }
 
     const discountLKR = 0;
-    const taxLKR = 0; // Tax neutral until tax rules finalized
+    // No tax on most orders. Koko orders carry 10% on the items plus delivery (rounded to the cent).
+    const taxLKR = options.kokoTax ? kokoTaxFor(merchandiseSubtotalLKR + deliveryFeeLKR - discountLKR) : 0;
     const totalLKR = merchandiseSubtotalLKR + deliveryFeeLKR - discountLKR + taxLKR;
 
     return {
@@ -164,7 +167,9 @@ export class OrderService {
 
   public async createOrder(input: CreateOrderInput): Promise<Order> {
     const { merchandiseSubtotalLKR, deliveryFeeLKR, discountLKR, taxLKR, totalLKR, validatedItems } =
-      await this.calculateCheckoutTotals(input.items, input.customer.district);
+      await this.calculateCheckoutTotals(input.items, input.customer.district, {
+        kokoTax: input.paymentMethod === "online_gateway" && input.onlineGateway === "koko",
+      });
 
     if (validatedItems.length === 0) {
       throw new Error("Cannot place an order with an empty or invalid cart.");

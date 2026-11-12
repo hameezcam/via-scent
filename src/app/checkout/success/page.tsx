@@ -276,7 +276,7 @@ function SuccessContent() {
             </div>
             <div className="flex justify-between text-stone-500">
               <span>Taxes</span>
-              <span>LKR 0.00 (Inclusive)</span>
+              <span>{snapshot.taxLKR > 0 ? formatLKR(snapshot.taxLKR, true) : "LKR 0.00 (Inclusive)"}</span>
             </div>
             <div className="pt-3 border-t border-stone-200 flex justify-between items-baseline">
               <span className="text-sm uppercase tracking-wider font-bold text-stone-900">

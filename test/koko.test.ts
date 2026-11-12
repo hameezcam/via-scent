@@ -146,3 +146,32 @@ test("Koko keys are accepted as PEM, quoted, one-line with \\n, or bare base64",
     assert.ok(createVerify("RSA-SHA256").update("y").verify(readPublicKey(form), sig, "base64"));
   }
 });
+
+test("Koko orders carry 10% tax on items plus delivery, other orders none", async () => {
+  const product = (await productService.getAll()).find((p) => (p.variants[0]?.priceLKR ?? p.basePriceLKR) > 0)!;
+  const make = (onlineGateway: "koko" | "payhere", paymentMethod: "online_gateway" | "cod") =>
+    orderService.createOrder({
+      customer: {
+        fullName: "Tax Buyer",
+        email: "tax@example.com",
+        phone: "+94771234567",
+        addressLine1: "1 Test Road",
+        city: "Colombo",
+        district: "Colombo",
+      },
+      items: [{ productId: product.id, variantId: product.variants[0]?.id, quantity: 1 }],
+      paymentMethod,
+      onlineGateway,
+    });
+
+  const koko = await make("koko", "online_gateway");
+  const p = koko.pricingSnapshot;
+  assert.equal(p.taxLKR, Math.round((p.merchandiseSubtotalLKR + p.deliveryFeeLKR) * 10) / 100);
+  assert.ok(p.taxLKR > 0);
+  assert.equal(p.totalLKR, p.merchandiseSubtotalLKR + p.deliveryFeeLKR + p.taxLKR);
+
+  const cod = await make("payhere", "cod");
+  assert.equal(cod.pricingSnapshot.taxLKR, 0);
+  const card = await make("payhere", "online_gateway");
+  assert.equal(card.pricingSnapshot.taxLKR, 0);
+});
