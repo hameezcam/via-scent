@@ -15,3 +15,4 @@ import "./admin-login.test";
 import "./menu-categories.test";
 import "./contact-and-tracking.test";
 import "./variant-photos.test";
+import "./bank-transfer.test";

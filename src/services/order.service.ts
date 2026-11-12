@@ -4,6 +4,7 @@ import { productService } from "./product.service";
 import { createDocumentStore } from "@/lib/document-store";
 import { PAYHERE_STATUS } from "@/lib/payhere";
 import { KOKO_STATUS } from "@/lib/koko";
+import type { ValidReceipt } from "@/lib/bank-receipt";
 
 export interface CreateOrderInput {
   customer: CustomerDetails;
@@ -16,6 +17,8 @@ export interface CreateOrderInput {
   /** Which online gateway an online order goes through. Defaults to PayHere. */
   onlineGateway?: "payhere" | "koko";
   notes?: string;
+  /** Bank transfer slip, already validated. Required for bank_transfer orders. */
+  receipt?: ValidReceipt;
 }
 
 // Demo order shown only in local file mode (never seeded into Postgres)
@@ -67,6 +70,21 @@ const DEMO_ORDER: Order = {
     },
   ],
 };
+
+export interface PaymentReceipt {
+  orderId: string;
+  fileName: string;
+  contentType: string;
+  dataBase64: string;
+  uploadedAt: string;
+}
+
+// Bank transfer slips live apart from orders so the order list stays light
+const receiptStore = createDocumentStore<PaymentReceipt>({
+  collection: "payment_receipts",
+  fileName: "payment-receipts.json",
+  getId: (receipt) => receipt.orderId,
+});
 
 const orderStore = createDocumentStore<Order>({
   collection: "orders",
@@ -158,6 +176,10 @@ export class OrderService {
     const orderId = `ord-${Date.now()}-${randomSuffix}`;
 
     const isCOD = input.paymentMethod === "cod";
+    const isBank = input.paymentMethod === "bank_transfer";
+    if (isBank && !input.receipt) {
+      throw new Error("Please upload your bank payment receipt.");
+    }
     const initialStatus: OrderStatus = isCOD ? "placed_cod" : "pending_payment";
     const initialPaymentStatus: PaymentStatus = "unpaid"; // COD is ALWAYS unpaid at order creation!
 
@@ -180,7 +202,10 @@ export class OrderService {
       payment: {
         method: input.paymentMethod,
         status: initialPaymentStatus,
-        gateway: isCOD ? undefined : input.onlineGateway === "koko" ? "koko" : "payhere_sri_lanka",
+        gateway: isCOD || isBank ? undefined : input.onlineGateway === "koko" ? "koko" : "payhere_sri_lanka",
+        ...(isBank && input.receipt
+          ? { receiptUploadedAt: new Date().toISOString(), receiptFileName: input.receipt.fileName }
+          : {}),
       },
       status: initialStatus,
       history: [
@@ -189,12 +214,23 @@ export class OrderService {
           status: initialStatus,
           note: isCOD
             ? "Order placed via Cash on Delivery (COD). Unpaid, awaiting courier delivery and payment collection."
-            : "Order created. Pending online digital payment gateway verification.",
+            : isBank
+              ? "Order placed by bank transfer. Receipt uploaded, waiting for the store to check the payment."
+              : "Order created. Pending online digital payment gateway verification.",
           updatedBy: input.customer.email,
         },
       ],
     };
 
+    if (isBank && input.receipt) {
+      await receiptStore.put(newOrder.id, {
+        orderId: newOrder.id,
+        fileName: input.receipt.fileName,
+        contentType: input.receipt.contentType,
+        dataBase64: input.receipt.dataBase64,
+        uploadedAt: newOrder.payment.receiptUploadedAt ?? newOrder.createdAt,
+      });
+    }
     await orderStore.put(newOrder.id, newOrder);
 
     return newOrder;
@@ -375,6 +411,41 @@ export class OrderService {
       updatedBy: adminUser,
     });
 
+    await this.updateOrder(order);
+    return order;
+  }
+
+  public async getReceipt(orderId: string): Promise<PaymentReceipt | null> {
+    return receiptStore.get(orderId);
+  }
+
+  /** The store has checked its bank account and the money has arrived. */
+  public async confirmBankTransfer(orderId: string, adminUser: string, note?: string): Promise<Order> {
+    const order = await this.getOrderById(orderId);
+    if (!order) {
+      throw new Error("Order not found.");
+    }
+    if (order.payment.method !== "bank_transfer") {
+      throw new Error("This order was not paid by bank transfer.");
+    }
+    if (order.payment.status === "paid") {
+      return order;
+    }
+    if (order.status === "cancelled") {
+      throw new Error("This order has been cancelled.");
+    }
+
+    const now = new Date().toISOString();
+    order.payment.status = "paid";
+    order.payment.paidAt = now;
+    order.payment.failureReason = undefined;
+    order.status = "confirmed";
+    order.history.push({
+      timestamp: now,
+      status: "confirmed",
+      note: `Bank transfer of LKR ${order.pricingSnapshot.totalLKR} checked and confirmed by ${adminUser}.${note ? ` ${note}` : ""}`,
+      updatedBy: adminUser,
+    });
     await this.updateOrder(order);
     return order;
   }

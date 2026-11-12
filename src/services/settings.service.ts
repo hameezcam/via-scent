@@ -1,8 +1,23 @@
-import { StoreSettings, DeliverySettings, PaymentSettings, ReturnSettings, WarrantySettings, AuditLogEntry } from "../types/settings";
+import { BankAccount, StoreSettings, DeliverySettings, PaymentSettings, ReturnSettings, WarrantySettings, AuditLogEntry } from "../types/settings";
 import { createDocumentStore } from "@/lib/document-store";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { isPayHereConfigured } from "@/lib/payhere";
 import { isKokoConfigured } from "@/lib/koko";
+
+/** Trims bank account fields and drops accounts that are missing a name or number. */
+export function sanitizeBankAccounts(accounts: unknown): BankAccount[] {
+  if (!Array.isArray(accounts)) return [];
+  const clean = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+  return accounts
+    .map((a) => ({
+      accountName: clean(a?.accountName, 120),
+      bankName: clean(a?.bankName, 120),
+      branch: clean(a?.branch, 120),
+      accountNumber: clean(a?.accountNumber, 40),
+    }))
+    .filter((a) => a.bankName && a.accountNumber)
+    .slice(0, 10);
+}
 
 export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   brand: {
@@ -26,6 +41,8 @@ export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   payments: {
     codEnabled: true, // Enabled by default
     onlineGatewayEnabled: true, // Customers only see it once PayHere keys are set (see getEffectivePaymentSettings)
+    bankTransferEnabled: false,
+    bankAccounts: [],
     defaultMethod: "cod",
     activeGateway: "payhere",
     merchantIdPlaceholder: "VIA_SCENT_MERCHANT_10928",
@@ -110,6 +127,9 @@ class SettingsService {
       onlineGatewayEnabled: payments.onlineGatewayEnabled && (isPayHereConfigured() || isSimulatedPaymentAllowed()),
       // Koko instalments appear as soon as Koko's keys are set, and go away when they are removed
       kokoEnabled: isKokoConfigured(),
+      // Bank transfer appears once at least one complete account is saved
+      bankAccounts: sanitizeBankAccounts(payments.bankAccounts),
+      bankTransferEnabled: Boolean(payments.bankTransferEnabled) && sanitizeBankAccounts(payments.bankAccounts).length > 0,
     };
   }
 
@@ -164,6 +184,10 @@ class SettingsService {
       ...updates,
       // COD remains enabled unless explicitly set
       codEnabled: updates.codEnabled !== undefined ? Boolean(updates.codEnabled) : current.payments.codEnabled,
+      bankTransferEnabled:
+        updates.bankTransferEnabled !== undefined ? Boolean(updates.bankTransferEnabled) : current.payments.bankTransferEnabled,
+      bankAccounts:
+        updates.bankAccounts !== undefined ? sanitizeBankAccounts(updates.bankAccounts) : current.payments.bankAccounts,
     };
 
     const newSettings: StoreSettings = {
@@ -176,7 +200,7 @@ class SettingsService {
       category: "PAYMENTS",
       action: "UPDATE_PAYMENT_SETTINGS",
       performedBy: adminUser,
-      details: `Payment methods updated. COD Enabled: ${newPayments.codEnabled}, Online Gateway Enabled: ${newPayments.onlineGatewayEnabled}.`,
+      details: `Payment methods updated. COD Enabled: ${newPayments.codEnabled}, Bank transfer: ${Boolean(newPayments.bankTransferEnabled)} (${(newPayments.bankAccounts ?? []).length} accounts), Online Gateway Enabled: ${newPayments.onlineGatewayEnabled}.`,
       previousValue: prevPayments,
       newValue: newPayments,
     });

@@ -14,6 +14,7 @@ import {
   Info,
   CheckCircle2,
   Lock,
+  Landmark,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatLKR } from "@/config/brand.config";
@@ -48,6 +49,45 @@ const SRI_LANKA_DISTRICTS = [
   "Kegalle",
 ];
 
+type PaymentChoice = "cod" | "online_gateway" | "koko" | "bank_transfer";
+
+const MAX_RECEIPT_BYTES = 3 * 1024 * 1024;
+
+function readAsDataUrl(file: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error("We couldn't read that file. Please try another one."));
+    reader.readAsDataURL(file);
+  });
+}
+
+/** Photos are shrunk so phone camera shots upload quickly; PDFs are sent as they are. */
+async function prepareReceipt(file: File): Promise<{ fileName: string; contentType: string; dataBase64: string }> {
+  if (file.type === "application/pdf") {
+    if (file.size > MAX_RECEIPT_BYTES) throw new Error("That PDF is over 3 MB. Please upload a smaller file or a photo of the receipt.");
+    return { fileName: file.name, contentType: file.type, dataBase64: await readAsDataUrl(file) };
+  }
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Please upload a photo (JPG, PNG) or a PDF of your receipt.");
+  }
+  const dataUrl = await readAsDataUrl(file);
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const el = document.createElement("img");
+    el.onload = () => resolve(el);
+    el.onerror = () => reject(new Error("We couldn't open that image. Please try another one."));
+    el.src = dataUrl;
+  });
+  const scale = Math.min(1, 1600 / Math.max(img.width, img.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(img.width * scale));
+  canvas.height = Math.max(1, Math.round(img.height * scale));
+  canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+  const jpeg = canvas.toDataURL("image/jpeg", 0.85);
+  const base = file.name.replace(/\.[^.]+$/, "") || "receipt";
+  return { fileName: `${base}.jpg`, contentType: "image/jpeg", dataBase64: jpeg };
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotalLKR, clearCart } = useCart();
@@ -64,7 +104,9 @@ export default function CheckoutPage() {
   const [district, setDistrict] = useState("Colombo");
   const [postalCode, setPostalCode] = useState("00300");
   const [notes, setNotes] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "online_gateway" | "koko">("cod");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentChoice>("cod");
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -80,10 +122,11 @@ export default function CheckoutPage() {
           const data = await res.json();
           setSettings(data);
           // Start on a payment method that is actually on offer
-          const offered: Array<"cod" | "online_gateway" | "koko"> = [];
+          const offered: PaymentChoice[] = [];
           if (data.payments?.codEnabled !== false) offered.push("cod");
           if (data.payments?.onlineGatewayEnabled) offered.push("online_gateway");
           if (data.payments?.kokoEnabled) offered.push("koko");
+          if (data.payments?.bankTransferEnabled) offered.push("bank_transfer");
           const preferred = data.payments?.defaultMethod;
           if (offered.length > 0) {
             setPaymentMethod(offered.includes(preferred) ? preferred : offered[offered.length - 1]);
@@ -129,9 +172,15 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (paymentMethod === "bank_transfer" && !receiptFile) {
+      setErrorMessage("Please upload your bank payment receipt before placing the order.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      const receipt = paymentMethod === "bank_transfer" && receiptFile ? await prepareReceipt(receiptFile) : undefined;
       const payload = {
         customer: {
           fullName,
@@ -150,6 +199,7 @@ export default function CheckoutPage() {
         })),
         paymentMethod,
         notes,
+        receipt,
       };
 
       const res = await fetch("/api/checkout", {
@@ -193,7 +243,7 @@ export default function CheckoutPage() {
         data.order.confirmationToken
       )}`;
 
-      if (paymentMethod === "cod") {
+      if (paymentMethod === "cod" || paymentMethod === "bank_transfer") {
         router.push(`/checkout/success?${orderQuery}`);
       } else {
         router.push(`/checkout/online-simulation?${orderQuery}`);
@@ -549,6 +599,106 @@ export default function CheckoutPage() {
                     </div>
                   </label>
                 )}
+                {/* Bank transfer: customer pays into the store's account and uploads the slip */}
+                {settings?.payments?.bankTransferEnabled && (
+                  <div
+                    className={`rounded-lg border transition-all ${
+                      paymentMethod === "bank_transfer"
+                        ? "border-amber-800 bg-amber-50/40 shadow-xs"
+                        : "border-stone-200 hover:border-stone-300 bg-stone-50/30"
+                    }`}
+                  >
+                    <label className="flex items-start gap-4 p-4 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="bank_transfer"
+                        checked={paymentMethod === "bank_transfer"}
+                        onChange={() => setPaymentMethod("bank_transfer")}
+                        className="mt-1 text-amber-800 focus:ring-amber-800"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 font-medium text-stone-900 text-sm">
+                          <Landmark className="w-4 h-4 text-amber-800" />
+                          <span>Bank Payment</span>
+                        </div>
+                        <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+                          Transfer the total to our bank account and upload your receipt.
+                        </p>
+                      </div>
+                    </label>
+
+                    {paymentMethod === "bank_transfer" && (
+                      <div className="px-4 pb-4 space-y-4">
+                        <ol className="text-xs text-amber-950 bg-amber-50 border border-amber-200 rounded p-3 space-y-1 list-decimal list-inside">
+                          <li>
+                            <strong>Make payment:</strong> pay {formatLKR(finalTotalLKR, true)} to one of our bank accounts below.
+                          </li>
+                          <li>
+                            <strong>Use reference:</strong> put your name or phone number as the transfer reference. Your order number is shown once you place the order.
+                          </li>
+                          <li>
+                            <strong>Upload receipt:</strong> choose a photo or PDF of your payment slip.
+                          </li>
+                          <li>
+                            <strong>Submit:</strong> press &quot;Place order&quot;.
+                          </li>
+                          <li>
+                            <strong>Activation:</strong> we check our account, then confirm your order by email.
+                          </li>
+                        </ol>
+
+                        <div className="space-y-3">
+                          <h3 className="font-serif text-base font-medium text-stone-900">Our bank details</h3>
+                          {(settings.payments.bankAccounts ?? []).map((acct, i) => (
+                            <div key={`${acct.accountNumber}-${i}`} className="bg-white border border-stone-200 rounded p-3 text-xs">
+                              {acct.accountName && (
+                                <p className="font-semibold text-stone-900">
+                                  Account name: {acct.accountName}
+                                </p>
+                              )}
+                              <div className="mt-2 flex items-center justify-between gap-3">
+                                <div className="text-stone-700">
+                                  <p className="font-medium text-stone-900">{acct.bankName}</p>
+                                  {acct.branch && <p className="text-stone-500">{acct.branch}</p>}
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-[10px] uppercase tracking-wider text-stone-500">Account number</p>
+                                  <p className="font-mono font-semibold text-stone-900">{acct.accountNumber}</p>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      navigator.clipboard?.writeText(acct.accountNumber).catch(() => {});
+                                      setCopiedAccount(acct.accountNumber);
+                                      setTimeout(() => setCopiedAccount(null), 2000);
+                                    }}
+                                    className="mt-1 px-3 py-1 bg-stone-900 text-amber-100 text-[10px] font-semibold uppercase tracking-wider rounded"
+                                  >
+                                    {copiedAccount === acct.accountNumber ? "Copied" : "Copy"}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div>
+                          <label htmlFor="bank-receipt" className="block text-xs font-medium text-stone-700 mb-1.5">
+                            Upload the bank payment receipt *
+                          </label>
+                          <input
+                            id="bank-receipt"
+                            type="file"
+                            accept="image/*,application/pdf"
+                            onChange={(e) => setReceiptFile(e.target.files?.[0] ?? null)}
+                            className="block w-full text-xs text-stone-700 border border-stone-300 rounded bg-white file:mr-3 file:px-3 file:py-2 file:border-0 file:bg-stone-900 file:text-amber-100 file:text-xs file:font-semibold"
+                          />
+                          <p className="text-[11px] text-stone-500 mt-1">A clear photo or PDF (up to 3 MB).</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -621,7 +771,7 @@ export default function CheckoutPage() {
                       Total Payable (LKR)
                     </span>
                     <span className="text-[11px] text-stone-500">
-                      {paymentMethod === "cod" ? "Pay upon courier arrival" : "Charged at checkout"}
+                      {paymentMethod === "cod" ? "Pay upon courier arrival" : paymentMethod === "bank_transfer" ? "Pay by bank transfer" : "Charged at checkout"}
                     </span>
                   </div>
                   <span className="font-serif text-2xl font-bold text-stone-900">
@@ -655,7 +805,9 @@ export default function CheckoutPage() {
                     <span>
                       {paymentMethod === "cod"
                         ? "Confirm & Place COD Order"
-                        : paymentMethod === "koko"
+                        : paymentMethod === "bank_transfer"
+                          ? "Place order & submit receipt"
+                          : paymentMethod === "koko"
                           ? "Continue to Koko"
                           : "Continue to secure card payment"}
                     </span>

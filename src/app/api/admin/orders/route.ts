@@ -42,6 +42,12 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ success: true, order: updated, message: "Payment collection recorded." });
     }
 
+    if (action === "confirm_bank_payment") {
+      const updated = await orderService.confirmBankTransfer(orderId, adminUser, note);
+      after(() => notifyOrderStatusChanged(updated));
+      return NextResponse.json({ success: true, order: updated, message: "Bank transfer confirmed. The customer has been emailed." });
+    }
+
     if (status) {
       const previousStatus = (await orderService.getOrderById(orderId))?.status;
       const updated = await orderService.updateOrderStatus(orderId, status, adminUser, note);

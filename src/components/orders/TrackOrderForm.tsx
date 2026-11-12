@@ -7,7 +7,7 @@ interface TrackResult {
   orderNumber: string;
   placedAt: string;
   status: string;
-  paymentMethod: "cod" | "online_gateway";
+  paymentMethod: "cod" | "online_gateway" | "bank_transfer";
   paymentStatus: string;
   totalLKR: number;
   items: { name: string; quantity: number }[];
@@ -110,7 +110,15 @@ export function TrackOrderForm() {
           </ul>
           <p className="mt-4 text-sm flex justify-between">
             <span>
-              {result.paymentMethod === "cod" ? "Pay on delivery" : result.paymentStatus === "paid" ? "Paid online" : "Online payment pending"}
+              {result.paymentMethod === "cod"
+                ? "Pay on delivery"
+                : result.paymentMethod === "bank_transfer"
+                  ? result.paymentStatus === "paid"
+                    ? "Bank transfer confirmed"
+                    : "Bank transfer being checked"
+                  : result.paymentStatus === "paid"
+                    ? "Paid online"
+                    : "Online payment pending"}
             </span>
             <strong>{formatLKR(result.totalLKR, true)}</strong>
           </p>

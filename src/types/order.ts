@@ -1,6 +1,6 @@
 import { ProductCategory } from "./product";
 
-export type PaymentMethod = "cod" | "online_gateway";
+export type PaymentMethod = "cod" | "online_gateway" | "bank_transfer";
 
 export type OrderStatus =
   | "pending_payment"
@@ -57,6 +57,9 @@ export interface PaymentRecord {
   collectedAt?: string;
   collectedBy?: string; // For COD verification
   failureReason?: string;
+  /** Bank transfer: when the customer uploaded their payment slip (the file itself is stored separately). */
+  receiptUploadedAt?: string;
+  receiptFileName?: string;
 }
 
 export interface OrderHistoryEntry {
