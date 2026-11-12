@@ -16,3 +16,4 @@ import "./menu-categories.test";
 import "./contact-and-tracking.test";
 import "./variant-photos.test";
 import "./bank-transfer.test";
+import "./checkout-quote.test";
