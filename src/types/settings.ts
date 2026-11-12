@@ -11,10 +11,19 @@ export interface DeliverySettings {
   estimateText: string;
 }
 
+export interface BankAccount {
+  accountName: string; // e.g. "SD Subs (Pvt) Ltd"
+  bankName: string; // e.g. "Seylan Bank"
+  branch: string; // e.g. "Colombo 04 (Bambalapitiya)"
+  accountNumber: string;
+}
+
 export interface PaymentSettings {
   codEnabled: boolean; // Cash on delivery (enabled by default)
   onlineGatewayEnabled: boolean; // Digital card payments
   kokoEnabled?: boolean; // Koko instalments. Set from the environment, not stored
+  bankTransferEnabled?: boolean; // Bank transfer with a receipt upload. Only offered once an account is added
+  bankAccounts?: BankAccount[];
   defaultMethod: "cod" | "online_gateway";
   activeGateway: "payhere" | "commercial_bank" | "mock_gateway";
   merchantIdPlaceholder: string;

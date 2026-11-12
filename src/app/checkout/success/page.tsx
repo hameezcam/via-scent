@@ -99,6 +99,7 @@ function SuccessContent() {
   }
 
   const isCOD = order.payment.method === "cod";
+  const isBank = order.payment.method === "bank_transfer";
   const snapshot = order.pricingSnapshot;
 
   return (
@@ -115,7 +116,9 @@ function SuccessContent() {
                 ? "Order Placed • Cash on Delivery"
                 : order.payment.status === "paid"
                   ? "Payment Confirmed • Order Processing"
-                  : "Order Received • Awaiting Payment"}
+                  : isBank
+                    ? "Order Received • Checking Your Bank Payment"
+                    : "Order Received • Awaiting Payment"}
             </span>
             <h1 className="font-serif text-3xl sm:text-4xl font-medium text-stone-900">
               Thank You for Your Order
@@ -161,6 +164,28 @@ function SuccessContent() {
               <span>Courier riders call ahead on {order.customer.phone} prior to dispatch.</span>
             </div>
           </div>
+        ) : isBank ? (
+          order.payment.status === "paid" ? (
+            <div className="bg-emerald-50/80 border border-emerald-200 p-6 rounded-lg text-emerald-950 space-y-2">
+              <div className="flex items-center gap-2 font-medium text-emerald-900 text-base">
+                <CheckCircle2 className="w-5 h-5 text-emerald-700" />
+                <span>Bank payment confirmed</span>
+              </div>
+              <p className="text-xs leading-relaxed text-emerald-900/90">
+                We&apos;ve checked your transfer and confirmed your order. We&apos;ll email you when it&apos;s on its way.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-amber-50/80 border border-amber-200 p-6 rounded-lg text-amber-950 space-y-2">
+              <div className="flex items-center gap-2 font-medium text-amber-900 text-base">
+                <Clock className="w-5 h-5 text-amber-800" />
+                <span>We&apos;re checking your bank payment</span>
+              </div>
+              <p className="text-xs leading-relaxed text-amber-900/90">
+                We&apos;ve received your receipt for <strong>{formatLKR(snapshot.totalLKR, true)}</strong>. Once we&apos;ve matched it with our bank account we&apos;ll confirm your order by email. Please quote order reference <strong>{order.orderNumber}</strong> if you contact us.
+              </p>
+            </div>
+          )
         ) : order.payment.status !== "paid" ? (
           <div className="bg-amber-50/80 border border-amber-200 p-6 rounded-lg text-amber-950 space-y-2">
             <div className="flex items-center gap-2 font-medium text-amber-900 text-base">

@@ -17,6 +17,8 @@ export async function GET() {
       codEnabled: payments.codEnabled,
       onlineGatewayEnabled: payments.onlineGatewayEnabled,
       kokoEnabled: Boolean(payments.kokoEnabled),
+      bankTransferEnabled: Boolean(payments.bankTransferEnabled),
+      bankAccounts: payments.bankTransferEnabled ? payments.bankAccounts ?? [] : [],
       defaultMethod: payments.onlineGatewayEnabled ? payments.defaultMethod : "cod",
     },
     returns: {

@@ -30,6 +30,7 @@ export function orderViewUrl(order: Order): string {
 
 function paymentLine(order: Order): string {
   if (order.payment.status === "paid") return "Paid";
+  if (order.payment.method === "bank_transfer") return "Bank transfer: we'll confirm once we've checked your payment";
   return order.payment.method === "cod"
     ? `Cash on delivery: please have ${formatLKR(order.pricingSnapshot.totalLKR)} ready`
     : "Awaiting payment";
@@ -126,13 +127,17 @@ const textFooter = `\n\nQuestions? Reply to this email, call or WhatsApp ${BRAND
 
 export function buildOrderConfirmationEmail(order: Order): EmailMessage {
   const url = orderViewUrl(order);
-  const intro = `Hi ${escapeHtml(firstName(order))}, thank you for your order <strong style="color:${COLORS.ink};">${escapeHtml(order.orderNumber)}</strong>. We'll call you to confirm it and let you know when it's on its way.`;
+  const isBank = order.payment.method === "bank_transfer" && order.payment.status !== "paid";
+  const next = isBank
+    ? "We've received your payment receipt. Once we've checked it against our bank account we'll confirm your order and let you know when it's on its way."
+    : "We'll call you to confirm it and let you know when it's on its way.";
+  const intro = `Hi ${escapeHtml(firstName(order))}, thank you for your order <strong style="color:${COLORS.ink};">${escapeHtml(order.orderNumber)}</strong>. ${next}`;
   return {
     to: order.customer.email,
     subject: `Your VIA Scent order ${order.orderNumber}`,
     html: layout({ heading: "Thank you for your order", intro, body: orderSummaryHtml(order), cta: { label: "View your order", href: url } }),
     text:
-      `Hi ${firstName(order)}, thank you for your order ${order.orderNumber}. We'll call you to confirm it and let you know when it's on its way.\n\n` +
+      `Hi ${firstName(order)}, thank you for your order ${order.orderNumber}. ${next}\n\n` +
       `${itemsText(order)}\n\n${totalsText(order)}\n\nDelivering to:\n${addressLines(order).join("\n")}\n\nPayment: ${paymentLine(order)}\n\n` +
       `View your order: ${url}${textFooter}`,
   };
@@ -141,7 +146,12 @@ export function buildOrderConfirmationEmail(order: Order): EmailMessage {
 export function buildNewOrderAlertEmail(order: Order): EmailMessage {
   const c = order.customer;
   const adminUrl = `${getSiteUrl()}/admin`;
-  const method = order.payment.method === "cod" ? "Cash on delivery" : "Online payment";
+  const method =
+    order.payment.method === "cod"
+      ? "Cash on delivery"
+      : order.payment.method === "bank_transfer"
+        ? "Bank transfer: receipt uploaded, check your bank account and confirm in admin"
+        : "Online payment";
   const intro =
     `${escapeHtml(c.fullName)} placed order <strong style="color:${COLORS.ink};">${escapeHtml(order.orderNumber)}</strong> ` +
     `for ${escapeHtml(formatLKR(order.pricingSnapshot.totalLKR))} (${escapeHtml(method)}).<br>` +

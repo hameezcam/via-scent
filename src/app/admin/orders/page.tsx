@@ -77,6 +77,28 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleConfirmBankTransfer = async () => {
+    if (!selectedOrder) return;
+    if (!window.confirm("Confirm that this payment has arrived in your bank account? The customer will be emailed.")) return;
+
+    try {
+      const res = await fetch("/api/admin/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: selectedOrder.id, action: "confirm_bank_payment" }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setOrders((prev) => prev.map((o) => (o.id === selectedOrder.id ? data.order : o)));
+        setSelectedOrder(data.order);
+      } else {
+        window.alert(data.error || "Could not confirm the payment.");
+      }
+    } catch (e) {
+      console.error("Failed to confirm bank transfer", e);
+    }
+  };
+
   const handleRecordCODCollection = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedOrder) return;
@@ -243,7 +265,7 @@ export default function AdminOrdersPage() {
                           <CreditCard className="w-3 h-3" />
                         )}
                         <span>
-                          {order.payment.method.toUpperCase()} • {order.payment.status.toUpperCase()}
+                          {order.payment.method.replace("_", " ").toUpperCase()} • {order.payment.status.toUpperCase()}
                         </span>
                       </span>
                     </td>
@@ -425,6 +447,43 @@ export default function AdminOrdersPage() {
                       Confirm Payment Collected (Mark Order As Paid)
                     </button>
                   </form>
+                )}
+              </div>
+            )}
+
+            {/* Bank transfer: check the slip, then confirm */}
+            {selectedOrder.payment.method === "bank_transfer" && (
+              <div className="p-4 bg-sky-50 border border-sky-200 rounded-lg space-y-3">
+                <div>
+                  <h4 className="font-semibold text-sky-950 text-xs">Bank transfer</h4>
+                  <p className="text-[11px] text-sky-800">
+                    Expected amount: LKR {selectedOrder.pricingSnapshot.totalLKR.toLocaleString()}. Check it has arrived in your bank account before confirming.
+                  </p>
+                </div>
+                {selectedOrder.payment.receiptUploadedAt ? (
+                  <a
+                    href={`/api/admin/orders/receipt?orderId=${encodeURIComponent(selectedOrder.id)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-3 py-1.5 bg-white border border-sky-300 text-sky-900 rounded text-xs font-semibold"
+                  >
+                    View uploaded receipt ({selectedOrder.payment.receiptFileName || "file"})
+                  </a>
+                ) : (
+                  <p className="text-[11px] text-sky-800">No receipt was uploaded.</p>
+                )}
+                {selectedOrder.payment.status === "paid" ? (
+                  <p className="text-xs font-semibold text-emerald-800">Payment confirmed.</p>
+                ) : selectedOrder.status === "cancelled" ? (
+                  <p className="text-xs text-stone-600">This order is cancelled.</p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleConfirmBankTransfer}
+                    className="w-full py-2 bg-emerald-800 text-white text-xs font-bold uppercase tracking-wider rounded"
+                  >
+                    Payment received: confirm order
+                  </button>
                 )}
               </div>
             )}

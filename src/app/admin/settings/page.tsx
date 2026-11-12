@@ -10,7 +10,7 @@ import {
   AlertCircle,
   Banknote,
 } from "lucide-react";
-import { StoreSettings } from "@/types/settings";
+import { BankAccount, StoreSettings } from "@/types/settings";
 
 export default function AdminGeneralSettingsPage() {
   const [loading, setLoading] = useState(true);
@@ -23,6 +23,12 @@ export default function AdminGeneralSettingsPage() {
   const [codEnabled, setCodEnabled] = useState(true);
   const [onlineGatewayEnabled, setOnlineGatewayEnabled] = useState(true);
   const [defaultMethod, setDefaultMethod] = useState<"cod" | "online_gateway">("cod");
+
+  const [bankTransferEnabled, setBankTransferEnabled] = useState(false);
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+
+  const updateAccount = (index: number, field: keyof BankAccount, value: string) =>
+    setBankAccounts((prev) => prev.map((a, i) => (i === index ? { ...a, [field]: value } : a)));
 
   // Returns form
   const [returnWindowDays, setReturnWindowDays] = useState(7);
@@ -42,6 +48,13 @@ export default function AdminGeneralSettingsPage() {
           setCodEnabled(data.payments.codEnabled);
           setOnlineGatewayEnabled(data.payments.onlineGatewayEnabled);
           setDefaultMethod(data.payments.defaultMethod);
+          // The public settings hide bank details until transfers are live, so read the saved ones
+          const adminRes = await fetch("/api/admin/settings");
+          if (adminRes.ok) {
+            const raw: StoreSettings = await adminRes.json();
+            setBankTransferEnabled(Boolean(raw.payments.bankTransferEnabled));
+            setBankAccounts(raw.payments.bankAccounts ?? []);
+          }
           setReturnWindowDays(data.returns.returnWindowDays);
           setRefundWindowDays(data.returns.refundWindowDays);
           setReturnPolicyText(data.returns.policyText);
@@ -143,6 +156,8 @@ export default function AdminGeneralSettingsPage() {
                 codEnabled,
                 onlineGatewayEnabled,
                 defaultMethod,
+                bankTransferEnabled,
+                bankAccounts,
               })
             }
             className="px-4 py-1.5 bg-stone-900 hover:bg-stone-800 text-amber-100 text-xs font-semibold uppercase tracking-wider rounded flex items-center gap-1.5"
@@ -193,6 +208,83 @@ export default function AdminGeneralSettingsPage() {
               />
               <div className="w-11 h-6 bg-stone-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-800"></div>
             </label>
+          </div>
+
+          <div className="p-4 bg-stone-50 rounded-lg border border-stone-200 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 font-semibold text-stone-900 text-sm">
+                  <Banknote className="w-4 h-4 text-sky-700" />
+                  <span>Bank Transfer (customer uploads a receipt)</span>
+                </div>
+                <span className="text-xs text-stone-500">
+                  Shown at checkout once at least one bank account is added below. You confirm each payment in Orders after checking your bank.
+                </span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={bankTransferEnabled}
+                  onChange={(e) => setBankTransferEnabled(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-stone-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-800"></div>
+              </label>
+            </div>
+
+            <div className="space-y-3">
+              {bankAccounts.map((acct, i) => (
+                <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-white border border-stone-200 rounded">
+                  <input
+                    type="text"
+                    placeholder="Account name (e.g. SD Subs (Pvt) Ltd)"
+                    value={acct.accountName}
+                    onChange={(e) => updateAccount(i, "accountName", e.target.value)}
+                    className="px-3 py-2 bg-stone-50 border border-stone-300 rounded text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Account number"
+                    value={acct.accountNumber}
+                    onChange={(e) => updateAccount(i, "accountNumber", e.target.value)}
+                    className="px-3 py-2 bg-stone-50 border border-stone-300 rounded text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Bank (e.g. Seylan Bank)"
+                    value={acct.bankName}
+                    onChange={(e) => updateAccount(i, "bankName", e.target.value)}
+                    className="px-3 py-2 bg-stone-50 border border-stone-300 rounded text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Branch (e.g. Colombo 04)"
+                    value={acct.branch}
+                    onChange={(e) => updateAccount(i, "branch", e.target.value)}
+                    className="px-3 py-2 bg-stone-50 border border-stone-300 rounded text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setBankAccounts((prev) => prev.filter((_, idx) => idx !== i))}
+                    className="sm:col-span-2 text-xs text-red-700 text-left font-semibold"
+                  >
+                    Remove this account
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() =>
+                  setBankAccounts((prev) => [...prev, { accountName: "", bankName: "", branch: "", accountNumber: "" }])
+                }
+                className="px-3 py-1.5 bg-stone-900 text-amber-100 text-xs font-semibold uppercase tracking-wider rounded"
+              >
+                + Add bank account
+              </button>
+              <p className="text-[11px] text-stone-500">
+                Accounts need a bank and an account number. Press &quot;Save Payments&quot; above to apply.
+              </p>
+            </div>
           </div>
         </div>
       </div>

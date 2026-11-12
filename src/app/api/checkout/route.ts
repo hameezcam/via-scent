@@ -5,6 +5,16 @@ import { notifyOrderPlaced } from "@/services/order-email.service";
 import { buildCheckoutForm, getPayHereConfig } from "@/lib/payhere";
 import { buildKokoCheckoutForm, getKokoConfig } from "@/lib/koko";
 import { getSiteUrl } from "@/lib/site-url";
+import { validateReceiptUpload } from "@/lib/bank-receipt";
+
+/** Runs work after the response is sent. Outside a request (for example in tests) it just runs it. */
+function afterResponse(task: () => Promise<void>) {
+  try {
+    after(task);
+  } catch {
+    void task().catch(() => {});
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,11 +59,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (paymentMethod === "bank_transfer" && !settings.bankTransferEnabled) {
+      return NextResponse.json(
+        { error: "Bank transfer is not available right now." },
+        { status: 400 }
+      );
+    }
+
+    let receipt;
+    if (paymentMethod === "bank_transfer") {
+      try {
+        receipt = validateReceiptUpload(body.receipt);
+      } catch (err) {
+        return NextResponse.json({ error: err instanceof Error ? err.message : "Invalid receipt." }, { status: 400 });
+      }
+    }
+
     const isOnline = paymentMethod === "online_gateway" || paymentMethod === "koko";
     const orderInput: CreateOrderInput = {
       customer,
       items,
-      paymentMethod: isOnline ? "online_gateway" : "cod",
+      paymentMethod: paymentMethod === "bank_transfer" ? "bank_transfer" : isOnline ? "online_gateway" : "cod",
+      receipt,
       onlineGateway: paymentMethod === "koko" ? "koko" : "payhere",
       notes: customer.notes,
     };
@@ -138,8 +165,23 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Bank transfer: the store checks the receipt against its bank account before confirming
+    if (newOrder.payment.method === "bank_transfer") {
+      afterResponse(() => notifyOrderPlaced(newOrder));
+      return NextResponse.json({
+        success: true,
+        order: orderRef,
+        orderId: newOrder.id,
+        orderNumber: newOrder.orderNumber,
+        pricingSnapshot: newOrder.pricingSnapshot,
+        paymentType: "bank_transfer",
+        status: newOrder.status,
+        message: "Order received. We'll confirm it once we've checked your bank transfer.",
+      });
+    }
+
     // For Cash on Delivery. Online orders are announced once payment is verified.
-    after(() => notifyOrderPlaced(newOrder));
+    afterResponse(() => notifyOrderPlaced(newOrder));
     return NextResponse.json({
       success: true,
       order: orderRef,
