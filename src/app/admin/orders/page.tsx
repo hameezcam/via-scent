@@ -349,6 +349,14 @@ export default function AdminOrdersPage() {
                     {formatLKR(selectedOrder.pricingSnapshot.discountLKR)}
                   </span>
                 </div>
+                {selectedOrder.pricingSnapshot.taxLKR > 0 && (
+                  <div>
+                    <span className="text-[10px] text-amber-700 block">Tax</span>
+                    <span className="font-semibold">
+                      {formatLKR(selectedOrder.pricingSnapshot.taxLKR, true)}
+                    </span>
+                  </div>
+                )}
                 <div>
                   <span className="text-[10px] text-amber-700 block">Final Total</span>
                   <span className="font-bold text-stone-900">

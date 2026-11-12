@@ -19,6 +19,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { formatLKR } from "@/config/brand.config";
 import { StoreSettings } from "@/types/settings";
+import { kokoTaxFor } from "@/lib/koko-tax";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 
 const SRI_LANKA_DISTRICTS = [
@@ -156,7 +157,9 @@ export default function CheckoutPage() {
     }
   }
 
-  const finalTotalLKR = subtotalLKR + deliveryFeeLKR;
+  // Koko orders carry 10% tax on items plus delivery
+  const taxLKR = paymentMethod === "koko" ? kokoTaxFor(subtotalLKR + deliveryFeeLKR) : 0;
+  const finalTotalLKR = subtotalLKR + deliveryFeeLKR + taxLKR;
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -594,7 +597,7 @@ export default function CheckoutPage() {
                         </span>
                       </div>
                       <p className="text-xs text-stone-600 mt-1 leading-relaxed">
-                        Split your order into 3 equal payments with no interest. You&apos;ll finish the first payment on Koko&apos;s secure page.
+                        Split your order into 3 equal payments with no interest. A 10% tax is added to Koko orders. You&apos;ll finish the first payment on Koko&apos;s secure page.
                       </p>
                     </div>
                   </label>
@@ -761,8 +764,8 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex justify-between text-stone-500">
-                  <span>Applicable Taxes</span>
-                  <span>LKR 0.00 (Inclusive)</span>
+                  <span>{taxLKR > 0 ? "Tax (10%, Koko)" : "Applicable Taxes"}</span>
+                  <span>{taxLKR > 0 ? formatLKR(taxLKR, true) : "LKR 0.00 (Inclusive)"}</span>
                 </div>
 
                 <div className="pt-3 border-t border-stone-200 flex justify-between items-baseline">
