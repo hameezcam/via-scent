@@ -65,8 +65,13 @@ export function getDb(): SqlFunction | null {
     globalForDb.postgresPool = new Pool({
       connectionString,
       ssl: { rejectUnauthorized: false },
-      max: 10,
-      idleTimeoutMillis: 30000,
+      // Keep this small: every serverless instance has its own pool, and Prisma Postgres only
+      // allows a handful of connections in total. A big pool per instance exhausts them
+      // ("too many connections") and the shop then falls back to the sample catalogue.
+      max: 2,
+      idleTimeoutMillis: 5000,
+      connectionTimeoutMillis: 10000,
+      allowExitOnIdle: true,
     });
   }
 
