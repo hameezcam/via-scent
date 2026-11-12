@@ -91,7 +91,7 @@ async function prepareReceipt(file: File): Promise<{ fileName: string; contentTy
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotalLKR, clearCart } = useCart();
+  const { items, subtotalLKR: cartSubtotalLKR, clearCart } = useCart();
 
   const [settings, setSettings] = useState<StoreSettings | null>(null);
 
@@ -109,6 +109,13 @@ export default function CheckoutPage() {
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
 
+  const [quote, setQuote] = useState<{
+    subtotalLKR: number;
+    deliveryFeeLKR: number;
+    taxLKR: number;
+    totalLKR: number;
+    lines: { productId: string; variantId: string; unitPriceLKR: number; lineTotalLKR: number }[];
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [paymentCancelled, setPaymentCancelled] = useState(false);
@@ -140,26 +147,60 @@ export default function CheckoutPage() {
     loadSettings();
   }, []);
 
+  // Ask the server what this order costs, whenever the cart, district or payment method changes
+  const cartKey = JSON.stringify(items.map((i) => [i.productId, i.variantId, i.quantity]));
+  useEffect(() => {
+    if (items.length === 0) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/checkout/quote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: items.map((i) => ({ productId: i.productId, variantId: i.variantId, quantity: i.quantity })),
+            district,
+            paymentMethod,
+          }),
+        });
+        if (res.ok && !cancelled) setQuote(await res.json());
+      } catch {
+        // Keep showing the browser's own estimate
+      }
+    }, 150);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartKey, district, paymentMethod]);
+
   // Compute live delivery fee based on active settings and customer district
-  let deliveryFeeLKR = 500; // Default LKR 500
+  let localDeliveryFeeLKR = 500; // Default LKR 500
   if (settings?.delivery) {
     if (settings.delivery.districtFees && settings.delivery.districtFees[district] !== undefined) {
-      deliveryFeeLKR = settings.delivery.districtFees[district];
+      localDeliveryFeeLKR = settings.delivery.districtFees[district];
     } else {
-      deliveryFeeLKR = settings.delivery.defaultCourierFeeLKR ?? 500;
+      localDeliveryFeeLKR = settings.delivery.defaultCourierFeeLKR ?? 500;
     }
 
     if (
       settings.delivery.freeDeliveryThresholdLKR &&
-      subtotalLKR >= settings.delivery.freeDeliveryThresholdLKR
+      cartSubtotalLKR >= settings.delivery.freeDeliveryThresholdLKR
     ) {
-      deliveryFeeLKR = 0;
+      localDeliveryFeeLKR = 0;
     }
   }
 
   // Koko orders carry 10% tax on items plus delivery
-  const taxLKR = paymentMethod === "koko" ? kokoTaxFor(subtotalLKR + deliveryFeeLKR) : 0;
-  const finalTotalLKR = subtotalLKR + deliveryFeeLKR + taxLKR;
+  const localTaxLKR = paymentMethod === "koko" ? kokoTaxFor(cartSubtotalLKR + localDeliveryFeeLKR) : 0;
+
+  // The server prices the order from the live catalogue. Show its numbers once we have them,
+  // so the total on screen is the amount the customer is actually charged.
+  const subtotalLKR = quote ? quote.subtotalLKR : cartSubtotalLKR;
+  const deliveryFeeLKR = quote ? quote.deliveryFeeLKR : localDeliveryFeeLKR;
+  const taxLKR = quote ? quote.taxLKR : localTaxLKR;
+  const finalTotalLKR = quote ? quote.totalLKR : subtotalLKR + deliveryFeeLKR + taxLKR;
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -737,7 +778,12 @@ export default function CheckoutPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium text-stone-900">
-                        {formatLKR(item.priceLKR * item.quantity)}
+                        {formatLKR(
+                          (
+                            quote?.lines.find((l) => l.productId === item.productId && l.variantId === item.variantId) ??
+                            quote?.lines.find((l) => l.productId === item.productId)
+                          )?.lineTotalLKR ?? item.priceLKR * item.quantity
+                        )}
                       </p>
                     </div>
                   </div>
