@@ -38,7 +38,7 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
       "IFRA-certified cold-air diffusion oils. Spanning Car Scent, Dr. Scent's Choice, F&B, Floral, Fresh, Fruity, Oriental, and Premium lines.",
     image: "/images/categories/fragrance-oils.jpg",
     href: "/shop/fragrance-oils",
-    colSpan: "col-span-2 md:col-span-7 h-[230px] sm:h-[420px] lg:h-[460px]",
+    colSpan: "h-[230px] sm:h-[420px] lg:h-[460px]",
     subItems: [
       { label: "Car Scent", href: "/shop/fragrance-oils?sub=car-scent" },
       { label: "Dr. Scent's Choice", href: "/shop/fragrance-oils?sub=choice" },
@@ -58,7 +58,7 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
       "Waterless, heatless cold-air diffusers engineered to atomize pure fragrance oil into an invisible, residue-free ambient mist.",
     image: "/images/categories/aroma-diffusers.jpg",
     href: "/shop/aroma-diffusers",
-    colSpan: "md:col-span-5 h-[230px] sm:h-[420px] lg:h-[460px]",
+    colSpan: "h-[230px] sm:h-[420px] lg:h-[460px]",
     subItems: [
       { label: "Diffuser", href: "/shop/aroma-diffusers?sub=diffuser" },
       { label: "Car Diffuser", href: "/shop/aroma-diffusers?sub=car-diffuser" },
@@ -74,7 +74,7 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
       "Our most celebrated cold-air diffusers, signature aroma oils, ambient sprays, reed diffusers, and luxury candles.",
     image: "/images/categories/bestsellers.jpg",
     href: "/shop?category=bestsellers",
-    colSpan: "md:col-span-6 lg:col-span-4 h-[230px] sm:h-[420px] lg:h-[460px]",
+    colSpan: "h-[230px] sm:h-[420px] lg:h-[460px]",
     subItems: [
       { label: "Diffusers", href: "/shop?category=bestsellers&sub=diffusers" },
       { label: "Aroma Oils", href: "/shop?category=bestsellers&sub=aroma-oils" },
@@ -91,7 +91,7 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
       "Instantaneous, residue-free sprays designed to refresh fine fabrics, linens, and living spaces with Dr. Scent fragrances.",
     image: "/images/categories/sprays.jpg",
     href: "/shop?category=sprays",
-    colSpan: "md:col-span-6 lg:col-span-4 h-[230px] sm:h-[420px] lg:h-[460px]",
+    colSpan: "h-[230px] sm:h-[420px] lg:h-[460px]",
     subItems: [
       { label: "Fabric Spray", href: "/shop?category=sprays&sub=fabric-spray" },
       { label: "Odor Eliminator", href: "/shop?category=sprays&sub=odor-eliminator" },
@@ -106,7 +106,7 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
       "Artisanal scented candles crafted with pure soy and coconut wax, cotton wicks, and Dr. Scent fragrances for warm ambient illumination.",
     image: "/images/categories/candles.jpg",
     href: "/shop/candles",
-    colSpan: "col-span-2 md:col-span-12 lg:col-span-4 h-[230px] sm:h-[420px] lg:h-[460px]",
+    colSpan: "h-[230px] sm:h-[420px] lg:h-[460px]",
     subItems: [
       { label: "Scented Candle", href: "/shop/candles?sub=scented-candle" },
       { label: "Soy Wax Candle", href: "/shop/candles?sub=soy-wax" },
@@ -115,19 +115,14 @@ const FEATURED_COLLECTIONS: CollectionCard[] = [
   },
 ];
 
-function getColSpan(idx: number, total: number): string {
-  if (total === 1) return "col-span-2 md:col-span-12 h-[230px] sm:h-[420px] lg:h-[460px]";
-  if (total === 2) return "md:col-span-6 h-[230px] sm:h-[420px] lg:h-[460px]";
-  if (total === 5) {
-    if (idx === 0) return "col-span-2 md:col-span-7 h-[230px] sm:h-[420px] lg:h-[460px]";
-    if (idx === 1) return "md:col-span-5 h-[230px] sm:h-[420px] lg:h-[460px]";
-    return "md:col-span-6 lg:col-span-4 h-[230px] sm:h-[420px] lg:h-[460px]";
-  }
-  const remaining = total - idx;
-  if (idx % 3 === 0 && remaining === 1) return "col-span-2 md:col-span-12 h-[230px] sm:h-[420px] lg:h-[460px]";
-  if (idx % 3 === 0 && remaining === 2) return "md:col-span-6 h-[230px] sm:h-[420px] lg:h-[460px]";
-  if (idx % 3 === 1 && remaining === 1) return "md:col-span-6 h-[230px] sm:h-[420px] lg:h-[460px]";
-  return "md:col-span-6 lg:col-span-4 h-[230px] sm:h-[420px] lg:h-[460px]";
+// Every tile is the same size. Only the number of columns changes with how many there are.
+const TILE_SIZE = "h-[230px] sm:h-[420px] lg:h-[460px]";
+
+function getGridColumns(total: number): string {
+  // Four tiles sit as an even 2 x 2; other counts use three columns on wide screens
+  if (total === 4) return "grid-cols-2";
+  if (total <= 2) return "grid-cols-2";
+  return "grid-cols-2 lg:grid-cols-3";
 }
 
 export function FeaturedCategories({ initialCategories }: FeaturedCategoriesProps) {
@@ -140,7 +135,7 @@ export function FeaturedCategories({ initialCategories }: FeaturedCategoriesProp
           description: cat.description || "",
           image: cat.image || "/images/categories/candles.jpg",
           href: cat.href || `/shop/${cat.slug}`,
-          colSpan: getColSpan(idx, initialCategories.length),
+          colSpan: TILE_SIZE,
           subItems:
             cat.subCategories && cat.subCategories.length > 0
               ? cat.subCategories.map((sub) => ({
@@ -168,8 +163,8 @@ export function FeaturedCategories({ initialCategories }: FeaturedCategoriesProp
           </p>
         </div>
 
-        {/* Editorial Balanced Asymmetric Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-3 sm:gap-6">
+        {/* Even-sized category tiles */}
+        <div className={`grid ${getGridColumns(dynamicCollections.length)} gap-3 sm:gap-6`}>
           {dynamicCollections.map((col, idx) => {
             return (
               <motion.div
@@ -186,7 +181,7 @@ export function FeaturedCategories({ initialCategories }: FeaturedCategoriesProp
                     src={col.image}
                     alt={col.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 60vw"
+                    sizes="(max-width: 1024px) 50vw, 33vw"
                     className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out brightness-[0.78] group-hover:brightness-[0.88]"
                   />
 
